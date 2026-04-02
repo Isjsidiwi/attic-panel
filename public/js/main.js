@@ -15,16 +15,31 @@ function closeModalOutside(e, id) {
 
 /* ── Edit Modal ────────────────────────────────── */
 function openEdit(key) {
-  document.getElementById('edit-key-code').value     = key.key_code;
-  document.getElementById('edit-resource').value     = key.resource;
-  document.getElementById('edit-active').value       = key.is_active ? '1' : '0';
-  document.getElementById('edit-notes').value        = key.notes || '';
-  document.getElementById('edit-serial-display').value = key.device_serial || 'Belum terkunci';
-  document.getElementById('edit-reset-device').checked = false;
+  document.getElementById('edit-key-code').value  = key.key_code;
+  document.getElementById('edit-resource').value  = key.resource;
+  document.getElementById('edit-active').value    = key.is_active ? '1' : '0';
+  document.getElementById('edit-notes').value     = key.notes || '';
+  document.getElementById('edit-max-devices').value = key.max_devices || 1;
+  document.getElementById('edit-reset-devices').checked = false;
 
-  // Format expires_at for datetime-local input
+  // Render daftar serials
+  let serials = [];
+  try { serials = JSON.parse(key.device_serials || '[]'); } catch {}
+  const box = document.getElementById('edit-serials-list');
+  if (serials.length === 0) {
+    box.innerHTML = '<span class="text-muted" style="font-size:.78rem">Belum ada device terdaftar</span>';
+  } else {
+    box.innerHTML = serials.map((s, i) =>
+      `<div class="serial-item">
+        <span class="serial-dot"></span>
+        <code style="font-size:.75rem;color:var(--text)">${s}</code>
+        <span class="serial-idx">#${i+1}</span>
+      </div>`
+    ).join('');
+  }
+
   if (key.expires_at) {
-    const d = new Date(key.expires_at * 1000);
+    const d = new Date(Number(key.expires_at) * 1000);
     const pad = n => String(n).padStart(2, '0');
     const local = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
     document.getElementById('edit-expires').value = local;

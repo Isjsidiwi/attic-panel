@@ -15,18 +15,20 @@ function getClient() {
 async function initDB() {
   const db = getClient();
 
+  // Buat tabel dengan skema terbaru
   await db.executeMultiple(`
     CREATE TABLE IF NOT EXISTS keys (
-      id            INTEGER PRIMARY KEY AUTOINCREMENT,
-      key_code      TEXT UNIQUE NOT NULL,
-      resource      TEXT NOT NULL DEFAULT 'vip',
-      device_serial TEXT DEFAULT NULL,
-      created_at    INTEGER NOT NULL,
-      expires_at    INTEGER NOT NULL,
-      is_active     INTEGER NOT NULL DEFAULT 1,
-      notes         TEXT DEFAULT '',
-      login_count   INTEGER DEFAULT 0,
-      last_login    INTEGER DEFAULT NULL
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      key_code        TEXT UNIQUE NOT NULL,
+      resource        TEXT NOT NULL DEFAULT 'vip',
+      device_serials  TEXT NOT NULL DEFAULT '[]',
+      max_devices     INTEGER NOT NULL DEFAULT 1,
+      created_at      INTEGER NOT NULL,
+      expires_at      INTEGER NOT NULL,
+      is_active       INTEGER NOT NULL DEFAULT 1,
+      notes           TEXT DEFAULT '',
+      login_count     INTEGER DEFAULT 0,
+      last_login      INTEGER DEFAULT NULL
     );
 
     CREATE TABLE IF NOT EXISTS config (
@@ -35,7 +37,29 @@ async function initDB() {
     );
   `);
 
-  // Seed default config if empty
+  // Migration: tabel lama mungkin punya device_serial (tanpa s)
+  try {
+    const cols = await db.execute('PRAGMA table_info(keys)');
+    const colNames = cols.rows.map(r => r.name);
+
+    if (colNames.includes('device_serial') && !colNames.includes('device_serials')) {
+      await db.execute("ALTER TABLE keys ADD COLUMN device_serials TEXT NOT NULL DEFAULT '[]'");
+      await db.execute("ALTER TABLE keys ADD COLUMN max_devices INTEGER NOT NULL DEFAULT 1");
+      await db.execute(`
+        UPDATE keys SET device_serials =
+          CASE WHEN device_serial IS NULL THEN '[]'
+               ELSE json_array(device_serial)
+          END
+      `);
+    } else {
+      if (!colNames.includes('device_serials'))
+        await db.execute("ALTER TABLE keys ADD COLUMN device_serials TEXT NOT NULL DEFAULT '[]'");
+      if (!colNames.includes('max_devices'))
+        await db.execute("ALTER TABLE keys ADD COLUMN max_devices INTEGER NOT NULL DEFAULT 1");
+    }
+  } catch (_) { /* tabel fresh, kolom sudah ada */ }
+
+  // Seed default config
   const bcrypt = require('bcryptjs');
   const defaults = {
     panel_name:     process.env.PANEL_NAME     || 'ATTIC PANEL',
@@ -46,21 +70,16 @@ async function initDB() {
   };
 
   for (const [k, v] of Object.entries(defaults)) {
-    await db.execute({
-      sql:  'INSERT OR IGNORE INTO config (key, value) VALUES (?, ?)',
-      args: [k, v]
-    });
+    await db.execute({ sql: 'INSERT OR IGNORE INTO config (key, value) VALUES (?, ?)', args: [k, v] });
   }
 
-  console.log('✓ Turso DB ready');
+  console.log('Turso DB ready');
 }
-
-// ── Query helpers ─────────────────────────────────────
 
 async function all(sql, args = []) {
   const db = getClient();
   const res = await db.execute({ sql, args });
-  return res.rows;          // array of row objects
+  return res.rows;
 }
 
 async function get(sql, args = []) {

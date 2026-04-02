@@ -60,6 +60,9 @@ app.use((req, res) => {
   `);
 });
 
+// Init DB then start (local) / export (Vercel)
+initDB().catch(err => { console.error('DB init failed:', err); process.exit(1); });
+
 const PORT = process.env.PORT || 3000;
 if (require.main === module) {
   app.listen(PORT, () => {

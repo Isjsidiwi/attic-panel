@@ -15,24 +15,31 @@ router.post('/game/MLBB', async (req, res) => {
   if (!userKey) return fail('user_key diperlukan');
 
   const row = await db.get('SELECT * FROM keys WHERE key_code = ?', [userKey]);
-  if (!row)             return fail('Key tidak ditemukan');
-  if (!row.is_active)   return fail('Key dinonaktifkan');
+  if (!row)           return fail('Key tidak ditemukan');
+  if (!row.is_active) return fail('Key dinonaktifkan');
   if (Number(row.expires_at) <= now) return fail('Key sudah expired');
 
-  if (row.device_serial && row.device_serial !== serial)
-    return fail('Device tidak diizinkan — key ini sudah terkunci ke device lain');
+  // Parse serials array
+  let serials = [];
+  try { serials = JSON.parse(row.device_serials || '[]'); } catch { serials = []; }
+  const maxDevices = Number(row.max_devices) || 1;
 
-  if (!row.device_serial && serial) {
-    await db.run(
-      'UPDATE keys SET device_serial=?, login_count=login_count+1, last_login=? WHERE id=?',
-      [serial, now, row.id]
-    );
-  } else {
-    await db.run(
-      'UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?',
-      [now, row.id]
-    );
+  if (serial) {
+    if (serials.includes(serial)) {
+      // Serial sudah terdaftar — OK, lanjut login
+    } else if (serials.length >= maxDevices) {
+      return fail(`Batas device tercapai (${maxDevices}/${maxDevices}). Key ini sudah terkunci ke ${maxDevices} device.`);
+    } else {
+      // Device baru, masih ada slot — tambahkan
+      serials.push(serial);
+      await db.run(
+        'UPDATE keys SET device_serials=?, login_count=login_count+1, last_login=? WHERE id=?',
+        [JSON.stringify(serials), now, row.id]
+      );
+    }
   }
+
+  await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
 
   const cfg = await loadConfig();
   const raw = `MLBB-${userKey}-${serial}-${resource}-${cfg.salt}`;
@@ -44,7 +51,7 @@ router.post('/game/MLBB', async (req, res) => {
   res.json({
     status: true,
     reason: 'Login Success',
-    data: { token, rng: Number(row.expires_at), tittle: 'Powered by Xsrc & Shannz', expired: expiredStr }
+    data: { token, rng: Number(row.expires_at), tittle: 'ATTIC MOD - 100% HACKED', expired: expiredStr }
   });
 });
 

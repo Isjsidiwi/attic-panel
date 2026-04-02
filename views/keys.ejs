@@ -57,7 +57,7 @@
                 <th>KEY CODE</th>
                 <th>RESOURCE</th>
                 <th>STATUS</th>
-                <th>DEVICE SERIAL</th>
+                <th>DEVICE (TERPAKAI/MAX)</th>
                 <th>DIBUAT</th>
                 <th>EXPIRED</th>
                 <th>LOGIN</th>
@@ -83,12 +83,20 @@
                     <span class="badge badge-active">AKTIF</span>
                   <% } %>
                 </td>
-                <td class="text-muted serial-cell">
-                  <% if (k.device_serial) { %>
-                    <span title="<%= k.device_serial %>"><%= k.device_serial.substring(0,20) %><%= k.device_serial.length > 20 ? '…' : '' %></span>
-                  <% } else { %>
-                    <span class="text-muted">—</span>
-                  <% } %>
+                <td class="serial-cell">
+                  <% const serials_k = parseSerials(k.device_serials); %>
+                  <div class="device-slot-wrap">
+                    <span class="device-slot-badge <%= serials_k.length >= k.max_devices ? 'slot-full' : serials_k.length > 0 ? 'slot-partial' : 'slot-empty' %>">
+                      <%= serials_k.length %>/<%= k.max_devices %>
+                    </span>
+                    <% if (serials_k.length > 0) { %>
+                      <span class="device-serial-list" title="<%= serials_k.join('\n') %>">
+                        <%= serials_k[0].substring(0,14) %><%= serials_k[0].length > 14 ? '…' : '' %><% if (serials_k.length > 1) { %> <span class="text-muted">+<%= serials_k.length - 1 %></span><% } %>
+                      </span>
+                    <% } else { %>
+                      <span class="text-muted" style="font-size:.72rem">Belum ada</span>
+                    <% } %>
+                  </div>
                 </td>
                 <td class="text-muted"><%= fmtDate(k.created_at) %></td>
                 <td class="<%= k.expires_at <= now ? 'text-danger' : 'text-muted' %>"><%= fmtDate(k.expires_at) %></td>
@@ -162,9 +170,15 @@
           </select>
         </div>
       </div>
-      <div class="field">
-        <label class="field-label">JUMLAH (bulk, maks 100)</label>
-        <input type="number" name="bulk" class="field-input" value="1" min="1" max="100">
+      <div class="field-row">
+        <div class="field" style="flex:1">
+          <label class="field-label">JUMLAH KEY (bulk)</label>
+          <input type="number" name="bulk" class="field-input" value="1" min="1" max="100">
+        </div>
+        <div class="field" style="flex:1">
+          <label class="field-label">MAX DEVICE / KEY</label>
+          <input type="number" name="max_devices" class="field-input" value="1" min="1" max="100" title="Berapa device yang bisa login pakai 1 key">
+        </div>
       </div>
       <div class="field">
         <label class="field-label">NOTES (opsional)</label>
@@ -206,13 +220,18 @@
         </select>
       </div>
       <div class="field">
-        <label class="field-label">DEVICE SERIAL</label>
-        <input type="text" id="edit-serial-display" class="field-input" readonly>
+        <label class="field-label">MAX DEVICE / KEY</label>
+        <input type="number" name="max_devices" id="edit-max-devices" class="field-input" min="1" max="100">
+        <p class="field-hint">Ubah kapasitas device. Jika dikecilkan di bawah jumlah serial terdaftar, device lama tetap tersimpan tapi slot tidak bisa bertambah.</p>
+      </div>
+      <div class="field">
+        <label class="field-label">DEVICE TERDAFTAR</label>
+        <div id="edit-serials-list" class="serials-box"></div>
       </div>
       <div class="field-check">
         <label class="check-label">
-          <input type="checkbox" name="reset_device" value="1" id="edit-reset-device">
-          <span>Reset device lock (unlock dari serial saat ini)</span>
+          <input type="checkbox" name="reset_devices" value="1" id="edit-reset-devices">
+          <span>Reset semua device (hapus semua serial terdaftar)</span>
         </label>
       </div>
       <div class="field">
