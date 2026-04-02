@@ -93,10 +93,29 @@ function clearSelection() {
   document.getElementById('bulk-bar').style.display = 'none';
 }
 
-function submitBulkAction(url) {
+function submitBulkAction(url, confirmMsg) {
+  if (confirmMsg && !confirm(confirmMsg)) return;
+
+  const checked = Array.from(document.querySelectorAll('.row-check:checked'));
+  if (!checked.length) return;
+
+  // Kumpulkan semua ID ke hidden input (comma-separated)
+  // Backend sudah support array via ?ids=1&ids=2, kita pakai multiple inputs
   const form = document.getElementById('bulk-form');
-  if (!form) return;
   form.action = url;
+
+  // Hapus input lama
+  form.querySelectorAll('input[name="ids"]').forEach(el => el.remove());
+
+  // Buat input per ID
+  checked.forEach(cb => {
+    const inp = document.createElement('input');
+    inp.type  = 'hidden';
+    inp.name  = 'ids';
+    inp.value = cb.value;
+    form.appendChild(inp);
+  });
+
   form.submit();
 }
 
