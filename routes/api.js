@@ -51,7 +51,7 @@ router.post('/game/MLBB', async (req, res) => {
   res.json({
     status: true,
     reason: 'Login Success',
-    data: { token, rng: Number(row.expires_at), tittle: 'ATTIC MOD - 100% HACKED', expired: expiredStr }
+    data: { token, rng: Number(row.expires_at), tittle: 'Provided by Xsrc & Shannz', expired: expiredStr }
   });
 });
 
