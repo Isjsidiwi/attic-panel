@@ -35,18 +35,22 @@
       </div>
     </div>
 
-    <!-- Bulk actions -->
-    <form id="bulk-form" action="/admin/keys/bulk-delete" method="POST">
-      <div class="bulk-bar" id="bulk-bar" style="display:none">
-        <span id="bulk-count">0 dipilih</span>
-        <button type="submit" class="btn-danger btn-sm" onclick="return confirm('Hapus semua yang dipilih?')">Hapus</button>
-        <button type="button" class="btn-secondary btn-sm" onclick="submitBulkAction('/admin/keys/bulk-deactivate')">Nonaktifkan</button>
-        <button type="button" class="btn-ghost btn-sm" onclick="clearSelection()">Batal</button>
-      </div>
+    <!-- Hidden bulk form (terpisah dari tabel) -->
+    <form id="bulk-form" action="/admin/keys/bulk-delete" method="POST" style="display:none">
+      <input type="hidden" name="ids" id="bulk-ids-input">
+    </form>
 
-      <div class="card">
-        <div class="table-wrap">
-          <table class="table" id="keys-table">
+    <!-- Bulk action bar -->
+    <div class="bulk-bar" id="bulk-bar" style="display:none">
+      <span id="bulk-count">0 dipilih</span>
+      <button type="button" class="btn-danger btn-sm" onclick="submitBulkAction('/admin/keys/bulk-delete', 'Hapus semua yang dipilih?')">Hapus</button>
+      <button type="button" class="btn-secondary btn-sm" onclick="submitBulkAction('/admin/keys/bulk-deactivate')">Nonaktifkan</button>
+      <button type="button" class="btn-ghost btn-sm" onclick="clearSelection()">Batal</button>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table class="table" id="keys-table">
             <thead>
               <tr>
                 <th><input type="checkbox" id="select-all" onchange="toggleAll(this)"></th>
@@ -116,7 +120,6 @@
           </table>
         </div>
       </div>
-    </form>
 
     <!-- Pagination -->
     <% if (totalPages > 1) { %>
