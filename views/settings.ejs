@@ -1,0 +1,107 @@
+<%- include('partials/head') %>
+
+<div class="layout">
+  <%- include('partials/sidebar') %>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h2 class="page-title">Settings</h2>
+        <p class="page-sub">Konfigurasi panel & API</p>
+      </div>
+    </div>
+
+    <% if (success_msg.length > 0) { %><div class="alert alert-success"><%= success_msg[0] %></div><% } %>
+    <% if (error_msg.length > 0)   { %><div class="alert alert-error"><%= error_msg[0] %></div><% } %>
+
+    <form action="/admin/settings" method="POST">
+      <div class="settings-grid">
+
+        <!-- Panel Settings -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Panel Settings</h3>
+          </div>
+          <div class="card-body">
+            <div class="field">
+              <label class="field-label">NAMA PANEL</label>
+              <input type="text" name="panel_name" class="field-input" value="<%= cfg.panel_name %>" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Credentials -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Admin Credentials</h3>
+          </div>
+          <div class="card-body">
+            <div class="field">
+              <label class="field-label">USERNAME</label>
+              <input type="text" name="admin_username" class="field-input" value="<%= cfg.admin_username %>" required autocomplete="off">
+            </div>
+            <div class="field">
+              <label class="field-label">PASSWORD BARU <span class="text-muted">(kosongkan jika tidak berubah)</span></label>
+              <input type="password" name="new_password" class="field-input" placeholder="Min 6 karakter" autocomplete="new-password">
+            </div>
+            <div class="field">
+              <label class="field-label">KONFIRMASI PASSWORD</label>
+              <input type="password" name="confirm_password" class="field-input" placeholder="Ulangi password baru" autocomplete="new-password">
+            </div>
+          </div>
+        </div>
+
+        <!-- API Settings -->
+        <div class="card" style="grid-column: 1 / -1">
+          <div class="card-header">
+            <h3 class="card-title">API Configuration</h3>
+          </div>
+          <div class="card-body">
+            <div class="field">
+              <label class="field-label">SECRET SALT (MD5 Hash Signature)</label>
+              <div style="position:relative">
+                <input type="text" name="salt" id="salt-input" class="field-input" value="<%= cfg.salt %>" autocomplete="off" spellcheck="false">
+                <button type="button" class="field-eye" onclick="toggleSalt()" id="salt-toggle">HIDE</button>
+              </div>
+              <p class="field-hint">Salt ini harus identik dengan yang ada di APK. Gunakan hanya jika kamu melakukan re-extract.</p>
+            </div>
+            <div class="field">
+              <label class="field-label">API ENDPOINT</label>
+              <div class="api-info-box">
+                <span class="method-badge">POST</span>
+                <code>/api/game/MLBB</code>
+              </div>
+              <p class="field-hint">Body params: <code>user_key</code>, <code>serial</code>, <code>resource</code></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:1.5rem;display:flex;justify-content:flex-end">
+        <button type="submit" class="btn-primary">Simpan Perubahan</button>
+      </div>
+    </form>
+
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+<script>
+  const saltInput  = document.getElementById('salt-input');
+  const saltToggle = document.getElementById('salt-toggle');
+  saltInput.type   = 'password';
+
+  function toggleSalt() {
+    if (saltInput.type === 'password') {
+      saltInput.type   = 'text';
+      saltToggle.textContent = 'HIDE';
+    } else {
+      saltInput.type   = 'password';
+      saltToggle.textContent = 'SHOW';
+    }
+  }
+  saltToggle.textContent = 'SHOW';
+</script>
+</body>
+</html>

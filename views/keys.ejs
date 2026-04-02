@@ -1,0 +1,249 @@
+<%- include('partials/head') %>
+
+<div class="layout">
+  <%- include('partials/sidebar') %>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h2 class="page-title">Manage Keys</h2>
+        <p class="page-sub">Total <strong><%= total %></strong> key terdaftar</p>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-primary" onclick="openModal('modal-generate')">+ Generate Key</button>
+        <a href="/admin/keys/export" class="btn-secondary">↓ Export</a>
+      </div>
+    </div>
+
+    <% if (success_msg.length > 0) { %><div class="alert alert-success"><%= success_msg[0] %></div><% } %>
+    <% if (error_msg.length > 0)   { %><div class="alert alert-error"><%= error_msg[0] %></div><% } %>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <form method="GET" action="/admin/keys" class="search-form">
+        <input type="text" name="search" class="field-input search-input" placeholder="Cari key, serial, notes…" value="<%= search %>">
+        <input type="hidden" name="filter" value="<%= filter %>">
+        <button type="submit" class="btn-secondary">Cari</button>
+      </form>
+
+      <div class="filter-tabs">
+        <a href="/admin/keys?filter=all&search=<%= search %>"      class="filter-tab <%= filter==='all'      ? 'active' : '' %>">Semua</a>
+        <a href="/admin/keys?filter=active&search=<%= search %>"   class="filter-tab <%= filter==='active'   ? 'active' : '' %>">Aktif</a>
+        <a href="/admin/keys?filter=expired&search=<%= search %>"  class="filter-tab <%= filter==='expired'  ? 'active' : '' %>">Expired</a>
+        <a href="/admin/keys?filter=locked&search=<%= search %>"   class="filter-tab <%= filter==='locked'   ? 'active' : '' %>">Terkunci</a>
+        <a href="/admin/keys?filter=inactive&search=<%= search %>" class="filter-tab <%= filter==='inactive' ? 'active' : '' %>">Nonaktif</a>
+      </div>
+    </div>
+
+    <!-- Bulk actions -->
+    <form id="bulk-form" action="/admin/keys/bulk-delete" method="POST">
+      <div class="bulk-bar" id="bulk-bar" style="display:none">
+        <span id="bulk-count">0 dipilih</span>
+        <button type="submit" class="btn-danger btn-sm" onclick="return confirm('Hapus semua yang dipilih?')">Hapus</button>
+        <button type="button" class="btn-secondary btn-sm" onclick="submitBulkAction('/admin/keys/bulk-deactivate')">Nonaktifkan</button>
+        <button type="button" class="btn-ghost btn-sm" onclick="clearSelection()">Batal</button>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table class="table" id="keys-table">
+            <thead>
+              <tr>
+                <th><input type="checkbox" id="select-all" onchange="toggleAll(this)"></th>
+                <th>KEY CODE</th>
+                <th>RESOURCE</th>
+                <th>STATUS</th>
+                <th>DEVICE SERIAL</th>
+                <th>DIBUAT</th>
+                <th>EXPIRED</th>
+                <th>LOGIN</th>
+                <th>AKSI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% keys.forEach(k => { %>
+              <tr>
+                <td><input type="checkbox" name="ids" value="<%= k.id %>" class="row-check" onchange="updateBulk()"></td>
+                <td>
+                  <code class="key-code" onclick="copyText('<%= k.key_code %>', this)" title="Klik untuk copy">
+                    <%= k.key_code %>
+                  </code>
+                </td>
+                <td><span class="badge badge-resource"><%= k.resource %></span></td>
+                <td>
+                  <% if (!k.is_active) { %>
+                    <span class="badge badge-off">NONAKTIF</span>
+                  <% } else if (k.expires_at <= now) { %>
+                    <span class="badge badge-expired">EXPIRED</span>
+                  <% } else { %>
+                    <span class="badge badge-active">AKTIF</span>
+                  <% } %>
+                </td>
+                <td class="text-muted serial-cell">
+                  <% if (k.device_serial) { %>
+                    <span title="<%= k.device_serial %>"><%= k.device_serial.substring(0,20) %><%= k.device_serial.length > 20 ? '…' : '' %></span>
+                  <% } else { %>
+                    <span class="text-muted">—</span>
+                  <% } %>
+                </td>
+                <td class="text-muted"><%= fmtDate(k.created_at) %></td>
+                <td class="<%= k.expires_at <= now ? 'text-danger' : 'text-muted' %>"><%= fmtDate(k.expires_at) %></td>
+                <td><span class="badge badge-count"><%= k.login_count %>×</span></td>
+                <td>
+                  <div class="action-btns">
+                    <button
+                      class="btn-icon btn-edit"
+                      onclick='openEdit(<%- JSON.stringify(k) %>)'
+                      title="Edit"
+                    >✎</button>
+                    <button
+                      class="btn-icon btn-del"
+                      onclick="openDelete(<%= k.id %>, '<%= k.key_code %>')"
+                      title="Hapus"
+                    >✕</button>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+              <% if (keys.length === 0) { %>
+              <tr>
+                <td colspan="9" class="text-center text-muted" style="padding:3rem">
+                  Tidak ada key ditemukan
+                </td>
+              </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+    <div class="pagination">
+      <% for (let p = 1; p <= totalPages; p++) { %>
+        <a
+          href="/admin/keys?page=<%= p %>&filter=<%= filter %>&search=<%= search %>"
+          class="page-btn <%= p === currentPage ? 'active' : '' %>"
+        ><%= p %></a>
+      <% } %>
+    </div>
+    <% } %>
+
+  </main>
+</div>
+
+<!-- ═══════════════════ MODAL: GENERATE ═══════════════════ -->
+<div class="modal-overlay" id="modal-generate" onclick="closeModalOutside(event, 'modal-generate')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Generate Key</h3>
+      <button class="modal-close" onclick="closeModal('modal-generate')">✕</button>
+    </div>
+    <form action="/admin/keys/generate" method="POST" class="modal-form">
+      <div class="field">
+        <label class="field-label">RESOURCE</label>
+        <input type="text" name="resource" class="field-input" value="vip" placeholder="vip / premium / dll" required>
+      </div>
+      <div class="field-row">
+        <div class="field" style="flex:1">
+          <label class="field-label">DURASI</label>
+          <input type="number" name="duration" class="field-input" value="30" min="1" required>
+        </div>
+        <div class="field" style="flex:1">
+          <label class="field-label">UNIT</label>
+          <select name="duration_unit" class="field-input">
+            <option value="hours">Jam</option>
+            <option value="days" selected>Hari</option>
+            <option value="months">Bulan</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">JUMLAH (bulk, maks 100)</label>
+        <input type="number" name="bulk" class="field-input" value="1" min="1" max="100">
+      </div>
+      <div class="field">
+        <label class="field-label">NOTES (opsional)</label>
+        <input type="text" name="notes" class="field-input" placeholder="e.g. untuk user A">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" onclick="closeModal('modal-generate')">Batal</button>
+        <button type="submit" class="btn-primary">Generate</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════ MODAL: EDIT ═══════════════════ -->
+<div class="modal-overlay" id="modal-edit" onclick="closeModalOutside(event, 'modal-edit')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Edit Key</h3>
+      <button class="modal-close" onclick="closeModal('modal-edit')">✕</button>
+    </div>
+    <form id="edit-form" method="POST" class="modal-form">
+      <div class="field">
+        <label class="field-label">KEY CODE</label>
+        <input type="text" id="edit-key-code" class="field-input" readonly>
+      </div>
+      <div class="field">
+        <label class="field-label">RESOURCE</label>
+        <input type="text" name="resource" id="edit-resource" class="field-input" required>
+      </div>
+      <div class="field">
+        <label class="field-label">EXPIRED DATE & TIME</label>
+        <input type="datetime-local" name="expires_at_input" id="edit-expires" class="field-input" required>
+      </div>
+      <div class="field">
+        <label class="field-label">STATUS</label>
+        <select name="is_active" id="edit-active" class="field-input">
+          <option value="1">Aktif</option>
+          <option value="0">Nonaktif</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">DEVICE SERIAL</label>
+        <input type="text" id="edit-serial-display" class="field-input" readonly>
+      </div>
+      <div class="field-check">
+        <label class="check-label">
+          <input type="checkbox" name="reset_device" value="1" id="edit-reset-device">
+          <span>Reset device lock (unlock dari serial saat ini)</span>
+        </label>
+      </div>
+      <div class="field">
+        <label class="field-label">NOTES</label>
+        <input type="text" name="notes" id="edit-notes" class="field-input">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" onclick="closeModal('modal-edit')">Batal</button>
+        <button type="submit" class="btn-primary">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════ MODAL: DELETE ═══════════════════ -->
+<div class="modal-overlay" id="modal-delete" onclick="closeModalOutside(event, 'modal-delete')">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3 class="modal-title text-danger">Hapus Key</h3>
+      <button class="modal-close" onclick="closeModal('modal-delete')">✕</button>
+    </div>
+    <div style="padding:1.25rem">
+      <p class="text-muted">Yakin ingin menghapus key:</p>
+      <code id="delete-key-display" class="key-code" style="display:block;margin:.75rem 0"></code>
+      <p class="text-muted" style="font-size:.8rem">Tindakan ini tidak bisa dibatalkan.</p>
+    </div>
+    <form id="delete-form" method="POST" class="modal-footer">
+      <button type="button" class="btn-ghost" onclick="closeModal('modal-delete')">Batal</button>
+      <button type="submit" class="btn-danger">Hapus</button>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="/js/main.js"></script>
+</body>
+</html>

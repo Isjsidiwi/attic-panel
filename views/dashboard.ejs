@@ -1,0 +1,131 @@
+<%- include('partials/head') %>
+
+<div class="layout">
+  <%- include('partials/sidebar') %>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h2 class="page-title">Dashboard</h2>
+        <p class="page-sub">Selamat datang, <strong><%= admin.username %></strong></p>
+      </div>
+      <div class="topbar-right">
+        <a href="/admin/keys?filter=active" class="btn-secondary">+ Generate Key</a>
+      </div>
+    </div>
+
+    <% if (success_msg.length > 0) { %><div class="alert alert-success"><%= success_msg[0] %></div><% } %>
+    <% if (error_msg.length > 0)   { %><div class="alert alert-error"><%= error_msg[0] %></div><% } %>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon stat-icon--cyan">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-num" data-count="<%= stats.total %>">0</div>
+          <div class="stat-label">Total Key</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon stat-icon--green">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-num" data-count="<%= stats.active %>">0</div>
+          <div class="stat-label">Key Aktif</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon stat-icon--warn">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-num" data-count="<%= stats.expired %>">0</div>
+          <div class="stat-label">Key Expired</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon stat-icon--purple">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        </div>
+        <div class="stat-body">
+          <div class="stat-num" data-count="<%= stats.locked %>">0</div>
+          <div class="stat-label">Device Terkunci</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Keys -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Key Terbaru</h3>
+        <a href="/admin/keys" class="link-muted">Lihat semua →</a>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>KEY CODE</th>
+              <th>RESOURCE</th>
+              <th>STATUS</th>
+              <th>DEVICE</th>
+              <th>EXPIRED</th>
+              <th>LOGIN</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% recent.forEach(k => { %>
+            <tr>
+              <td><code class="key-code"><%= k.key_code %></code></td>
+              <td><span class="badge badge-resource"><%= k.resource %></span></td>
+              <td>
+                <% if (!k.is_active) { %>
+                  <span class="badge badge-off">NONAKTIF</span>
+                <% } else if (k.expires_at <= now) { %>
+                  <span class="badge badge-expired">EXPIRED</span>
+                <% } else { %>
+                  <span class="badge badge-active">AKTIF</span>
+                <% } %>
+              </td>
+              <td class="text-muted"><%= k.device_serial ? k.device_serial.substring(0,16) + '…' : '—' %></td>
+              <td class="text-muted"><%= fmtDate(k.expires_at) %></td>
+              <td><span class="badge badge-count"><%= k.login_count %>×</span></td>
+            </tr>
+            <% }) %>
+            <% if (recent.length === 0) { %>
+            <tr><td colspan="6" class="text-center text-muted" style="padding:2rem">Belum ada key</td></tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- API Info -->
+    <div class="card card-info">
+      <div class="card-header">
+        <h3 class="card-title">API Endpoint</h3>
+        <span class="dot-green" style="margin-left:auto"></span>
+        <span class="text-green" style="font-size:.75rem;margin-left:.5rem">ONLINE</span>
+      </div>
+      <div style="padding:1rem 1.25rem">
+        <div class="api-line">
+          <span class="method-badge">POST</span>
+          <code class="api-url">/api/game/MLBB</code>
+        </div>
+        <p class="text-muted" style="font-size:.8rem;margin-top:.75rem">
+          Body: <code>user_key</code>, <code>serial</code>, <code>resource</code>
+        </p>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>
