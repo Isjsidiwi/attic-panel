@@ -46,15 +46,6 @@ app.use((req, res, next) => {
   next();
 });
 
-const dbInitPromise = initDB().catch(err => { 
-  console.error('DB init failed:', err); 
-});
-
-app.use(async (req, res, next) => {
-  await dbInitPromise;
-  next();
-});
-
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api', apiRoutes);
