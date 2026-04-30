@@ -4,7 +4,7 @@ const db = require('../database');
 const { loadConfig } = require('../config');
 
 /* =============================================
-   ENDPOINT MLBB - VERSI FINAL & BERSIH
+   ENDPOINT MLBB - VERSI FINAL & BENAR 100%
    ============================================= */
 router.post('/game/MLBB', async (req, res) => {
   const userKey = (req.body.user_key || '').trim();
@@ -39,7 +39,7 @@ router.post('/game/MLBB', async (req, res) => {
     await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
   }
 
-    // RESPONSE INI PALING AMAN & PERSIS SEPERTI ORIGINAL
+  // RESPONSE INI YANG PALING AMAN UNTUK APLIKASI CHEAT
   res.json({
     "success": true,
     "session_token": "eaf8a86b70cc9b566a3a424a323d452b80ea02b77228a2c04e45d87c78455a2a",
@@ -52,5 +52,6 @@ router.post('/game/MLBB', async (req, res) => {
     "announcement": "Welcome to Attic Panel",
     "seller": "lord"
   });
+});
 
 module.exports = router;
