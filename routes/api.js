@@ -39,7 +39,7 @@ router.post('/game/MLBB', async (req, res) => {
     await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
   }
 
-  // RESPONSE LENGKAP YANG DIPAKAI APLIKASI CHEAT (ini yang mengatasi JSON_PARSE_ERROR)
+    // RESPONSE INI PALING AMAN & PERSIS SEPERTI ORIGINAL
   res.json({
     "success": true,
     "session_token": "eaf8a86b70cc9b566a3a424a323d452b80ea02b77228a2c04e45d87c78455a2a",
@@ -48,10 +48,9 @@ router.post('/game/MLBB', async (req, res) => {
     "remaining_devices": "99/100",
     "vip": "NO",
     "file_url": null,
-    "version": "1.0",
+    "version": null,
     "announcement": "Welcome to Attic Panel",
     "seller": "lord"
   });
-});
 
 module.exports = router;
