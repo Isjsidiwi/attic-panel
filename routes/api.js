@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const crypto = require('crypto');
 const db = require('../database');
 const { loadConfig } = require('../config');
 
@@ -40,10 +39,10 @@ router.post('/game/MLBB', async (req, res) => {
     await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
   }
 
-  // RESPONSE YANG DIBUTUHKAN APLIKASI CHEAT
+  // RESPONSE INI YANG PALING PENTING UNTUK CHEAT
   res.json({
     success: true,
-    seller: "lord",        // ← GANTI sesuai nama seller kamu
+    seller: "lord",        // ← Ganti sesuai nama seller kamu
     version: "1.0"
   });
 });
