@@ -39,12 +39,18 @@ router.post('/game/MLBB', async (req, res) => {
     await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
   }
 
-  // RESPONSE YANG DIBUTUHKAN OLEH APLIKASI CHEAT
-  res.json({
-    success: true,
-    seller: "lord",
-    version: "1.0"
-  });
+ // RESPONSE INI YANG PALING AMAN UNTUK APLIKASI CHEAT
+res.json({
+  "success": true,
+  "session_token": "eaf8a86b70cc9b566a3a424a323d452b80ea02b77228a2c04e45d87c78455a2a",
+  "name_key": "ATTIC-4N3E-J2EB-CG8Q",
+  "expiry_date": "2026-12-31 23:59:59",
+  "remaining_devices": "99/100",
+  "vip": "NO",
+  "file_url": null,
+  "version": "1.0",
+  "announcement": "Welcome to Attic Panel",
+  "seller": "lord"
 });
 
 module.exports = router;
