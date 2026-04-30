@@ -17,7 +17,7 @@ router.post('/game/MLBB', async (req, res) => {
   if (!row.is_active) return fail('Key dinonaktifkan');
   if (Number(row.expires_at) <= now) return fail('Key sudah expired');
 
-  // RESPONSE PALING AMAN UNTUK APLIKASI CHEAT
+  // RESPONSE PALING AMAN & LENGKAP
   res.json({
     "success": true,
     "session_token": "eaf8a86b70cc9b566a3a424a323d452b80ea02b77228a2c04e45d87c78455a2a",
@@ -27,7 +27,7 @@ router.post('/game/MLBB', async (req, res) => {
     "vip": "NO",
     "file_url": null,
     "version": null,
-    "announcement": "Welcome to Attic Panel",
+    "announcement": "NEW UPDATE SOON ?",
     "seller": "lord"
   });
 });
