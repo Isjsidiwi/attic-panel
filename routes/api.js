@@ -4,7 +4,7 @@ const db = require('../database');
 const { loadConfig } = require('../config');
 
 /* =============================================
-   ENDPOINT MLBB - SUDAH BENAR UNTUK CHEAT
+   ENDPOINT MLBB - VERSI BERSIH & BENAR
    ============================================= */
 router.post('/game/MLBB', async (req, res) => {
   const userKey = (req.body.user_key || '').trim();
@@ -39,10 +39,10 @@ router.post('/game/MLBB', async (req, res) => {
     await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
   }
 
-  // RESPONSE INI YANG PALING PENTING UNTUK CHEAT
+  // RESPONSE YANG DIBUTUHKAN OLEH APLIKASI CHEAT
   res.json({
     success: true,
-    seller: "lord",        // ← Ganti sesuai nama seller kamu
+    seller: "lord",
     version: "1.0"
   });
 });
