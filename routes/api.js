@@ -5,7 +5,7 @@ const db = require('../database');
 const { loadConfig } = require('../config');
 
 /* =============================================
-   ENDPOINT MLBB - SUDAH DISESUAIKAN UNTUK CHEAT
+   ENDPOINT MLBB - SUDAH BENAR UNTUK CHEAT
    ============================================= */
 router.post('/game/MLBB', async (req, res) => {
   const userKey = (req.body.user_key || '').trim();
@@ -22,7 +22,7 @@ router.post('/game/MLBB', async (req, res) => {
   if (!row.is_active) return fail('Key dinonaktifkan');
   if (Number(row.expires_at) <= now) return fail('Key sudah expired');
 
-  // Optional: Device limit
+  // Device limit (opsional)
   let serials = [];
   try { serials = JSON.parse(row.device_serials || '[]'); } catch { serials = []; }
   const maxDevices = Number(row.max_devices) || 1;
@@ -43,7 +43,7 @@ router.post('/game/MLBB', async (req, res) => {
   // RESPONSE YANG DIBUTUHKAN APLIKASI CHEAT
   res.json({
     success: true,
-    seller: "lord",      // ← GANTI sesuai nama seller kamu
+    seller: "lord",        // ← GANTI sesuai nama seller kamu
     version: "1.0"
   });
 });
