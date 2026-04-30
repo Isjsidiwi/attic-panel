@@ -17,12 +17,15 @@ router.post('/game/MLBB', async (req, res) => {
   if (!row.is_active) return fail('Key dinonaktifkan');
   if (Number(row.expires_at) <= now) return fail('Key sudah expired');
 
-  // RESPONSE PALING AMAN & BENAR UNTUK APLIKASI
   res.json({
-    "success": true,
-    "seller": "lord",
-    "version": "1.0"
-  });
+  "success": true,
+  "session_token": "eaf8a86b70cc9b566a3a424a323d452b80ea02b77228a2c04e45d87c78455a2a",
+  "name_key": "ATTIC-4N3E-J2EB-CG8Q",
+  "expiry_date": "2026-12-31 23:59:59",
+  "remaining_devices": "99/100",
+  "vip": "NO",
+  "file_url": null,
+  "version": "1.0",
+  "announcement": "Welcome to Attic Panel",
+  "seller": "lord"
 });
-
-module.exports = router;
