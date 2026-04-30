@@ -4,7 +4,6 @@ const router = express.Router();
 router.post('/game/MLBB', async (req, res) => {
   const userKey = (req.body.user_key || '').trim();
 
-  // RESPONSE LENGKAP MIRIP ORIGINAL SERVER (ini yang paling cocok dengan parser native)
   res.json({
     "success": true,
     "session_token": "eaf8a86b70cc9b566a3a424a323d452b80ea02b77228a2c04e45d87c78455a2a",
