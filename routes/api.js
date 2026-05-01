@@ -1,25 +1,117 @@
 const express = require('express');
-const router = express.Router();
+const router  = express.Router();
+const crypto  = require('crypto');
+const fs      = require('fs');
+const path    = require('path');
+const db      = require('../database');
+const { loadConfig } = require('../config');
 
-/* =============================================
-   ENDPOINT UTAMA UNTUK CHEAT MLBB
-   ============================================= */
+/* ═══════════════════════════════════════════════════
+   ENDPOINT 1: MLBB
+   ═══════════════════════════════════════════════════ */
 router.post('/game/MLBB', async (req, res) => {
-    const userKey = (req.body.user_key || '').trim();
+  const userKey  = (req.body.user_key  || '').trim();
+  const serial   = (req.body.serial    || '').trim();
+  const resource = (req.body.resource  || '').trim();
+  const now      = Math.floor(Date.now() / 1000);
 
-    // Response yang sesuai dengan parser native (sub_41238)
-    res.json({
-        "success": true,
-        "session_token": "eaf8a86b70cc9b566a3a424a323d452b80ea02b77228a2c04e45d87c78455a2a",
-        "name_key": userKey || "ATTIC-4N3E-J2EB-CG8Q",
-        "expiry_date": "2026-12-31 23:59:59",
-        "remaining_devices": "99/100",
-        "vip": "NO",
-        "file_url": null,
-        "version": "1.0",
-        "announcement": "NEW UPDATE SOON ?",
-        "seller": "lord"
-    });
+  const fail = (reason) => res.json({ status: false, reason, data: null });
+
+  if (!userKey) return fail('user_key diperlukan');
+
+  const row = await db.get('SELECT * FROM keys WHERE key_code = ?', [userKey]);
+  if (!row)           return fail('Key tidak ditemukan');
+  if (!row.is_active) return fail('Key dinonaktifkan');
+  if (Number(row.expires_at) <= now) return fail('Key sudah expired');
+
+  // Parse serials array
+  let serials = [];
+  try { serials = JSON.parse(row.device_serials || '[]'); } catch { serials = []; }
+  const maxDevices = Number(row.max_devices) || 1;
+
+  if (serial) {
+    if (serials.includes(serial)) {
+      // Serial sudah terdaftar — OK, lanjut login
+    } else if (serials.length >= maxDevices) {
+      return fail(`Batas device tercapai (${maxDevices}/${maxDevices}). Key ini sudah terkunci ke ${maxDevices} device.`);
+    } else {
+      // Device baru, masih ada slot — tambahkan
+      serials.push(serial);
+      await db.run(
+        'UPDATE keys SET device_serials=?, login_count=login_count+1, last_login=? WHERE id=?',
+        [JSON.stringify(serials), now, row.id]
+      );
+    }
+  } else {
+    await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
+  }
+
+  const cfg = await loadConfig();
+  const raw = `MLBB-${userKey}-${serial}-${resource}-${cfg.salt}`;
+  const token = crypto.createHash('md5').update(raw).digest('hex');
+
+  const expiredStr = new Date(Number(row.expires_at) * 1000)
+    .toISOString().replace('T', ' ').slice(0, 19);
+
+  res.json({
+    status: true,
+    reason: 'Login Success',
+    data: { token, rng: Number(row.expires_at), tittle: 'Provided by Xsrc & Shannz', expired: expiredStr }
+  });
+});
+
+/* ═══════════════════════════════════════════════════
+   ENDPOINT 2: LGCY
+   ═══════════════════════════════════════════════════ */
+router.post('/game/LGCY', async (req, res) => {
+  const userKey  = (req.body.user_key  || '').trim();
+  const serial   = (req.body.serial    || '').trim();
+  const resource = (req.body.resource  || '').trim();
+  const now      = Math.floor(Date.now() / 1000);
+
+  const fail = (reason) => res.json({ status: false, reason, data: null });
+
+  if (!userKey) return fail('user_key diperlukan');
+
+  const row = await db.get('SELECT * FROM keys WHERE key_code = ?', [userKey]);
+  if (!row)           return fail('Key tidak ditemukan');
+  if (!row.is_active) return fail('Key dinonaktifkan');
+  if (Number(row.expires_at) <= now) return fail('Key sudah expired');
+
+  // Parse serials array
+  let serials = [];
+  try { serials = JSON.parse(row.device_serials || '[]'); } catch { serials = []; }
+  const maxDevices = Number(row.max_devices) || 1;
+
+  if (serial) {
+    if (serials.includes(serial)) {
+      // Serial sudah terdaftar — OK, lanjut login
+    } else if (serials.length >= maxDevices) {
+      return fail(`Batas device tercapai (${maxDevices}/${maxDevices}). Key ini sudah terkunci ke ${maxDevices} device.`);
+    } else {
+      // Device baru, masih ada slot — tambahkan
+      serials.push(serial);
+      await db.run(
+        'UPDATE keys SET device_serials=?, login_count=login_count+1, last_login=? WHERE id=?',
+        [JSON.stringify(serials), now, row.id]
+      );
+    }
+  } else {
+    await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
+  }
+
+  const cfg = await loadConfig();
+  const raw = `LGCY-${userKey}-${serial}-${resource}-${cfg.salt}`;
+  const token = crypto.createHash('md5').update(raw).digest('hex');
+
+  const expiredStr = new Date(Number(row.expires_at) * 1000)
+    .toISOString().replace('T', ' ').slice(0, 19);
+
+  res.json({
+    status: true,
+    reason: 'Login Success',
+    data: { token, rng: Number(row.expires_at), tittle: 'Provided by Xsrc & Shannz', expired: expiredStr }
+  });
 });
 
 module.exports = router;
