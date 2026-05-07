@@ -119,8 +119,6 @@ router.post('/game/LGCY', async (req, res) => {
 // Endpoint untuk Blood Strike (Hemorax)
 // =============================================
 
-const express = require('express');
-const router = express.Router();
 
 // POST https://qyz.vercel.app/api/connect
 router.post('/connect', (req, res) => {
