@@ -129,7 +129,7 @@ router.post('/connect', (req, res) => {
     const response = {
         "status": true,
         "data": {
-            "real": BS-HEMORAX-VIP-${user_key ? user_key.substring(0, 8) : "CUSTOM"}-f4c61ab5-f04d-3300-b3e8-c1720ae56b64-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E,
+            "real": `BS-HEMORAX-VIP-${user_key ? user_key.substring(0, 8) : "CUSTOM"}-f4c61ab5-f04d-3300-b3e8-c1720ae56b64-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`,
             "token": "61a1c302db02026dc48c57f8eff693b3",
             "modname": "VIP MOD",
             "mod_status": "Safe",
