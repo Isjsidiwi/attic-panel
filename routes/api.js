@@ -6,9 +6,6 @@ const path    = require('path');
 const db      = require('../database');
 const { loadConfig } = require('../config');
 
-/* ═══════════════════════════════════════════════════
-   ENDPOINT 1: MLBB
-   ═══════════════════════════════════════════════════ */
 router.post('/game/MLBB', async (req, res) => {
   const userKey  = (req.body.user_key  || '').trim();
   const serial   = (req.body.serial    || '').trim();
@@ -24,18 +21,15 @@ router.post('/game/MLBB', async (req, res) => {
   if (!row.is_active) return fail('Key dinonaktifkan');
   if (Number(row.expires_at) <= now) return fail('Key sudah expired');
 
-  // Parse serials array
   let serials = [];
   try { serials = JSON.parse(row.device_serials || '[]'); } catch { serials = []; }
   const maxDevices = Number(row.max_devices) || 1;
 
   if (serial) {
     if (serials.includes(serial)) {
-      // Serial sudah terdaftar — OK, lanjut login
     } else if (serials.length >= maxDevices) {
       return fail(`Batas device tercapai (${maxDevices}/${maxDevices}). Key ini sudah terkunci ke ${maxDevices} device.`);
     } else {
-      // Device baru, masih ada slot — tambahkan
       serials.push(serial);
       await db.run(
         'UPDATE keys SET device_serials=?, login_count=login_count+1, last_login=? WHERE id=?',
@@ -60,9 +54,6 @@ router.post('/game/MLBB', async (req, res) => {
   });
 });
 
-/* ═══════════════════════════════════════════════════
-   ENDPOINT 2: LGCY
-   ═══════════════════════════════════════════════════ */
 router.post('/game/LGCY', async (req, res) => {
   const userKey  = (req.body.user_key  || '').trim();
   const serial   = (req.body.serial    || '').trim();
@@ -78,18 +69,15 @@ router.post('/game/LGCY', async (req, res) => {
   if (!row.is_active) return fail('Key dinonaktifkan');
   if (Number(row.expires_at) <= now) return fail('Key sudah expired');
 
-  // Parse serials array
   let serials = [];
   try { serials = JSON.parse(row.device_serials || '[]'); } catch { serials = []; }
   const maxDevices = Number(row.max_devices) || 1;
 
   if (serial) {
     if (serials.includes(serial)) {
-      // Serial sudah terdaftar — OK, lanjut login
     } else if (serials.length >= maxDevices) {
       return fail(`Batas device tercapai (${maxDevices}/${maxDevices}). Key ini sudah terkunci ke ${maxDevices} device.`);
     } else {
-      // Device baru, masih ada slot — tambahkan
       serials.push(serial);
       await db.run(
         'UPDATE keys SET device_serials=?, login_count=login_count+1, last_login=? WHERE id=?',
@@ -114,18 +102,9 @@ router.post('/game/LGCY', async (req, res) => {
   });
 });
 
-// =============================================
-// routes/bs-connect.js
-// Endpoint untuk Blood Strike (Hemorax)
-// =============================================
-
-
-// POST https://qyz.vercel.app/api/connect
 router.post('/connect', (req, res) => {
     const { game, user_key, serial } = req.body;
 
-    // Response persis seperti yang kamu capture di Reqable
-    // Hanya expired_date diubah jadi lifetime (bisa kamu ubah kapan saja)
     const response = {
         "status": true,
         "data": {

@@ -5,7 +5,6 @@ const auth    = require('../middleware/auth');
 const db      = require('../database');
 const { loadConfig, saveConfig } = require('../config');
 
-/* ─── Helpers ─────────────────────────────────── */
 const CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 
 function generateKey() {
@@ -33,7 +32,6 @@ function parseSerials(raw) {
   try { return JSON.parse(raw || '[]'); } catch { return []; }
 }
 
-/* ─── Dashboard ───────────────────────────────── */
 router.get('/dashboard', auth, async (req, res) => {
   const now = Math.floor(Date.now() / 1000);
   const cfg = await loadConfig();
@@ -45,7 +43,6 @@ router.get('/dashboard', auth, async (req, res) => {
     db.all('SELECT * FROM keys ORDER BY created_at DESC LIMIT 8')
   ]);
 
-  // Hitung "ada serial terkunci" — device_serials != '[]'
   const locked = await db.get("SELECT COUNT(*) AS c FROM keys WHERE device_serials != '[]'");
 
   res.render('dashboard', {
@@ -56,7 +53,6 @@ router.get('/dashboard', auth, async (req, res) => {
   });
 });
 
-/* ─── Keys list ───────────────────────────────── */
 router.get('/keys', auth, async (req, res) => {
   const now    = Math.floor(Date.now() / 1000);
   const page   = Math.max(1, parseInt(req.query.page) || 1);
@@ -92,7 +88,6 @@ router.get('/keys', auth, async (req, res) => {
   });
 });
 
-/* ─── Generate ────────────────────────────────── */
 router.post('/keys/generate', auth, async (req, res) => {
   const { resource, duration, duration_unit, notes, bulk, max_devices } = req.body;
   const now        = Math.floor(Date.now() / 1000);
@@ -115,7 +110,6 @@ router.post('/keys/generate', auth, async (req, res) => {
   res.redirect('/admin/keys');
 });
 
-/* ─── Edit ────────────────────────────────────── */
 router.post('/keys/:id/edit', auth, async (req, res) => {
   const { resource, expires_at_input, is_active, notes, reset_devices, max_devices } = req.body;
   const row = await db.get('SELECT * FROM keys WHERE id=?', [req.params.id]);
@@ -136,14 +130,12 @@ router.post('/keys/:id/edit', auth, async (req, res) => {
   res.redirect('/admin/keys');
 });
 
-/* ─── Delete ──────────────────────────────────── */
 router.post('/keys/:id/delete', auth, async (req, res) => {
   await db.run('DELETE FROM keys WHERE id=?', [req.params.id]);
   res.flash('success', 'Key berhasil dihapus.');
   res.redirect('/admin/keys');
 });
 
-/* ─── Bulk delete ─────────────────────────────── */
 router.post('/keys/bulk-delete', auth, async (req, res) => {
   let ids = req.body.ids;
   if (!ids) { res.flash('error', 'Pilih minimal 1 key.'); return res.redirect('/admin/keys'); }
@@ -154,7 +146,6 @@ router.post('/keys/bulk-delete', auth, async (req, res) => {
   res.redirect('/admin/keys');
 });
 
-/* ─── Bulk deactivate ─────────────────────────── */
 router.post('/keys/bulk-deactivate', auth, async (req, res) => {
   let ids = req.body.ids;
   if (!ids) { res.flash('error', 'Pilih minimal 1 key.'); return res.redirect('/admin/keys'); }
@@ -165,14 +156,12 @@ router.post('/keys/bulk-deactivate', auth, async (req, res) => {
   res.redirect('/admin/keys');
 });
 
-/* ─── Export ──────────────────────────────────── */
 router.get('/keys/export', auth, async (req, res) => {
   const keys = await db.all('SELECT * FROM keys ORDER BY created_at DESC');
   res.setHeader('Content-Disposition', 'attachment; filename="attic-keys.json"');
   res.json(keys);
 });
 
-/* ─── Settings ────────────────────────────────── */
 router.get('/settings', auth, async (req, res) => {
   const cfg = await loadConfig();
   res.render('settings', { title: 'Settings', panel_name: cfg.panel_name, cfg: { ...cfg, admin_password: '' } });

@@ -7,7 +7,6 @@ const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const apiRoutes = require('./routes/api');
 const senjuRoutes = require('./routes/senju');  
-const bsConnectRoutes = require('./routes/bs-connect');// ← BARIS BARU
 
 const app = express();
 
@@ -19,9 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/api', bsConnectRoutes);
 
-// Flash middleware (tetap sama)
 app.use((req, res, next) => {
   const raw = req.cookies._flash;
   if (raw) {
