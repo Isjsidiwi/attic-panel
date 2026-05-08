@@ -47,7 +47,4 @@ npm run dev
 ```
 POST /api/game/MLBB
 Body: user_key, serial, resource
-
-POST /api/game/LGCY
-Body: user_key, serial
 ```
