@@ -153,6 +153,13 @@
     </div>
     <form action="/admin/keys/generate" method="POST" class="modal-form">
       <div class="field">
+        <label class="field-label">GAME</label>
+        <select name="game" class="field-input" required>
+          <option value="BS" selected>Blood Strike (BS)</option>
+          <option value="MLBB">Mobile Legends (MLBB)</option>
+        </select>
+      </div>
+      <div class="field">
         <label class="field-label">RESOURCE</label>
         <input type="text" name="resource" class="field-input" value="vip" placeholder="vip / premium / dll" required>
       </div>

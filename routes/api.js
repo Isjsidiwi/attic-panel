@@ -99,7 +99,7 @@
     const response = {
         "status": true,
         "data": {
-            "real": `BS-HEMORAX-VIP-${userKey.substring(0, 8)}-f4c61ab5-f04d-3300-b3e8-c1720ae56b64-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`,
+            "real": `${userKey}-f4c61ab5-f04d-3300-b3e8-c1720ae56b64-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`,
             "token": "61a1c302db02026dc48c57f8eff693b3",
             "modname": "VIP MOD",
             "mod_status": "Safe",
@@ -115,7 +115,7 @@
             "expired_date": "2027-12-31 23:59:59",
             "EXP": "2027-12-31 23:59:59",
             "exdate": "2027-12-31 23:59:59",
-            "device": "150",
+            "device": String(maxDevices),
             "rng": Math.floor(Math.random() * 9999999999)
         }
     };

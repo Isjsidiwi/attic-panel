@@ -7,9 +7,9 @@ const { loadConfig, saveConfig } = require('../config');
 
 const CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 
-function generateKey() {
+function generateKey(game = 'BS') {
   const seg = () => Array.from({ length: 4 }, () => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
-  return `ATTIC-${seg()}-${seg()}-${seg()}`;
+  return `${game}-${seg()}-${seg()}-${seg()}`;
 }
 
 function fmtDate(unix) {
@@ -89,15 +89,16 @@ router.get('/keys', auth, async (req, res) => {
 });
 
 router.post('/keys/generate', auth, async (req, res) => {
-  const { resource, duration, duration_unit, notes, bulk, max_devices } = req.body;
+  const { game, resource, duration, duration_unit, notes, bulk, max_devices } = req.body;
   const now        = Math.floor(Date.now() / 1000);
   const count      = Math.min(Math.max(1, parseInt(bulk) || 1), 100);
   const secs       = durationToSeconds(duration, duration_unit);
   const maxDevices = Math.min(Math.max(1, parseInt(max_devices) || 1), 100);
+  const gamePrefix = (game || 'BS').toUpperCase();
 
   for (let i = 0; i < count; i++) {
     let key, tries = 0;
-    do { key = generateKey(); tries++; }
+    do { key = generateKey(gamePrefix); tries++; }
     while ((await db.get('SELECT id FROM keys WHERE key_code=?', [key])) && tries < 20);
 
     await db.run(
@@ -106,9 +107,9 @@ router.post('/keys/generate', auth, async (req, res) => {
     );
   }
 
-  res.flash('success', `${count} key berhasil digenerate.`);
+  res.flash('success', `${count} key (${gamePrefix}) berhasil digenerate.`);
   res.redirect('/admin/keys');
-});
+}
 
 router.post('/keys/:id/edit', auth, async (req, res) => {
   const { resource, expires_at_input, is_active, notes, reset_devices, max_devices } = req.body;
