@@ -109,7 +109,7 @@ router.post('/keys/generate', auth, async (req, res) => {
 
   res.flash('success', `${count} key (${gamePrefix}) berhasil digenerate.`);
   res.redirect('/admin/keys');
-}
+});
 
 router.post('/keys/:id/edit', auth, async (req, res) => {
   const { resource, expires_at_input, is_active, notes, reset_devices, max_devices } = req.body;
