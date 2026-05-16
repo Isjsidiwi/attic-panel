@@ -104,16 +104,18 @@
     const token = crypto.createHash('md5').update(raw).digest('hex');
     const dateNow = new Date();
     const formattedDate = formatDateId(dateNow);
+    const expireDate = new Date(Number(row.expires_at) * 1000);
+    const formattedExpired = formatDateId(expireDate);
 
     res.json({
       status: true,
       data: {
         Datte: formattedDate,
         token,
-        rng: Math.floor(Math.random() * 9000000000) + 1000000000,
+        rng: Number(row.expires_at) || Math.floor(Math.random() * 9000000000) + 1000000000,
         tittle: ' | Easyvictors',
         instance: 'Instance',
-        expired: formattedDate
+        expired: formattedExpired
       }
     });
   });
