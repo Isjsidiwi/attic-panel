@@ -92,7 +92,8 @@
                   <span class="badge badge-active">AKTIF</span>
                 <% } %>
               </td>
-              <td class="text-muted"><%= k.device_serial ? k.device_serial.substring(0,16) + '…' : '—' %></td>
+              <% const serials = parseSerials(k.device_serials); %>
+              <td class="text-muted"><%= serials.length ? serials[0].substring(0,16) + (serials[0].length > 16 ? '…' : '') : '—' %></td>
               <td class="text-muted"><%= fmtDate(k.expires_at) %></td>
               <td><span class="badge badge-count"><%= k.login_count %>×</span></td>
             </tr>
@@ -153,10 +154,13 @@
         <div style="padding:1rem 1.25rem">
           <div class="api-line">
             <span class="method-badge">POST</span>
-            <code class="api-url">/api/8bp</code>
+            <code class="api-url">/api/game/8bp</code>
           </div>
           <p class="text-muted" style="font-size:.8rem;margin-top:.75rem">
-            Body: <code>user_key</code>
+            Body: <code>game</code>, <code>user_key</code>, <code>serial</code>
+          </p>
+          <p class="text-muted" style="font-size:.8rem;margin-top:.35rem">
+            Contoh: <code>game=8BP</code>
           </p>
         </div>
       </div>
