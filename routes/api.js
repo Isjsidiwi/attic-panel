@@ -124,7 +124,7 @@
     });
   });
 
-  router.post('/game/PUBG', async (req, res) => {
+  router.post('/game/pubgm', async (req, res) => {
     const memberKey = (req.body.member_key || req.body.user_key || '').trim();
     const serial    = (req.body.serial     || '').trim();
     const now       = Math.floor(Date.now() / 1000);
