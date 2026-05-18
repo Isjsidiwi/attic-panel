@@ -6,7 +6,6 @@ const { initDB } = require('./database');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const apiRoutes = require('./routes/api');
-const senjuRoutes = require('./routes/senju');  
 
 const app = express();
 
@@ -47,7 +46,6 @@ app.use((req, res, next) => {
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api', apiRoutes);
-app.use('/', senjuRoutes);                    // ← BARIS YANG DITAMBAHKAN
 
 // 404 handler
 app.use((req, res) => {

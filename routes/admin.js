@@ -6,8 +6,13 @@ const db      = require('../database');
 const { loadConfig, saveConfig } = require('../config');
 
 const CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const HEX_CHARS = '0123456789ABCDEF';
 
 function generateKey(game = 'BS') {
+  if (game === 'PUBGM') {
+    return `${game}-${Array.from({ length: 10 }, () => HEX_CHARS[Math.floor(Math.random() * HEX_CHARS.length)]).join('')}`;
+  }
+
   const seg = () => Array.from({ length: 4 }, () => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
   return `${game}-${seg()}-${seg()}-${seg()}`;
 }
