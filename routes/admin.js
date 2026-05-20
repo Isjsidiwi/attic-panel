@@ -7,6 +7,7 @@ const { loadConfig, saveConfig } = require('../config');
 
 const CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 const HEX_CHARS = '0123456789ABCDEF';
+const MAX_DEVICES_LIMIT = 500;
 
 function generateKey(game = 'BS') {
   if (game === 'PUBGM') {
@@ -98,7 +99,7 @@ router.post('/keys/generate', auth, async (req, res) => {
   const now        = Math.floor(Date.now() / 1000);
   const count      = Math.min(Math.max(1, parseInt(bulk) || 1), 100);
   const secs       = durationToSeconds(duration, duration_unit);
-  const maxDevices = Math.min(Math.max(1, parseInt(max_devices) || 1), 100);
+  const maxDevices = Math.min(Math.max(1, parseInt(max_devices) || 1), MAX_DEVICES_LIMIT);
   const gamePrefix = (game || 'BS').toUpperCase();
 
   for (let i = 0; i < count; i++) {
@@ -124,7 +125,7 @@ router.post('/keys/:id/edit', auth, async (req, res) => {
   const expiresAt  = expires_at_input
     ? Math.floor(new Date(expires_at_input).getTime() / 1000)
     : Number(row.expires_at);
-  const maxDevices = Math.min(Math.max(1, parseInt(max_devices) || 1), 100);
+  const maxDevices = Math.min(Math.max(1, parseInt(max_devices) || 1), MAX_DEVICES_LIMIT);
   const serials    = reset_devices === '1' ? '[]' : (row.device_serials || '[]');
 
   await db.run(

@@ -50,4 +50,7 @@ Body: user_key, serial, resource
 
 POST /api/game/PUBG
 Body: member_key, serial
+
+POST /api/codm
+Body: game, user_key, serial
 ```

@@ -21,6 +21,25 @@
       .replace(/\.(\d{3})Z$/, (_, ms) => `.${ms}000Z`);
   }
 
+  function formatDateTime(unix) {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Jakarta',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hourCycle: 'h23'
+    }).formatToParts(new Date(Number(unix) * 1000))
+      .reduce((acc, part) => {
+        if (part.type !== 'literal') acc[part.type] = part.value;
+        return acc;
+      }, {});
+
+    return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
+  }
+
   router.post('/game/MLBB', async (req, res) => {
     const userKey  = (req.body.user_key  || '').trim();
     const serial   = (req.body.serial    || '').trim();
@@ -236,6 +255,75 @@
     };
 
     res.json(response);
+  });
+
+  router.post('/codm', async (req, res) => {
+    const game    = (req.body.game || 'CODM').trim().toUpperCase();
+    const userKey = (req.body.user_key || req.body.member_key || '').trim();
+    const serial  = (req.body.serial || '').trim();
+    const now     = Math.floor(Date.now() / 1000);
+
+    const fail = (reason) => res.json({ status: false, reason, data: null });
+
+    if (!userKey) return fail('user_key diperlukan');
+    if (!serial)  return fail('serial diperlukan');
+
+    const row = await db.get('SELECT * FROM keys WHERE key_code = ?', [userKey]);
+    if (!row)           return fail('Key tidak ditemukan');
+    if (!row.is_active) return fail('Key dinonaktifkan');
+    if (Number(row.expires_at) <= now) return fail('Key sudah expired');
+
+    let serials = [];
+    try { serials = JSON.parse(row.device_serials || '[]'); } catch { serials = []; }
+    const maxDevices = Number(row.max_devices) || 1;
+
+    if (!serials.includes(serial)) {
+      if (serials.length >= maxDevices) {
+        return fail(`Batas device tercapai (${maxDevices}/${maxDevices}). Key ini sudah terkunci ke ${maxDevices} device.`);
+      }
+      serials.push(serial);
+      await db.run(
+        'UPDATE keys SET device_serials=?, login_count=login_count+1, last_login=? WHERE id=?',
+        [JSON.stringify(serials), now, row.id]
+      );
+    } else {
+      await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
+    }
+
+    const cfg = await loadConfig();
+    const real = `${game}-${userKey}-${serial}-${cfg.salt}`;
+    const token = crypto.createHash('md5').update(real).digest('hex');
+    const expired = formatDateTime(row.expires_at);
+    const slot = String(maxDevices);
+
+    res.set('Cache-Control', 'no-store, max-age=0, no-cache');
+    res.json({
+      status: true,
+      data: {
+        real,
+        token,
+        modname: 'CFL MOD',
+        mod_status: 'Safe',
+        credit: 'Test',
+        ESP: false,
+        Item: false,
+        AIM: false,
+        SilentAim: false,
+        BulletTrack: false,
+        Floating: false,
+        Memory: false,
+        Setting: false,
+        EXPR: expired,
+        device: slot,
+        MOD_NAME: 'CFL MOD',
+        MOD_STATUS: 'Safe',
+        FLOTING_TEST: 'Test',
+        EXP: expired,
+        SLOT: slot,
+        cantcrack: '5DXuN61YKEgIhKNqa6PbJgf8DXm1Sft10sEEfFs9st8=',
+        rng: now
+      }
+    });
   });
 
   module.exports = router;
