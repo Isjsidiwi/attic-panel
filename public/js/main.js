@@ -134,8 +134,44 @@ function submitBulkAction(url, confirmMsg) {
   form.submit();
 }
 
+function setupCreditPreview() {
+  const form = document.querySelector('[data-generate-form]');
+  const preview = document.getElementById('credit-preview');
+  if (!form || !preview) return;
+
+  const gameInput = form.querySelector('[name="game"]');
+  const durationInput = form.querySelector('[name="duration"]');
+  const bulkInput = form.querySelector('[name="bulk"]');
+  const balance = Number(preview.dataset.balance || window.USER_CREDIT || 0);
+  const prices = window.KEY_PRICES || {};
+
+  const render = () => {
+    const game = gameInput.value;
+    const days = Math.max(1, Math.min(30, parseInt(durationInput.value, 10) || 1));
+    const count = Math.max(1, parseInt(bulkInput.value, 10) || 1);
+    const each = Number(prices[game] && prices[game][days]) || days;
+    const total = each * count;
+    const remaining = balance - total;
+
+    preview.classList.toggle('is-danger', remaining < 0);
+    preview.innerHTML = `
+      <span>Harga: <strong>${each}</strong> credit/key</span>
+      <span>Total: <strong>${total}</strong></span>
+      <span>Sisa: <strong>${remaining}</strong></span>
+    `;
+  };
+
+  [gameInput, durationInput, bulkInput].forEach(input => {
+    if (input) input.addEventListener('input', render);
+    if (input) input.addEventListener('change', render);
+  });
+  render();
+}
+
 /* ── Animated counters ─────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  setupCreditPreview();
+
   document.querySelectorAll('[data-count]').forEach(el => {
     const target = parseInt(el.dataset.count, 10);
     if (isNaN(target) || target === 0) { el.textContent = '0'; return; }

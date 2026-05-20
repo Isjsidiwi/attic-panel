@@ -4,6 +4,7 @@ const bcrypt     = require('bcryptjs');
 const jwt        = require('jsonwebtoken');
 const rateLimit  = require('express-rate-limit');
 const { loadConfig } = require('../config');
+const db         = require('../database');
 
 const SECRET = () => process.env.JWT_SECRET || 'attic-jwt-fallback-secret';
 
@@ -14,10 +15,17 @@ const loginLimiter = rateLimit({
   handler: (req, res) => res.redirect('/login?error=Terlalu+banyak+percobaan.+Coba+lagi+15+menit+lagi.')
 });
 
+function homeFor(role) {
+  return role === 'reseller' ? '/admin/keys' : '/admin/dashboard';
+}
+
 router.get('/', (req, res) => {
   const token = req.cookies._token;
   if (token) {
-    try { jwt.verify(token, SECRET()); return res.redirect('/admin/dashboard'); } catch {}
+    try {
+      const payload = jwt.verify(token, SECRET());
+      return res.redirect(homeFor(payload.role));
+    } catch {}
   }
   res.redirect('/login');
 });
@@ -25,7 +33,10 @@ router.get('/', (req, res) => {
 router.get('/login', async (req, res) => {
   const token = req.cookies._token;
   if (token) {
-    try { jwt.verify(token, SECRET()); return res.redirect('/admin/dashboard'); } catch {}
+    try {
+      const payload = jwt.verify(token, SECRET());
+      return res.redirect(homeFor(payload.role));
+    } catch {}
   }
   const cfg = await loadConfig();
   res.render('login', {
@@ -37,11 +48,30 @@ router.get('/login', async (req, res) => {
 });
 
 router.post('/login', loginLimiter, async (req, res) => {
-  const { username, password } = req.body;
+  const username = (req.body.username || '').trim();
+  const password = req.body.password || '';
   const cfg = await loadConfig();
+  const user = await db.get('SELECT * FROM users WHERE username=?', [username]);
+
+  if (user && user.is_active && bcrypt.compareSync(password, user.password_hash)) {
+    const token = jwt.sign(
+      { id: user.id, username: user.username, role: user.role },
+      SECRET(),
+      { expiresIn: '24h' }
+    );
+    res.cookie('_token', token, {
+      httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'lax', secure: process.env.NODE_ENV === 'production'
+    });
+    return res.redirect(homeFor(user.role));
+  }
 
   if (username === cfg.admin_username && bcrypt.compareSync(password, cfg.admin_password)) {
-    const token = jwt.sign({ username: cfg.admin_username }, SECRET(), { expiresIn: '24h' });
+    const owner = await db.get("SELECT * FROM users WHERE role='owner' LIMIT 1");
+    const token = jwt.sign(
+      { id: owner && owner.id, username: cfg.admin_username, role: 'owner' },
+      SECRET(),
+      { expiresIn: '24h' }
+    );
     res.cookie('_token', token, {
       httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'lax', secure: process.env.NODE_ENV === 'production'
     });

@@ -168,6 +168,13 @@ body::before {
   color: var(--text-2);
 }
 
+.admin-role {
+  font-size: .58rem;
+  color: var(--text-3);
+  letter-spacing: .08em;
+  margin-top: .15rem;
+}
+
 .admin-dot {
   width: 7px; height: 7px;
   border-radius: 50%;
@@ -791,6 +798,87 @@ body::before {
   gap: 1rem;
 }
 
+.reseller-list {
+  display: grid;
+  gap: .85rem;
+}
+
+.reseller-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+  padding: .85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.015);
+}
+
+.reseller-row .btn-full {
+  grid-column: 1 / -1;
+}
+
+.pricing-block {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.pricing-block:last-child {
+  border-bottom: none;
+}
+
+.pricing-title {
+  font-family: var(--font-d);
+  font-size: .72rem;
+  color: var(--cyan);
+  letter-spacing: .08em;
+  margin-bottom: .75rem;
+}
+
+.price-grid {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(70px, 1fr));
+  gap: .5rem;
+}
+
+.price-cell {
+  display: grid;
+  gap: .3rem;
+  font-size: .62rem;
+  color: var(--text-3);
+  letter-spacing: .06em;
+}
+
+.price-cell input {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-lit);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--font-m);
+  font-size: .78rem;
+  padding: .45rem .5rem;
+}
+
+.credit-preview {
+  display: flex;
+  gap: .75rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding: .75rem .85rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(0,255,136,.22);
+  border-radius: var(--radius);
+  background: rgba(0,255,136,.06);
+  color: var(--green);
+  font-size: .74rem;
+}
+
+.credit-preview.is-danger {
+  border-color: rgba(255,51,85,.3);
+  background: rgba(255,51,85,.07);
+  color: var(--danger);
+}
+
 /* ── Misc ─────────────────────────────────────────── */
 .text-muted   { color: var(--text-2); }
 .text-danger  { color: var(--danger); }
@@ -937,6 +1025,7 @@ code {
 
 @media (max-width: 900px) {
   .settings-grid { grid-template-columns: 1fr; }
+  .price-grid { grid-template-columns: repeat(5, minmax(60px, 1fr)); }
   .sidebar {
     transform: translateX(-100%);
   }
@@ -952,6 +1041,8 @@ code {
 
 @media (max-width: 600px) {
   .stats-grid { grid-template-columns: 1fr 1fr; }
+  .reseller-row { grid-template-columns: 1fr; }
+  .price-grid { grid-template-columns: repeat(3, minmax(60px, 1fr)); }
   .topbar-right { width: 100%; }
   .btn-primary, .btn-secondary { flex: 1; justify-content: center; }
   .table { font-size: .72rem; }

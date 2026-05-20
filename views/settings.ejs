@@ -107,6 +107,96 @@
       </div>
     </form>
 
+    <div class="settings-grid" style="margin-top:1.25rem">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Buat Reseller</h3>
+        </div>
+        <form action="/admin/resellers" method="POST" class="card-body">
+          <div class="field">
+            <label class="field-label">USERNAME</label>
+            <input type="text" name="username" class="field-input" placeholder="reseller01" required autocomplete="off">
+          </div>
+          <div class="field">
+            <label class="field-label">PASSWORD</label>
+            <input type="password" name="password" class="field-input" placeholder="Min 6 karakter" required autocomplete="new-password">
+          </div>
+          <div class="field">
+            <label class="field-label">CREDIT AWAL</label>
+            <input type="number" name="credit" class="field-input" value="0" min="0" required>
+          </div>
+          <button type="submit" class="btn-primary btn-full">Tambah Reseller</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Credit Reseller</h3>
+        </div>
+        <div class="card-body reseller-list">
+          <% if (resellers.length === 0) { %>
+            <p class="text-muted" style="font-size:.8rem">Belum ada akun reseller.</p>
+          <% } %>
+          <% resellers.forEach(r => { %>
+            <form action="/admin/resellers/<%= r.id %>" method="POST" class="reseller-row">
+              <div class="field">
+                <label class="field-label">USERNAME</label>
+                <input type="text" name="username" class="field-input" value="<%= r.username %>" required autocomplete="off">
+              </div>
+              <div class="field">
+                <label class="field-label">CREDIT</label>
+                <input type="number" name="credit" class="field-input" value="<%= r.credit %>" min="0" required>
+              </div>
+              <div class="field">
+                <label class="field-label">STATUS</label>
+                <select name="is_active" class="field-input">
+                  <option value="1" <%= r.is_active ? 'selected' : '' %>>Aktif</option>
+                  <option value="0" <%= !r.is_active ? 'selected' : '' %>>Nonaktif</option>
+                </select>
+              </div>
+              <div class="field">
+                <label class="field-label">PASSWORD BARU</label>
+                <input type="password" name="password" class="field-input" placeholder="Kosongkan jika tetap" autocomplete="new-password">
+              </div>
+              <button type="submit" class="btn-secondary btn-full">Simpan Reseller</button>
+            </form>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+
+    <form action="/admin/prices" method="POST" style="margin-top:1.25rem">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Harga Key Reseller</h3>
+          <span class="text-muted" style="font-size:.72rem">Credit per durasi 1-30 hari</span>
+        </div>
+        <div class="card-body">
+          <% pricingGames.forEach(g => { %>
+            <div class="pricing-block">
+              <div class="pricing-title"><%= g.label %></div>
+              <div class="price-grid">
+                <% pricingDays.forEach(day => { %>
+                  <label class="price-cell">
+                    <span><%= day %>H</span>
+                    <input
+                      type="number"
+                      name="prices[<%= g.value %>][<%= day %>]"
+                      value="<%= priceMatrix[g.value] && priceMatrix[g.value][day] !== undefined ? priceMatrix[g.value][day] : day %>"
+                      min="1"
+                    >
+                  </label>
+                <% }) %>
+              </div>
+            </div>
+          <% }) %>
+          <div style="display:flex;justify-content:flex-end;margin-top:1rem">
+            <button type="submit" class="btn-primary">Simpan Harga</button>
+          </div>
+        </div>
+      </div>
+    </form>
+
   </main>
 </div>
 

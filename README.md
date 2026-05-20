@@ -33,6 +33,15 @@ Buka Vercel → Import Repository → selesai.
 
 ---
 
+## Akses Owner & Reseller
+
+- Owner login dari akun admin awal dan punya akses penuh ke dashboard, key, settings, reseller, credit, dan harga.
+- Reseller dibuat dari Settings oleh owner. Reseller hanya bisa membuka Manage Keys dan generate key.
+- Generate key reseller memotong credit sesuai harga game dan durasi 1-30 hari. Jika credit kurang, key tidak dibuat.
+- Harga credit per game/hari dan saldo reseller bisa diatur dari Settings.
+
+---
+
 ## Dev lokal
 
 ```bash

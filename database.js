@@ -12,8 +12,17 @@ function getClient() {
   return client;
 }
 
+async function ensureColumn(db, table, column, definition) {
+  const cols = await db.execute(`PRAGMA table_info(${table})`);
+  const colNames = cols.rows.map(r => r.name);
+  if (!colNames.includes(column)) {
+    await db.execute(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
+}
+
 async function initDB() {
   const db = getClient();
+  const now = Math.floor(Date.now() / 1000);
 
   // Buat tabel dengan skema terbaru
   await db.executeMultiple(`
@@ -34,6 +43,24 @@ async function initDB() {
     CREATE TABLE IF NOT EXISTS config (
       key   TEXT PRIMARY KEY,
       value TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS users (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      username      TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      role          TEXT NOT NULL DEFAULT 'reseller',
+      credit        INTEGER NOT NULL DEFAULT 0,
+      is_active     INTEGER NOT NULL DEFAULT 1,
+      created_at    INTEGER NOT NULL,
+      updated_at    INTEGER DEFAULT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS key_prices (
+      game          TEXT NOT NULL,
+      duration_days INTEGER NOT NULL,
+      price_credit INTEGER NOT NULL DEFAULT 0,
+      PRIMARY KEY (game, duration_days)
     );
   `);
 
@@ -59,6 +86,10 @@ async function initDB() {
     }
   } catch (_) { /* tabel fresh, kolom sudah ada */ }
 
+  await ensureColumn(db, 'keys', 'created_by', 'INTEGER DEFAULT NULL');
+  await ensureColumn(db, 'keys', 'created_by_username', "TEXT DEFAULT ''");
+  await ensureColumn(db, 'keys', 'price_paid', 'INTEGER NOT NULL DEFAULT 0');
+
   // Seed default config
   const bcrypt = require('bcryptjs');
   const defaults = {
@@ -71,6 +102,28 @@ async function initDB() {
 
   for (const [k, v] of Object.entries(defaults)) {
     await db.execute({ sql: 'INSERT OR IGNORE INTO config (key, value) VALUES (?, ?)', args: [k, v] });
+  }
+
+  const cfgRows = await db.execute('SELECT key, value FROM config');
+  const cfg = {};
+  cfgRows.rows.forEach(r => { cfg[r.key] = r.value; });
+
+  const owner = await db.execute("SELECT id FROM users WHERE role = 'owner' LIMIT 1");
+  if (owner.rows.length === 0) {
+    await db.execute({
+      sql: 'INSERT INTO users (username, password_hash, role, credit, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+      args: [cfg.admin_username || defaults.admin_username, cfg.admin_password || defaults.admin_password, 'owner', 0, 1, now]
+    });
+  }
+
+  const games = ['BS', 'MLBB', 'PUBGM', 'CODM', '8BP'];
+  for (const game of games) {
+    for (let day = 1; day <= 30; day++) {
+      await db.execute({
+        sql: 'INSERT OR IGNORE INTO key_prices (game, duration_days, price_credit) VALUES (?, ?, ?)',
+        args: [game, day, day]
+      });
+    }
   }
 
   console.log('Turso DB ready');
