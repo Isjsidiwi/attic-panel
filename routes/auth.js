@@ -53,7 +53,17 @@ router.post('/login', loginLimiter, async (req, res) => {
   const cfg = await loadConfig();
   const user = await db.get('SELECT * FROM users WHERE username=?', [username]);
 
+  const now = Math.floor(Date.now() / 1000);
+
   if (user && user.is_active && bcrypt.compareSync(password, user.password_hash)) {
+    if (user.role === 'reseller' && cfg.maintenance_mode === '1') {
+      return res.redirect('/login?error=Website+sedang+maintenance.+Hanya+admin+yang+bisa+login.');
+    }
+    
+    if (user.expires_at && user.expires_at < now) {
+      return res.redirect('/login?error=Akun+kamu+sudah+expired.');
+    }
+
     const token = jwt.sign(
       { id: user.id, username: user.username, role: user.role },
       SECRET(),

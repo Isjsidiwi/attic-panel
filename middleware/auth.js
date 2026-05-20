@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const db = require('../database');
+const { loadConfig } = require('../config');
 
 const SECRET = () => process.env.JWT_SECRET || 'attic-jwt-fallback-secret';
 
@@ -13,10 +14,16 @@ async function auth(req, res, next) {
       : await db.get('SELECT id, username, role, credit, is_active, expires_at FROM users WHERE username=?', [payload.username]);
 
     const now = Math.floor(Date.now() / 1000);
+    const cfg = await loadConfig();
 
     if (!user || !user.is_active || (user.expires_at && user.expires_at < now)) {
       res.clearCookie('_token');
-      return res.redirect('/login');
+      return res.redirect('/login?error=Sesi+habis+atau+akun+tidak+valid.');
+    }
+
+    if (user.role === 'reseller' && cfg.maintenance_mode === '1') {
+      res.clearCookie('_token');
+      return res.redirect('/login?error=Website+sedang+maintenance.+Hanya+admin+yang+bisa+login.');
     }
 
     req.user = {

@@ -98,7 +98,8 @@ async function initDB() {
     admin_username: process.env.ADMIN_USERNAME || 'admin',
     admin_password: process.env.ADMIN_PASSWORD_HASH
                     || bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 10),
-    salt:           process.env.SALT           || 'Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E'
+    salt:           process.env.SALT           || 'Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E',
+    maintenance_mode: '0'
   };
 
   for (const [k, v] of Object.entries(defaults)) {

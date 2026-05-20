@@ -27,6 +27,14 @@
               <label class="field-label">NAMA PANEL</label>
               <input type="text" name="panel_name" class="field-input" value="<%= cfg.panel_name %>" required>
             </div>
+            <div class="field">
+              <label class="field-label">MAINTENANCE MODE</label>
+              <select name="maintenance_mode" class="field-input">
+                <option value="0" <%= cfg.maintenance_mode === '0' ? 'selected' : '' %>>Off (Normal)</option>
+                <option value="1" <%= cfg.maintenance_mode === '1' ? 'selected' : '' %>>On (Reseller tidak bisa login)</option>
+              </select>
+              <p class="field-hint">Jika On, reseller aktif akan dikeluarkan otomatis dan tidak bisa login.</p>
+            </div>
           </div>
         </div>
 

@@ -297,11 +297,12 @@ router.get('/settings', auth, requireOwner, async (req, res) => {
 });
 
 router.post('/settings', auth, requireOwner, async (req, res) => {
-  const { panel_name, admin_username, new_password, confirm_password, salt } = req.body;
+  const { panel_name, admin_username, new_password, confirm_password, salt, maintenance_mode } = req.body;
   const updates = {};
   const userUpdates = {};
 
   if (panel_name)     updates.panel_name     = panel_name;
+  if (maintenance_mode !== undefined) updates.maintenance_mode = maintenance_mode;
   if (admin_username) {
     updates.admin_username = admin_username.trim();
     userUpdates.username = admin_username.trim();
