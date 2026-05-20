@@ -189,6 +189,60 @@
     });
   });
 
+  router.post('/game/freefire', async (req, res) => {
+    const memberKey = (req.body.member_key || req.body.user_key || '').trim();
+    const serial    = (req.body.serial     || '').trim();
+    const now       = Math.floor(Date.now() / 1000);
+
+    const fail = (reason) => res.json({ status: false, reason, data: null });
+
+    if (!memberKey) return fail('member_key diperlukan');
+    if (!serial)    return fail('serial diperlukan');
+
+    const row = await db.get('SELECT * FROM keys WHERE key_code = ?', [memberKey]);
+    if (!row)           return fail('Key tidak ditemukan');
+    if (!row.is_active) return fail('Key dinonaktifkan');
+    if (Number(row.expires_at) <= now) return fail('Key sudah expired');
+
+    let serials = [];
+    try { serials = JSON.parse(row.device_serials || '[]'); } catch { serials = []; }
+    const maxDevices = Number(row.max_devices) || 1;
+
+    if (!serials.includes(serial)) {
+      if (serials.length >= maxDevices) {
+        return fail(`Batas device tercapai (${maxDevices}/${maxDevices}). Key ini sudah terkunci ke ${maxDevices} device.`);
+      }
+      serials.push(serial);
+      await db.run(
+        'UPDATE keys SET device_serials=?, login_count=login_count+1, last_login=? WHERE id=?',
+        [JSON.stringify(serials), now, row.id]
+      );
+    } else {
+      await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
+    }
+
+    const cfg = await loadConfig();
+    const raw = `FF-${memberKey}-${serial}-${cfg.salt}`;
+    const token = crypto.createHash('md5').update(raw).digest('hex');
+    const expiredStr = new Date(Number(row.expires_at) * 1000).toISOString().replace(/\.\d{3}Z$/, 'Z');
+
+    res.set({
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, private'
+    });
+
+    res.json({
+      status: true,
+      data: {
+        token: token,
+        rng: Number(row.expires_at),
+        expired: expiredStr,
+        EXPR: expiredStr,
+        registrator: "Edge"
+      }
+    });
+  });
+
   router.post('/connect', async (req, res) => {
     const userKey = (req.body.user_key || '').trim();
     const serial  = (req.body.serial   || '').trim();
