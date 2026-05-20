@@ -14,39 +14,43 @@
       <span class="nav-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       </span>
-      Dashboard
+      <span class="lang-id">Dashboard</span><span class="lang-en" style="display:none;">Dashboard</span>
     </a>
     <% } %>
     <a href="/admin/keys" class="nav-item <%= title === 'Manage Keys' ? 'active' : '' %>">
       <span class="nav-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
       </span>
-      Manage Keys
+      <span class="lang-id">Kelola Key</span><span class="lang-en" style="display:none;">Manage Keys</span>
     </a>
     <% if (isOwner) { %>
     <a href="/admin/files" class="nav-item <%= title === 'Manage Files' ? 'active' : '' %>">
       <span class="nav-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
       </span>
-      Manage Files
+      <span class="lang-id">Kelola File</span><span class="lang-en" style="display:none;">Manage Files</span>
     </a>
     <a href="/admin/settings" class="nav-item <%= title === 'Settings' ? 'active' : '' %>">
       <span class="nav-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </span>
-      Settings
+      <span class="lang-id">Pengaturan</span><span class="lang-en" style="display:none;">Settings</span>
     </a>
     <% } else { %>
     <a href="/admin/profile" class="nav-item <%= title === 'My Profile' ? 'active' : '' %>">
       <span class="nav-icon">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
       </span>
-      My Profile
+      <span class="lang-id">Profil Saya</span><span class="lang-en" style="display:none;">My Profile</span>
     </a>
     <% } %>
   </nav>
 
   <div class="sidebar-footer">
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; justify-content: space-between;">
+      <button class="btn-ghost" onclick="toggleTheme()" style="flex:1; padding: 0.5rem; font-size: 0.8rem;" id="theme-btn">☀️ Light</button>
+      <button class="btn-ghost" onclick="toggleLang()" style="flex:1; padding: 0.5rem; font-size: 0.8rem;" id="lang-btn">🇬🇧 EN</button>
+    </div>
     <div class="admin-info">
       <div class="admin-dot"></div>
       <div>

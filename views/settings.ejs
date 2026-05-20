@@ -6,232 +6,244 @@
   <main class="main">
     <div class="topbar">
       <div>
-        <h2 class="page-title">Settings</h2>
-        <p class="page-sub">Konfigurasi panel & API</p>
+        <h2 class="page-title"><span class="lang-id">Pengaturan</span><span class="lang-en">Settings</span></h2>
+        <p class="page-sub"><span class="lang-id">Konfigurasi panel & API</span><span class="lang-en">Panel & API Configuration</span></p>
       </div>
     </div>
 
     <% if (success_msg.length > 0) { %><div class="alert alert-success"><%= success_msg[0] %></div><% } %>
     <% if (error_msg.length > 0)   { %><div class="alert alert-error"><%= error_msg[0] %></div><% } %>
 
-    <form action="/admin/settings" method="POST">
-      <div class="settings-grid">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('tab-panel', this)"><span class="lang-id">Sistem & API</span><span class="lang-en">System & API</span></button>
+      <button class="tab-btn" onclick="switchTab('tab-reseller', this)"><span class="lang-id">Kelola Reseller</span><span class="lang-en">Manage Resellers</span></button>
+      <button class="tab-btn" onclick="switchTab('tab-price', this)"><span class="lang-id">Daftar Harga</span><span class="lang-en">Pricing</span></button>
+    </div>
 
-        <!-- Panel Settings -->
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Panel Settings</h3>
-          </div>
-          <div class="card-body">
-            <div class="field">
-              <label class="field-label">NAMA PANEL</label>
-              <input type="text" name="panel_name" class="field-input" value="<%= cfg.panel_name %>" required>
+    <!-- TAB 1: PANEL & API -->
+    <div id="tab-panel" class="tab-content active">
+      <form action="/admin/settings" method="POST">
+        <div class="settings-grid">
+          <!-- Panel Settings -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Panel Settings</h3>
             </div>
-            <div class="field">
-              <label class="field-label">MAINTENANCE MODE</label>
-              <select name="maintenance_mode" class="field-input">
-                <option value="0" <%= cfg.maintenance_mode === '0' ? 'selected' : '' %>>Off (Normal)</option>
-                <option value="1" <%= cfg.maintenance_mode === '1' ? 'selected' : '' %>>On (Reseller tidak bisa login)</option>
-              </select>
-              <p class="field-hint">Jika On, reseller aktif akan dikeluarkan otomatis dan tidak bisa login.</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Admin Credentials -->
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Admin Credentials</h3>
-          </div>
-          <div class="card-body">
-            <div class="field">
-              <label class="field-label">USERNAME</label>
-              <input type="text" name="admin_username" class="field-input" value="<%= cfg.admin_username %>" required autocomplete="off">
-            </div>
-            <div class="field">
-              <label class="field-label">PASSWORD BARU <span class="text-muted">(kosongkan jika tidak berubah)</span></label>
-              <input type="password" name="new_password" class="field-input" placeholder="Min 6 karakter" autocomplete="new-password">
-            </div>
-            <div class="field">
-              <label class="field-label">KONFIRMASI PASSWORD</label>
-              <input type="password" name="confirm_password" class="field-input" placeholder="Ulangi password baru" autocomplete="new-password">
-            </div>
-          </div>
-        </div>
-
-        <!-- API Settings -->
-        <div class="card" style="grid-column: 1 / -1">
-          <div class="card-header">
-            <h3 class="card-title">API Configuration</h3>
-          </div>
-          <div class="card-body">
-            <div class="field">
-              <label class="field-label">SECRET SALT (MD5 Hash Signature)</label>
-              <div style="position:relative">
-                <input type="text" name="salt" id="salt-input" class="field-input" value="<%= cfg.salt %>" autocomplete="off" spellcheck="false">
-                <button type="button" class="field-eye" onclick="toggleSalt()" id="salt-toggle">HIDE</button>
+            <div class="card-body">
+              <div class="field">
+                <label class="field-label">NAMA PANEL</label>
+                <input type="text" name="panel_name" class="field-input" value="<%= cfg.panel_name %>" required>
               </div>
-              <p class="field-hint">Salt ini harus identik dengan yang ada di APK. Gunakan hanya jika kamu melakukan re-extract.</p>
-            </div>
-            <div class="field">
-              <label class="field-label">API ENDPOINT</label>
-              <div class="api-info-box">
-                <span class="method-badge">POST</span>
-                <code>/api/game/MLBB</code>
+              <div class="field">
+                <label class="field-label">MAINTENANCE MODE</label>
+                <select name="maintenance_mode" class="field-input">
+                  <option value="0" <%= cfg.maintenance_mode === '0' ? 'selected' : '' %>>Off (Normal)</option>
+                  <option value="1" <%= cfg.maintenance_mode === '1' ? 'selected' : '' %>>On (Reseller tidak bisa login)</option>
+                </select>
+                <p class="field-hint">Jika On, reseller aktif akan dikeluarkan otomatis dan tidak bisa login.</p>
               </div>
-              <p class="field-hint">Body params: <code>user_key</code>, <code>serial</code>, <code>resource</code></p>
-            </div>
-            <div class="field" style="margin-top:1rem;">
-              <label class="field-label">PUBG ENDPOINT</label>
-              <div class="api-info-box">
-                <span class="method-badge">POST</span>
-                <code>/api/game/PUBG</code>
-              </div>
-              <p class="field-hint">Body params: <code>member_key</code>, <code>serial</code></p>
-            </div>
-            <div class="field" style="margin-top:1rem;">
-              <label class="field-label">8BP ENDPOINT</label>
-              <div class="api-info-box">
-                <span class="method-badge">POST</span>
-                <code>/api/game/8bp</code>
-              </div>
-              <p class="field-hint">Body params: <code>game</code>, <code>user_key</code>, <code>serial</code> (<code>game=8BP</code>)</p>
-            </div>
-            <div class="field" style="margin-top:1rem;">
-              <label class="field-label">CODM ENDPOINT</label>
-              <div class="api-info-box">
-                <span class="method-badge">POST</span>
-                <code>/api/codm</code>
-              </div>
-              <p class="field-hint">Body params: <code>game</code>, <code>user_key</code>, <code>serial</code> (<code>game=ASHESZ</code>)</p>
             </div>
           </div>
-        </div>
 
-      </div>
-
-      <div style="margin-top:1.5rem;display:flex;justify-content:flex-end">
-        <button type="submit" class="btn-primary">Simpan Perubahan</button>
-      </div>
-    </form>
-
-    <div class="settings-grid" style="margin-top:1.25rem">
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Buat Reseller</h3>
-        </div>
-        <form action="/admin/resellers" method="POST" class="card-body">
-          <div class="field">
-            <label class="field-label">USERNAME</label>
-            <input type="text" name="username" class="field-input" placeholder="reseller01" required autocomplete="off">
-          </div>
-          <div class="field">
-            <label class="field-label">PASSWORD</label>
-            <input type="password" name="password" class="field-input" placeholder="Min 6 karakter" required autocomplete="new-password">
-          </div>
-          <div class="field-row">
-            <div class="field" style="flex:1">
-              <label class="field-label">CREDIT AWAL</label>
-              <input type="number" name="credit" class="field-input" value="0" min="0" required>
+          <!-- Admin Credentials -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Admin Credentials</h3>
             </div>
-            <div class="field" style="flex:1">
-              <label class="field-label">DURASI AKUN</label>
-              <select name="duration" class="field-input">
-                <option value="1_month">1 Bulan</option>
-                <option value="1_year">1 Tahun</option>
-                <option value="lifetime" selected>Lifetime (Permanen)</option>
-              </select>
-            </div>
-          </div>
-          <button type="submit" class="btn-primary btn-full">Tambah Reseller</button>
-        </form>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Credit Reseller</h3>
-        </div>
-        <div class="card-body reseller-list">
-          <% if (resellers.length === 0) { %>
-            <p class="text-muted" style="font-size:.8rem">Belum ada akun reseller.</p>
-          <% } %>
-          <% resellers.forEach(r => { %>
-            <form action="/admin/resellers/<%= r.id %>" method="POST" class="reseller-row">
+            <div class="card-body">
               <div class="field">
                 <label class="field-label">USERNAME</label>
-                <input type="text" name="username" class="field-input" value="<%= r.username %>" required autocomplete="off">
+                <input type="text" name="admin_username" class="field-input" value="<%= cfg.admin_username %>" required autocomplete="off">
               </div>
               <div class="field">
-                <label class="field-label">CREDIT</label>
-                <input type="number" name="credit" class="field-input" value="<%= r.credit %>" min="0" required>
+                <label class="field-label">PASSWORD BARU <span class="text-muted">(kosongkan jika tidak berubah)</span></label>
+                <input type="password" name="new_password" class="field-input" placeholder="Min 6 karakter" autocomplete="new-password">
               </div>
               <div class="field">
-                <label class="field-label">STATUS</label>
-                <select name="is_active" class="field-input">
-                  <option value="1" <%= r.is_active ? 'selected' : '' %>>Aktif</option>
-                  <option value="0" <%= !r.is_active ? 'selected' : '' %>>Nonaktif</option>
+                <label class="field-label">KONFIRMASI PASSWORD</label>
+                <input type="password" name="confirm_password" class="field-input" placeholder="Ulangi password baru" autocomplete="new-password">
+              </div>
+            </div>
+          </div>
+
+          <!-- API Settings -->
+          <div class="card" style="grid-column: 1 / -1">
+            <div class="card-header">
+              <h3 class="card-title">API Configuration</h3>
+            </div>
+            <div class="card-body">
+              <div class="field">
+                <label class="field-label">SECRET SALT (MD5 Hash Signature)</label>
+                <div style="position:relative">
+                  <input type="text" name="salt" id="salt-input" class="field-input" value="<%= cfg.salt %>" autocomplete="off" spellcheck="false">
+                  <button type="button" class="field-eye" onclick="toggleSalt()" id="salt-toggle">HIDE</button>
+                </div>
+                <p class="field-hint">Salt ini harus identik dengan yang ada di APK. Gunakan hanya jika kamu melakukan re-extract.</p>
+              </div>
+              <div class="field">
+                <label class="field-label">API ENDPOINT</label>
+                <div class="api-info-box">
+                  <span class="method-badge">POST</span>
+                  <code>/api/game/MLBB</code>
+                </div>
+                <p class="field-hint">Body params: <code>user_key</code>, <code>serial</code>, <code>resource</code></p>
+              </div>
+              <div class="field" style="margin-top:1rem;">
+                <label class="field-label">PUBG ENDPOINT</label>
+                <div class="api-info-box">
+                  <span class="method-badge">POST</span>
+                  <code>/api/game/PUBG</code>
+                </div>
+                <p class="field-hint">Body params: <code>member_key</code>, <code>serial</code></p>
+              </div>
+              <div class="field" style="margin-top:1rem;">
+                <label class="field-label">8BP ENDPOINT</label>
+                <div class="api-info-box">
+                  <span class="method-badge">POST</span>
+                  <code>/api/game/8bp</code>
+                </div>
+                <p class="field-hint">Body params: <code>game</code>, <code>user_key</code>, <code>serial</code> (<code>game=8BP</code>)</p>
+              </div>
+              <div class="field" style="margin-top:1rem;">
+                <label class="field-label">CODM ENDPOINT</label>
+                <div class="api-info-box">
+                  <span class="method-badge">POST</span>
+                  <code>/api/codm</code>
+                </div>
+                <p class="field-hint">Body params: <code>game</code>, <code>user_key</code>, <code>serial</code> (<code>game=ASHESZ</code>)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem;display:flex;justify-content:flex-end">
+          <button type="submit" class="btn-primary">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- TAB 2: RESELLER -->
+    <div id="tab-reseller" class="tab-content" style="display: none;">
+      <div class="settings-grid">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Buat Reseller</h3>
+          </div>
+          <form action="/admin/resellers" method="POST" class="card-body">
+            <div class="field">
+              <label class="field-label">USERNAME</label>
+              <input type="text" name="username" class="field-input" placeholder="reseller01" required autocomplete="off">
+            </div>
+            <div class="field">
+              <label class="field-label">PASSWORD</label>
+              <input type="password" name="password" class="field-input" placeholder="Min 6 karakter" required autocomplete="new-password">
+            </div>
+            <div class="field-row">
+              <div class="field" style="flex:1">
+                <label class="field-label">CREDIT AWAL</label>
+                <input type="number" name="credit" class="field-input" value="0" min="0" required>
+              </div>
+              <div class="field" style="flex:1">
+                <label class="field-label">DURASI AKUN</label>
+                <select name="duration" class="field-input">
+                  <option value="1_month">1 Bulan</option>
+                  <option value="1_year">1 Tahun</option>
+                  <option value="lifetime" selected>Lifetime (Permanen)</option>
                 </select>
               </div>
-              <div class="field">
-                <label class="field-label">PASSWORD BARU</label>
-                <input type="password" name="password" class="field-input" placeholder="Kosongkan jika tetap" autocomplete="new-password">
-              </div>
-              <div class="field">
-                <label class="field-label">PERPANJANG DURASI</label>
-                <select name="extend_duration" class="field-input">
-                  <option value="none">Tidak Perpanjang</option>
-                  <option value="1_month">Beri 1 Bulan</option>
-                  <option value="1_year">Beri 1 Tahun</option>
-                  <option value="lifetime">Jadikan Lifetime</option>
-                </select>
-                <% if (r.expires_at) { %>
-                  <p class="field-hint text-danger">Exp: <%= fmtDate(r.expires_at) %></p>
-                <% } else { %>
-                  <p class="field-hint">Exp: Lifetime</p>
-                <% } %>
-              </div>
-              <button type="submit" class="btn-secondary btn-full">Simpan Reseller</button>
-            </form>
-            <form action="/admin/resellers/<%= r.id %>/delete" method="POST" style="margin-top: 0.5rem;" onsubmit="return confirm('Yakin ingin menghapus reseller <%= r.username %>?');">
-              <button type="submit" class="btn-danger btn-full">Hapus Reseller</button>
-            </form>
-            <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
-          <% }) %>
+            </div>
+            <button type="submit" class="btn-primary btn-full">Tambah Reseller</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Credit Reseller</h3>
+          </div>
+          <div class="card-body reseller-list">
+            <% if (resellers.length === 0) { %>
+              <p class="text-muted" style="font-size:.8rem">Belum ada akun reseller.</p>
+            <% } %>
+            <% resellers.forEach(r => { %>
+              <form action="/admin/resellers/<%= r.id %>" method="POST" class="reseller-row">
+                <div class="field">
+                  <label class="field-label">USERNAME</label>
+                  <input type="text" name="username" class="field-input" value="<%= r.username %>" required autocomplete="off">
+                </div>
+                <div class="field">
+                  <label class="field-label">CREDIT</label>
+                  <input type="number" name="credit" class="field-input" value="<%= r.credit %>" min="0" required>
+                </div>
+                <div class="field">
+                  <label class="field-label">STATUS</label>
+                  <select name="is_active" class="field-input">
+                    <option value="1" <%= r.is_active ? 'selected' : '' %>>Aktif</option>
+                    <option value="0" <%= !r.is_active ? 'selected' : '' %>>Nonaktif</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label class="field-label">PASSWORD BARU</label>
+                  <input type="password" name="password" class="field-input" placeholder="Kosongkan jika tetap" autocomplete="new-password">
+                </div>
+                <div class="field">
+                  <label class="field-label">PERPANJANG DURASI</label>
+                  <select name="extend_duration" class="field-input">
+                    <option value="none">Tidak Perpanjang</option>
+                    <option value="1_month">Beri 1 Bulan</option>
+                    <option value="1_year">Beri 1 Tahun</option>
+                    <option value="lifetime">Jadikan Lifetime</option>
+                  </select>
+                  <% if (r.expires_at) { %>
+                    <p class="field-hint text-danger">Exp: <%= fmtDate(r.expires_at) %></p>
+                  <% } else { %>
+                    <p class="field-hint">Exp: Lifetime</p>
+                  <% } %>
+                </div>
+                <button type="submit" class="btn-secondary btn-full">Simpan Reseller</button>
+              </form>
+              <form action="/admin/resellers/<%= r.id %>/delete" method="POST" style="margin-top: 0.5rem;" onsubmit="return confirm('Yakin ingin menghapus reseller <%= r.username %>?');">
+                <button type="submit" class="btn-danger btn-full">Hapus Reseller</button>
+              </form>
+              <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
+            <% }) %>
+          </div>
         </div>
       </div>
     </div>
 
-    <form action="/admin/prices" method="POST" style="margin-top:1.25rem">
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Harga Key Reseller</h3>
-          <span class="text-muted" style="font-size:.72rem">Credit per durasi 1-30 hari</span>
-        </div>
-        <div class="card-body">
-          <% pricingGames.forEach(g => { %>
-            <div class="pricing-block">
-              <div class="pricing-title"><%= g.label %></div>
-              <div class="price-grid">
-                <% pricingDays.forEach(day => { %>
-                  <label class="price-cell">
-                    <span><%= day %>H</span>
-                    <input
-                      type="number"
-                      name="prices[<%= g.value %>][<%= day %>]"
-                      value="<%= priceMatrix[g.value] && priceMatrix[g.value][day] !== undefined ? priceMatrix[g.value][day] : day %>"
-                      min="1"
-                    >
-                  </label>
-                <% }) %>
+    <!-- TAB 3: PRICE -->
+    <div id="tab-price" class="tab-content" style="display: none;">
+      <form action="/admin/prices" method="POST">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Harga Key Reseller</h3>
+            <span class="text-muted" style="font-size:.72rem">Credit per durasi 1-30 hari</span>
+          </div>
+          <div class="card-body">
+            <% pricingGames.forEach(g => { %>
+              <div class="pricing-block">
+                <div class="pricing-title"><%= g.label %></div>
+                <div class="price-grid">
+                  <% pricingDays.forEach(day => { %>
+                    <label class="price-cell">
+                      <span><%= day %>H</span>
+                      <input
+                        type="number"
+                        name="prices[<%= g.value %>][<%= day %>]"
+                        value="<%= priceMatrix[g.value] && priceMatrix[g.value][day] !== undefined ? priceMatrix[g.value][day] : day %>"
+                        min="1"
+                      >
+                    </label>
+                  <% }) %>
+                </div>
               </div>
+            <% }) %>
+            <div style="display:flex;justify-content:flex-end;margin-top:1rem">
+              <button type="submit" class="btn-primary">Simpan Harga</button>
             </div>
-          <% }) %>
-          <div style="display:flex;justify-content:flex-end;margin-top:1rem">
-            <button type="submit" class="btn-primary">Simpan Harga</button>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
 
   </main>
 </div>
@@ -240,7 +252,7 @@
 <script>
   const saltInput  = document.getElementById('salt-input');
   const saltToggle = document.getElementById('salt-toggle');
-  saltInput.type   = 'password';
+  if(saltInput) saltInput.type = 'password';
 
   function toggleSalt() {
     if (saltInput.type === 'password') {
@@ -251,7 +263,24 @@
       saltToggle.textContent = 'SHOW';
     }
   }
-  saltToggle.textContent = 'SHOW';
+  if(saltToggle) saltToggle.textContent = 'SHOW';
+
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).style.display = 'block';
+    btn.classList.add('active');
+    
+    // Save state so after refresh it stays on the same tab
+    localStorage.setItem('settingsTab', tabId);
+  }
+
+  // Restore tab state
+  const savedTab = localStorage.getItem('settingsTab');
+  if (savedTab && document.getElementById(savedTab)) {
+    const btn = document.querySelector(`.tab-btn[onclick*="${savedTab}"]`);
+    if(btn) switchTab(savedTab, btn);
+  }
 </script>
 </body>
 </html>

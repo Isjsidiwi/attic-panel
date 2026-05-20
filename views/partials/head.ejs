@@ -5,7 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %> — <%= panel_name %></title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Poppins:wght@300;400;500;600;700&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
+  <script>
+    // Prevent flash of incorrect theme
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.add('light-theme');
+    }
+    // Set language class
+    const lang = localStorage.getItem('lang') || 'id';
+    document.documentElement.setAttribute('data-lang', lang);
+  </script>
 </head>
 <body>
