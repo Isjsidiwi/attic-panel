@@ -280,7 +280,7 @@ router.get('/keys/export', auth, requireOwner, async (req, res) => {
 router.get('/settings', auth, requireOwner, async (req, res) => {
   const cfg = await loadConfig();
   const [resellers, priceMatrix] = await Promise.all([
-    db.all("SELECT id, username, credit, is_active, created_at FROM users WHERE role='reseller' ORDER BY created_at DESC"),
+    db.all("SELECT id, username, credit, is_active, created_at, expires_at FROM users WHERE role='reseller' ORDER BY created_at DESC"),
     getPriceMatrix()
   ]);
 
@@ -337,7 +337,12 @@ router.post('/resellers', auth, requireOwner, async (req, res) => {
   const username = (req.body.username || '').trim();
   const password = req.body.password || '';
   const credit = normalizeCredit(req.body.credit);
+  const duration = req.body.duration;
   const now = Math.floor(Date.now() / 1000);
+
+  let expiresAt = null;
+  if (duration === '1_month') expiresAt = now + (30 * 86400);
+  else if (duration === '1_year') expiresAt = now + (365 * 86400);
 
   if (!username) {
     res.flash('error', 'Username reseller wajib diisi.');
@@ -350,8 +355,8 @@ router.post('/resellers', auth, requireOwner, async (req, res) => {
 
   try {
     await db.run(
-      'INSERT INTO users (username, password_hash, role, credit, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-      [username, bcrypt.hashSync(password, 10), 'reseller', credit, 1, now]
+      'INSERT INTO users (username, password_hash, role, credit, is_active, created_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [username, bcrypt.hashSync(password, 10), 'reseller', credit, 1, now, expiresAt]
     );
   } catch (err) {
     res.flash('error', 'Username reseller sudah dipakai.');
@@ -368,6 +373,7 @@ router.post('/resellers/:id', auth, requireOwner, async (req, res) => {
   const password = req.body.password || '';
   const credit = normalizeCredit(req.body.credit);
   const isActive = req.body.is_active === '1' ? 1 : 0;
+  const extendDuration = req.body.extend_duration;
   const now = Math.floor(Date.now() / 1000);
 
   const reseller = await db.get("SELECT * FROM users WHERE id=? AND role='reseller'", [id]);
@@ -386,6 +392,19 @@ router.post('/resellers/:id', auth, requireOwner, async (req, res) => {
 
   const fields = ['username=?', 'credit=?', 'is_active=?', 'updated_at=?'];
   const args = [username, credit, isActive, now];
+  
+  if (extendDuration && extendDuration !== 'none') {
+    let newExpiresAt = reseller.expires_at || now;
+    if (newExpiresAt < now) newExpiresAt = now; // If already expired, start from now
+    
+    if (extendDuration === '1_month') newExpiresAt += (30 * 86400);
+    else if (extendDuration === '1_year') newExpiresAt += (365 * 86400);
+    else if (extendDuration === 'lifetime') newExpiresAt = null;
+    
+    fields.push('expires_at=?');
+    args.push(newExpiresAt);
+  }
+
   if (password) {
     fields.push('password_hash=?');
     args.push(bcrypt.hashSync(password, 10));
@@ -417,6 +436,71 @@ router.post('/prices', auth, requireOwner, async (req, res) => {
 
   res.flash('success', 'Harga key berhasil disimpan.');
   res.redirect('/admin/settings');
+});
+
+// File Management
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = path.join(__dirname, '../public/uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
+});
+const upload = multer({ storage: storage });
+
+router.get('/files', auth, requireOwner, async (req, res) => {
+  const cfg = await loadConfig();
+  const uploadDir = path.join(__dirname, '../public/uploads');
+  let files = [];
+  
+  if (fs.existsSync(uploadDir)) {
+    const fileNames = fs.readdirSync(uploadDir);
+    files = fileNames.map(name => {
+      const stats = fs.statSync(path.join(uploadDir, name));
+      return {
+        name,
+        size: (stats.size / 1024).toFixed(2) + ' KB',
+        date: stats.mtime
+      };
+    }).sort((a, b) => b.date - a.date);
+  }
+
+  res.render('files', {
+    title: 'Manage Files',
+    panel_name: cfg.panel_name,
+    files
+  });
+});
+
+router.post('/files/upload', auth, requireOwner, upload.single('file'), (req, res) => {
+  if (!req.file) {
+    res.flash('error', 'Tidak ada file yang diupload.');
+    return res.redirect('/admin/files');
+  }
+  res.flash('success', `File ${req.file.originalname} berhasil diupload.`);
+  res.redirect('/admin/files');
+});
+
+router.post('/files/delete/:filename', auth, requireOwner, (req, res) => {
+  const filename = req.params.filename;
+  const filepath = path.join(__dirname, '../public/uploads', filename);
+  
+  if (fs.existsSync(filepath)) {
+    fs.unlinkSync(filepath);
+    res.flash('success', `File ${filename} berhasil dihapus.`);
+  } else {
+    res.flash('error', 'File tidak ditemukan.');
+  }
+  res.redirect('/admin/files');
 });
 
 module.exports = router;

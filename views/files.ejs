@@ -1,0 +1,82 @@
+<%- include('partials/head') %>
+
+<div class="layout">
+  <%- include('partials/sidebar') %>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h2 class="page-title">Manage Files</h2>
+        <p class="page-sub">Upload dan kelola file (hanya untuk Admin)</p>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-primary" onclick="openModal('modal-upload')">+ Upload File</button>
+      </div>
+    </div>
+
+    <% if (success_msg && success_msg.length > 0) { %><div class="alert alert-success"><%= success_msg[0] %></div><% } %>
+    <% if (error_msg && error_msg.length > 0)   { %><div class="alert alert-error"><%= error_msg[0] %></div><% } %>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>NAMA FILE</th>
+              <th>UKURAN</th>
+              <th>TANGGAL UPLOAD</th>
+              <th>URL</th>
+              <th>AKSI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% files.forEach(file => { %>
+            <tr>
+              <td><%= file.name %></td>
+              <td><%= file.size %></td>
+              <td class="text-muted"><%= file.date.toLocaleString('id-ID') %></td>
+              <td>
+                <a href="/uploads/<%= file.name %>" target="_blank" class="text-muted" style="text-decoration:underline;">Buka/Download</a>
+              </td>
+              <td>
+                <form action="/admin/files/delete/<%= file.name %>" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus file ini?');">
+                  <button type="submit" class="btn-icon btn-del" title="Hapus">✕</button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+            <% if (files.length === 0) { %>
+            <tr>
+              <td colspan="5" class="text-center text-muted" style="padding:3rem">Belum ada file yang diupload.</td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL: UPLOAD -->
+<div class="modal-overlay" id="modal-upload" onclick="closeModalOutside(event, 'modal-upload')">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Upload File Baru</h3>
+      <button class="modal-close" onclick="closeModal('modal-upload')">✕</button>
+    </div>
+    <form action="/admin/files/upload" method="POST" enctype="multipart/form-data" class="modal-form">
+      <div class="field">
+        <label class="field-label">PILIH FILE</label>
+        <input type="file" name="file" class="field-input" required style="padding: 1rem 0;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-ghost" onclick="closeModal('modal-upload')">Batal</button>
+        <button type="submit" class="btn-primary">Upload</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

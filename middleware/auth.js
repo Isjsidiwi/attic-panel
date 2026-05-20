@@ -9,10 +9,12 @@ async function auth(req, res, next) {
   try {
     const payload = jwt.verify(token, SECRET());
     const user = payload.id
-      ? await db.get('SELECT id, username, role, credit, is_active FROM users WHERE id=?', [payload.id])
-      : await db.get('SELECT id, username, role, credit, is_active FROM users WHERE username=?', [payload.username]);
+      ? await db.get('SELECT id, username, role, credit, is_active, expires_at FROM users WHERE id=?', [payload.id])
+      : await db.get('SELECT id, username, role, credit, is_active, expires_at FROM users WHERE username=?', [payload.username]);
 
-    if (!user || !user.is_active) {
+    const now = Math.floor(Date.now() / 1000);
+
+    if (!user || !user.is_active || (user.expires_at && user.expires_at < now)) {
       res.clearCookie('_token');
       return res.redirect('/login');
     }

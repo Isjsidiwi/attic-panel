@@ -89,6 +89,7 @@ async function initDB() {
   await ensureColumn(db, 'keys', 'created_by', 'INTEGER DEFAULT NULL');
   await ensureColumn(db, 'keys', 'created_by_username', "TEXT DEFAULT ''");
   await ensureColumn(db, 'keys', 'price_paid', 'INTEGER NOT NULL DEFAULT 0');
+  await ensureColumn(db, 'users', 'expires_at', 'INTEGER DEFAULT NULL');
 
   // Seed default config
   const bcrypt = require('bcryptjs');
