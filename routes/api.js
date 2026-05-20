@@ -221,8 +221,7 @@
       await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
     }
 
-    const cfg = await loadConfig();
-    const raw = `${memberKey}${serial}${cfg.salt}`;
+    const raw = `${memberKey}${serial}VVIPMODS`;
     const token = crypto.createHash('md5').update(raw).digest('hex');
     const expiredStr = formatIsoMicros(row.expires_at);
 
