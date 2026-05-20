@@ -15,7 +15,8 @@ const GAME_OPTIONS = [
   { value: 'PUBGM', label: 'PUBG Mobile (PUBGM)' },
   { value: 'CODM', label: 'Call Of Duty (CODM)' },
   { value: '8BP', label: '8 Ball Pool (8BP)' },
-  { value: 'FF', label: 'Free Fire (FF)' }
+  { value: 'FF', label: 'Free Fire (FF)' },
+  { value: 'CFL', label: 'Crossfire (CFL)' }
 ];
 const requireOwner = auth.requireOwner;
 
