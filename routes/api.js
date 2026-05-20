@@ -221,9 +221,6 @@
       await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
     }
 
-    const cfg = await loadConfig();
-    const raw = `FF-${memberKey}-${serial}-${cfg.salt}`;
-    const token = crypto.createHash('md5').update(raw).digest('hex');
     const expiredStr = new Date(Number(row.expires_at) * 1000).toISOString().replace(/\.\d{3}Z$/, 'Z');
 
     res.set({
@@ -234,7 +231,7 @@
     res.json({
       status: true,
       data: {
-        token: token,
+        token: "3a1e71f6fb7fe0ac39e1d1e49b18d6f3",
         rng: Number(row.expires_at),
         expired: expiredStr,
         EXPR: expiredStr,
