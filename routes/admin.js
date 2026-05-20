@@ -198,10 +198,14 @@ router.post('/keys/generate', auth, async (req, res) => {
   res.redirect('/admin/keys');
 });
 
-router.post('/keys/:id/edit', auth, requireOwner, async (req, res) => {
+router.post('/keys/:id/edit', auth, async (req, res) => {
   const { resource, expires_at_input, is_active, notes, reset_devices, max_devices } = req.body;
   const row = await db.get('SELECT * FROM keys WHERE id=?', [req.params.id]);
   if (!row) { res.flash('error', 'Key tidak ditemukan.'); return res.redirect('/admin/keys'); }
+
+  if (!req.user.isOwner && row.created_by !== req.user.id) {
+    res.flash('error', 'Akses ditolak.'); return res.redirect('/admin/keys');
+  }
 
   const expiresAt  = expires_at_input
     ? Math.floor(new Date(expires_at_input).getTime() / 1000)
@@ -218,29 +222,52 @@ router.post('/keys/:id/edit', auth, requireOwner, async (req, res) => {
   res.redirect('/admin/keys');
 });
 
-router.post('/keys/:id/delete', auth, requireOwner, async (req, res) => {
+router.post('/keys/:id/delete', auth, async (req, res) => {
+  const row = await db.get('SELECT * FROM keys WHERE id=?', [req.params.id]);
+  if (!row) { res.flash('error', 'Key tidak ditemukan.'); return res.redirect('/admin/keys'); }
+
+  if (!req.user.isOwner && row.created_by !== req.user.id) {
+    res.flash('error', 'Akses ditolak.'); return res.redirect('/admin/keys');
+  }
+
   await db.run('DELETE FROM keys WHERE id=?', [req.params.id]);
   res.flash('success', 'Key berhasil dihapus.');
   res.redirect('/admin/keys');
 });
 
-router.post('/keys/bulk-delete', auth, requireOwner, async (req, res) => {
+router.post('/keys/bulk-delete', auth, async (req, res) => {
   let ids = req.body.ids;
   if (!ids) { res.flash('error', 'Pilih minimal 1 key.'); return res.redirect('/admin/keys'); }
   if (!Array.isArray(ids)) ids = [ids];
   const ph = ids.map(() => '?').join(',');
-  await db.run(`DELETE FROM keys WHERE id IN (${ph})`, ids);
-  res.flash('success', `${ids.length} key berhasil dihapus.`);
+  const params = [...ids];
+  let query = `DELETE FROM keys WHERE id IN (${ph})`;
+  
+  if (!req.user.isOwner) {
+    query += ' AND created_by=?';
+    params.push(req.user.id);
+  }
+  
+  await db.run(query, params);
+  res.flash('success', `Key berhasil dihapus.`);
   res.redirect('/admin/keys');
 });
 
-router.post('/keys/bulk-deactivate', auth, requireOwner, async (req, res) => {
+router.post('/keys/bulk-deactivate', auth, async (req, res) => {
   let ids = req.body.ids;
   if (!ids) { res.flash('error', 'Pilih minimal 1 key.'); return res.redirect('/admin/keys'); }
   if (!Array.isArray(ids)) ids = [ids];
   const ph = ids.map(() => '?').join(',');
-  await db.run(`UPDATE keys SET is_active=0 WHERE id IN (${ph})`, ids);
-  res.flash('success', `${ids.length} key dinonaktifkan.`);
+  const params = [...ids];
+  let query = `UPDATE keys SET is_active=0 WHERE id IN (${ph})`;
+  
+  if (!req.user.isOwner) {
+    query += ' AND created_by=?';
+    params.push(req.user.id);
+  }
+  
+  await db.run(query, params);
+  res.flash('success', `Key dinonaktifkan.`);
   res.redirect('/admin/keys');
 });
 
