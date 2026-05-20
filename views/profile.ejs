@@ -1,0 +1,64 @@
+<%- include('partials/head') %>
+
+<div class="layout">
+  <%- include('partials/sidebar') %>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h2 class="page-title">My Profile</h2>
+        <p class="page-sub">Kelola akun reseller kamu</p>
+      </div>
+    </div>
+
+    <% if (success_msg && success_msg.length > 0) { %><div class="alert alert-success"><%= success_msg[0] %></div><% } %>
+    <% if (error_msg && error_msg.length > 0)   { %><div class="alert alert-error"><%= error_msg[0] %></div><% } %>
+
+    <div class="settings-grid">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Informasi Akun</h3>
+        </div>
+        <div class="card-body">
+          <div class="field">
+            <label class="field-label">USERNAME</label>
+            <input type="text" class="field-input" value="<%= user.username %>" readonly disabled>
+          </div>
+          <div class="field">
+            <label class="field-label">CREDIT</label>
+            <input type="text" class="field-input" value="<%= user.credit %>" readonly disabled>
+          </div>
+          <div class="field">
+            <label class="field-label">MASA AKTIF AKUN</label>
+            <input type="text" class="field-input text-danger" value="<%= user.expires_at ? fmtDate(user.expires_at) : 'Lifetime (Permanen)' %>" readonly disabled style="font-weight:bold;">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Ubah Kredensial</h3>
+        </div>
+        <form action="/admin/profile" method="POST" class="card-body">
+          <div class="field">
+            <label class="field-label">USERNAME BARU <span class="text-muted">(opsional)</span></label>
+            <input type="text" name="new_username" class="field-input" placeholder="Ganti jika perlu" value="<%= user.username %>" required autocomplete="off">
+          </div>
+          <div class="field">
+            <label class="field-label">PASSWORD LAMA</label>
+            <input type="password" name="old_password" class="field-input" placeholder="Wajib diisi jika ubah password" autocomplete="current-password">
+          </div>
+          <div class="field">
+            <label class="field-label">PASSWORD BARU</label>
+            <input type="password" name="new_password" class="field-input" placeholder="Min 6 karakter" autocomplete="new-password">
+          </div>
+          <button type="submit" class="btn-primary btn-full">Simpan Perubahan</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

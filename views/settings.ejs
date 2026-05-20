@@ -192,6 +192,10 @@
               </div>
               <button type="submit" class="btn-secondary btn-full">Simpan Reseller</button>
             </form>
+            <form action="/admin/resellers/<%= r.id %>/delete" method="POST" style="margin-top: 0.5rem;" onsubmit="return confirm('Yakin ingin menghapus reseller <%= r.username %>?');">
+              <button type="submit" class="btn-danger btn-full">Hapus Reseller</button>
+            </form>
+            <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
           <% }) %>
         </div>
       </div>
