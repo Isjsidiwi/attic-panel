@@ -81,7 +81,7 @@ router.get('/checkout/:slug/:variantId', async (req, res) => {
 // ── Checkout: Submit → Buat Order + QRIS
 router.post('/checkout/:slug/:variantId', async (req, res) => {
   try {
-    const { customer_name, customer_email } = req.body;
+    const { customer_name, customer_email, referral_code } = req.body;
     
     const { rows: pRows } = await db.execute(
       `SELECT p.* FROM store_products p WHERE p.slug = ? AND p.is_active = 1`,
@@ -104,9 +104,31 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
 
     if (variant.stock < 1) return res.redirect('/store/produk/' + req.params.slug);
 
+    let finalPrice = variant.price;
+    let appliedDiscount = 0;
+
+    // Cek referral code jika ada
+    if (referral_code) {
+      const { rows: refRows } = await db.execute(
+        `SELECT * FROM store_referrals WHERE code = ? AND is_active = 1`,
+        [referral_code.trim().toUpperCase()]
+      );
+      if (refRows.length > 0) {
+        const ref = refRows[0];
+        let isExpired = false;
+        if (ref.expired_at && new Date(ref.expired_at) < new Date()) {
+          isExpired = true;
+        }
+        if (!isExpired) {
+          appliedDiscount = ref.discount_amount;
+          finalPrice = Math.max(0, finalPrice - appliedDiscount);
+        }
+      }
+    }
+
     // Unique amount untuk verifikasi pembayaran
     const suffix = generateUniqueSuffix();
-    const uniqueAmount = variant.price + suffix;
+    const uniqueAmount = finalPrice + suffix;
     const orderId = uuidv4();
 
     // Buat QRIS
@@ -131,7 +153,7 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
     await db.execute(
       `INSERT INTO store_orders (id, product_id, variant_id, customer_name, customer_email, amount, unique_amount, unique_suffix, qris_id, qris_url, status, expired_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)`,
-      [orderId, product.id, variant.id, customer_name, customer_email, variant.price, uniqueAmount, suffix, qrisId, qrisUrl, expiredAt]
+      [orderId, product.id, variant.id, customer_name, customer_email, finalPrice, uniqueAmount, suffix, qrisId, qrisUrl, expiredAt]
     );
 
     res.redirect('/store/order/' + orderId);

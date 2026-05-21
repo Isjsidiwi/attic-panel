@@ -99,6 +99,15 @@ async function initDB() {
       FOREIGN KEY (variant_id) REFERENCES store_product_variants(id)
     );
 
+    CREATE TABLE IF NOT EXISTS store_referrals (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      code TEXT NOT NULL UNIQUE,
+      discount_amount INTEGER NOT NULL,
+      expired_at TEXT,
+      is_active INTEGER DEFAULT 1,
+      created_at TEXT DEFAULT (datetime('now','localtime'))
+    );
+
     CREATE TABLE IF NOT EXISTS store_orders (
       id TEXT PRIMARY KEY,
       product_id INTEGER NOT NULL,

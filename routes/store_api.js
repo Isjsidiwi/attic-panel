@@ -68,6 +68,29 @@ router.get('/order/:id/status', async (req, res) => {
   }
 });
 
+// Referral check API
+router.post('/referral/check', async (req, res) => {
+  try {
+    const { code } = req.body;
+    if (!code) return res.json({ valid: false, reason: 'Kode kosong.' });
+
+    const { rows } = await db.execute(`SELECT * FROM store_referrals WHERE code = ? AND is_active = 1`, [code.trim().toUpperCase()]);
+    if (!rows.length) return res.json({ valid: false, reason: 'Kode tidak ditemukan atau sudah tidak aktif.' });
+
+    const ref = rows[0];
+    if (ref.expired_at) {
+      if (new Date(ref.expired_at) < new Date()) {
+        return res.json({ valid: false, reason: 'Kode referral sudah kedaluwarsa.' });
+      }
+    }
+
+    return res.json({ valid: true, discount: ref.discount_amount });
+  } catch (err) {
+    console.error('Referral check error:', err);
+    return res.json({ valid: false, reason: 'Kesalahan server.' });
+  }
+});
+
 router.post('/8bp', (req, res) => {
   console.log("Body:", JSON.stringify(req.body, null, 2));
   console.log("Headers:", req.headers);

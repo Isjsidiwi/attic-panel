@@ -308,4 +308,47 @@ router.post('/orders/prune', requireAdmin, async (req, res) => {
   }
 });
 
+// ── Referrals
+router.get('/referrals', requireAdmin, async (req, res) => {
+  try {
+    const { rows: referrals } = await db.execute(`SELECT * FROM store_referrals ORDER BY created_at DESC`);
+    res.render('store/admin/referrals', { referrals, success: req.query.success, error: req.query.error });
+  } catch (err) {
+    console.error('Get referrals error:', err.message);
+    res.redirect('/admin/store');
+  }
+});
+
+router.post('/referrals/add', requireAdmin, async (req, res) => {
+  try {
+    const { code, discount_amount, expired_at } = req.body;
+    if (!code || !discount_amount) return res.redirect('/admin/store/referrals?error=Kode+dan+Diskon+wajib+diisi');
+    
+    // Parse expired_at to local ISO if provided
+    let expiry = null;
+    if (expired_at) {
+      expiry = new Date(expired_at).toISOString();
+    }
+    
+    await db.execute(
+      `INSERT INTO store_referrals (code, discount_amount, expired_at, is_active) VALUES (?, ?, ?, 1)`,
+      [code.trim().toUpperCase(), parseInt(discount_amount), expiry]
+    );
+    res.redirect('/admin/store/referrals?success=Kode+referral+berhasil+ditambahkan');
+  } catch (err) {
+    console.error('Add referral error:', err.message);
+    res.redirect('/admin/store/referrals?error=Gagal+menambah+referral+(mungkin+kode+sudah+ada)');
+  }
+});
+
+router.post('/referrals/:id/delete', requireAdmin, async (req, res) => {
+  try {
+    await db.execute(`DELETE FROM store_referrals WHERE id = ?`, [req.params.id]);
+    res.redirect('/admin/store/referrals?success=Referral+berhasil+dihapus');
+  } catch (err) {
+    console.error('Delete referral error:', err.message);
+    res.redirect('/admin/store/referrals?error=Gagal+menghapus+referral');
+  }
+});
+
 module.exports = router;
