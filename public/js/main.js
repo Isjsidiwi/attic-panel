@@ -258,9 +258,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // If this is the login page (imgui skin), show asset installer until images loaded
+  // If this is the login page (imgui skin), detect device and show asset installer
   if (document.querySelector('.imgui-skin')) {
-    const assets = ['/img/login-bg.png', '/img/kurumi.png'];
+    const isMobile = (() => {
+      try {
+        const ua = (navigator.userAgent || '').toLowerCase();
+        if (/android|iphone|ipod|ipad|windows phone|mobile/.test(ua)) return true;
+        return (window.innerWidth <= 900 && window.innerHeight > window.innerWidth);
+      } catch (e) { return false; }
+    })();
+
+    const loginBg = isMobile ? '/img/mobile-bg.png' : '/img/login-bg.png';
+    const bgEl = document.querySelector('.imgui-skin .login-bg');
+    if (bgEl) {
+      bgEl.style.backgroundImage = `url('${loginBg}')`;
+      if (isMobile) bgEl.classList.add('bg-contain'); else bgEl.classList.remove('bg-contain');
+    }
+
+    const assets = [loginBg, '/img/kurumi.png'];
     showAssetLoader();
     setLoaderProgress(6, 'Preparing download...');
     loadImages(assets, (pct, url) => {
