@@ -33,7 +33,7 @@ router.get('/produk/:slug', async (req, res) => {
       `SELECT p.* FROM store_products p WHERE p.slug = ? AND p.is_active = 1`,
       [req.params.slug]
     );
-    if (!rows.length) return res.redirect('/');
+    if (!rows.length) return res.redirect('/store/');
     const product = rows[0];
 
     const { rows: variants } = await db.execute(
@@ -48,7 +48,7 @@ router.get('/produk/:slug', async (req, res) => {
     res.render('store/product', { product, variants });
   } catch (err) {
     console.error(err);
-    res.redirect('/');
+    res.redirect('/store/');
   }
 });
 
@@ -59,7 +59,7 @@ router.get('/checkout/:slug/:variantId', async (req, res) => {
       `SELECT p.* FROM store_products p WHERE p.slug = ? AND p.is_active = 1`,
       [req.params.slug]
     );
-    if (!pRows.length) return res.redirect('/');
+    if (!pRows.length) return res.redirect('/store/');
     const product = pRows[0];
 
     const { rows: vRows } = await db.execute(
@@ -67,14 +67,14 @@ router.get('/checkout/:slug/:variantId', async (req, res) => {
        FROM store_product_variants v WHERE v.id = ? AND v.product_id = ?`,
       [req.params.variantId, product.id]
     );
-    if (!vRows.length) return res.redirect('/produk/' + req.params.slug);
+    if (!vRows.length) return res.redirect('/store/produk/' + req.params.slug);
     const variant = vRows[0];
 
-    if (variant.stock < 1) return res.redirect('/produk/' + req.params.slug);
+    if (variant.stock < 1) return res.redirect('/store/produk/' + req.params.slug);
     res.render('store/checkout', { product, variant, error: null });
   } catch (err) {
     console.error(err);
-    res.redirect('/');
+    res.redirect('/store/');
   }
 });
 
@@ -87,7 +87,7 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
       `SELECT p.* FROM store_products p WHERE p.slug = ? AND p.is_active = 1`,
       [req.params.slug]
     );
-    if (!pRows.length) return res.redirect('/');
+    if (!pRows.length) return res.redirect('/store/');
     const product = pRows[0];
 
     const { rows: vRows } = await db.execute(
@@ -95,14 +95,14 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
        FROM store_product_variants v WHERE v.id = ? AND v.product_id = ?`,
       [req.params.variantId, product.id]
     );
-    if (!vRows.length) return res.redirect('/produk/' + req.params.slug);
+    if (!vRows.length) return res.redirect('/store/produk/' + req.params.slug);
     const variant = vRows[0];
 
     if (!customer_name || !customer_email) {
       return res.render('store/checkout', { product, variant, error: 'Nama dan email wajib diisi.' });
     }
 
-    if (variant.stock < 1) return res.redirect('/produk/' + req.params.slug);
+    if (variant.stock < 1) return res.redirect('/store/produk/' + req.params.slug);
 
     // Unique amount untuk verifikasi pembayaran
     const suffix = generateUniqueSuffix();
@@ -134,10 +134,10 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
       [orderId, product.id, variant.id, customer_name, customer_email, variant.price, uniqueAmount, suffix, qrisId, qrisUrl, expiredAt]
     );
 
-    res.redirect('/order/' + orderId);
+    res.redirect('/store/order/' + orderId);
   } catch (err) {
     console.error(err);
-    res.redirect('/');
+    res.redirect('/store/');
   }
 });
 
@@ -155,12 +155,12 @@ router.get('/order/:id', async (req, res) => {
        WHERE o.id = ?`,
       [req.params.id]
     );
-    if (!rows.length) return res.redirect('/');
+    if (!rows.length) return res.redirect('/store/');
     const order = rows[0];
     res.render('store/order', { order });
   } catch (err) {
     console.error(err);
-    res.redirect('/');
+    res.redirect('/store/');
   }
 });
 
