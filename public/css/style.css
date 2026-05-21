@@ -817,6 +817,42 @@ body::before {
   grid-column: 1 / -1;
 }
 
+/* Horizontal reseller carousel/cards */
+.reseller-carousel {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: .5rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+.reseller-card {
+  flex: 0 0 320px;
+  min-width: 260px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .85rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+.reseller-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem;
+}
+.reseller-info { display:flex; flex-direction:column; gap:.25rem; }
+.reseller-username { font-weight:700; color:var(--text); }
+.reseller-meta { font-size:.82rem; color:var(--text-2); }
+.reseller-actions { display:flex; align-items:center; gap:.4rem; }
+.reseller-card-body { transition: max-height .22s ease, opacity .18s ease; }
+.reseller-card.expanded { box-shadow: var(--glow-c); border-color: var(--cyan); transform: translateY(-4px); }
+
+@media (max-width: 720px) {
+  .reseller-card { flex: 0 0 86%; }
+}
+
 .pricing-block {
   padding: 1rem 0;
   border-bottom: 1px solid var(--border);

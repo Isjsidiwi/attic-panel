@@ -47,4 +47,26 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btn) switchTab(savedTab, btn);
     }
   } catch (e) {}
+
+  // Reseller card expand/collapse and delete confirmation
+  document.querySelectorAll('.reseller-card-toggle').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const card = btn.closest('.reseller-card');
+      if (!card) return;
+      const body = card.querySelector('.reseller-card-body');
+      const expanded = card.classList.toggle('expanded');
+      if (body) body.style.display = expanded ? 'block' : 'none';
+      if (expanded) card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    });
+  });
+
+  document.querySelectorAll('.reseller-delete-form').forEach(form => {
+    form.addEventListener('submit', function (e) {
+      const username = this.dataset.username || '';
+      if (!confirm(`Yakin ingin menghapus reseller ${username}?`)) {
+        e.preventDefault();
+      }
+    });
+  });
 });

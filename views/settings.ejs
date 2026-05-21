@@ -175,52 +175,71 @@
           <div class="card-header">
             <h3 class="card-title">Credit Reseller</h3>
           </div>
-          <div class="card-body reseller-list">
+          <div class="card-body">
             <% if (resellers.length === 0) { %>
               <p class="text-muted" style="font-size:.8rem">Belum ada akun reseller.</p>
+            <% } else { %>
+              <div class="reseller-carousel" role="list">
+                <% resellers.forEach(r => { %>
+                  <div class="reseller-card" data-id="<%= r.id %>">
+                    <div class="reseller-card-header">
+                      <div class="reseller-info">
+                        <div class="reseller-username"><%= r.username %></div>
+                        <div class="reseller-meta">Credit: <strong><%= r.credit %></strong></div>
+                        <div class="reseller-meta"><% if (r.expires_at) { %>Exp: <%= fmtDate(r.expires_at) %><% } else { %>Lifetime<% } %></div>
+                      </div>
+                      <div class="reseller-actions">
+                        <button type="button" class="btn-secondary btn-sm reseller-card-toggle">Edit</button>
+                        <form action="/admin/resellers/<%= r.id %>/delete" method="POST" class="reseller-delete-form" data-username="<%= r.username %>" style="display:inline;margin-left:.5rem">
+                          <button type="submit" class="btn-danger btn-sm">Hapus</button>
+                        </form>
+                      </div>
+                    </div>
+
+                    <div class="reseller-card-body" style="display:none">
+                      <form action="/admin/resellers/<%= r.id %>" method="POST" class="reseller-edit-form">
+                        <div class="field">
+                          <label class="field-label">USERNAME</label>
+                          <input type="text" name="username" class="field-input" value="<%= r.username %>" required autocomplete="off">
+                        </div>
+                        <div class="field">
+                          <label class="field-label">CREDIT</label>
+                          <input type="number" name="credit" class="field-input" value="<%= r.credit %>" min="0" required>
+                        </div>
+                        <div class="field">
+                          <label class="field-label">STATUS</label>
+                          <select name="is_active" class="field-input">
+                            <option value="1" <%= r.is_active ? 'selected' : '' %>>Aktif</option>
+                            <option value="0" <%= !r.is_active ? 'selected' : '' %>>Nonaktif</option>
+                          </select>
+                        </div>
+                        <div class="field">
+                          <label class="field-label">PASSWORD BARU</label>
+                          <input type="password" name="password" class="field-input" placeholder="Kosongkan jika tetap" autocomplete="new-password">
+                        </div>
+                        <div class="field">
+                          <label class="field-label">PERPANJANG DURASI</label>
+                          <select name="extend_duration" class="field-input">
+                            <option value="none">Tidak Perpanjang</option>
+                            <option value="1_month">Beri 1 Bulan</option>
+                            <option value="1_year">Beri 1 Tahun</option>
+                            <option value="lifetime">Jadikan Lifetime</option>
+                          </select>
+                          <% if (r.expires_at) { %>
+                            <p class="field-hint text-danger">Exp: <%= fmtDate(r.expires_at) %></p>
+                          <% } else { %>
+                            <p class="field-hint">Exp: Lifetime</p>
+                          <% } %>
+                        </div>
+                        <div style="margin-top:.6rem">
+                          <button type="submit" class="btn-primary btn-full">Simpan Reseller</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                <% }) %>
+              </div>
             <% } %>
-            <% resellers.forEach(r => { %>
-              <form action="/admin/resellers/<%= r.id %>" method="POST" class="reseller-row">
-                <div class="field">
-                  <label class="field-label">USERNAME</label>
-                  <input type="text" name="username" class="field-input" value="<%= r.username %>" required autocomplete="off">
-                </div>
-                <div class="field">
-                  <label class="field-label">CREDIT</label>
-                  <input type="number" name="credit" class="field-input" value="<%= r.credit %>" min="0" required>
-                </div>
-                <div class="field">
-                  <label class="field-label">STATUS</label>
-                  <select name="is_active" class="field-input">
-                    <option value="1" <%= r.is_active ? 'selected' : '' %>>Aktif</option>
-                    <option value="0" <%= !r.is_active ? 'selected' : '' %>>Nonaktif</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label class="field-label">PASSWORD BARU</label>
-                  <input type="password" name="password" class="field-input" placeholder="Kosongkan jika tetap" autocomplete="new-password">
-                </div>
-                <div class="field">
-                  <label class="field-label">PERPANJANG DURASI</label>
-                  <select name="extend_duration" class="field-input">
-                    <option value="none">Tidak Perpanjang</option>
-                    <option value="1_month">Beri 1 Bulan</option>
-                    <option value="1_year">Beri 1 Tahun</option>
-                    <option value="lifetime">Jadikan Lifetime</option>
-                  </select>
-                  <% if (r.expires_at) { %>
-                    <p class="field-hint text-danger">Exp: <%= fmtDate(r.expires_at) %></p>
-                  <% } else { %>
-                    <p class="field-hint">Exp: Lifetime</p>
-                  <% } %>
-                </div>
-                <button type="submit" class="btn-secondary btn-full">Simpan Reseller</button>
-              </form>
-              <form action="/admin/resellers/<%= r.id %>/delete" method="POST" style="margin-top: 0.5rem;" onsubmit="return confirm('Yakin ingin menghapus reseller <%= r.username %>?');">
-                <button type="submit" class="btn-danger btn-full">Hapus Reseller</button>
-              </form>
-              <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border);">
-            <% }) %>
           </div>
         </div>
       </div>
