@@ -99,3 +99,8 @@
   .imgui-left, .imgui-right { width: 100%; max-width: 100%; }
   .imgui-art { min-height: 220px; }
 }
+
+.imgui-artbox { position: relative; display: flex; align-items: center; justify-content: center; min-height: 320px; }
+.imgui-artbox .imgui-art { width: 100%; height: auto; display: block; }
+.imgui-art-fallback { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .6rem; color: var(--text-3); font-size: .9rem; min-height: 320px; }
+.imgui-art-fallback svg { width: 80%; height: auto; max-width: 280px; border-radius: 6px; }
