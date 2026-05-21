@@ -326,8 +326,11 @@ router.post('/referrals/add', requireAdmin, async (req, res) => {
     
     // Parse expired_at to local ISO if provided
     let expiry = null;
-    if (expired_at) {
-      expiry = new Date(expired_at).toISOString();
+    if (expired_at && expired_at.trim() !== "") {
+      const d = new Date(expired_at);
+      if (!isNaN(d.getTime())) {
+        expiry = d.toISOString();
+      }
     }
     
     await db.execute(
