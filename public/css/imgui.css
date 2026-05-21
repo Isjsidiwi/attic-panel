@@ -105,6 +105,39 @@
 .imgui-art-fallback { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .6rem; color: var(--text-3); font-size: .9rem; min-height: 320px; }
 .imgui-art-fallback svg { width: 80%; height: auto; max-width: 280px; border-radius: 6px; }
 
+/* Region time popup (small ImGui-style card in top-right) */
+.time-popup {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 12000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+.time-card {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: .5rem .7rem;
+  border-radius: 8px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 0 20px rgba(0,229,255,0.03);
+}
+.time-region { font-size: .68rem; color: var(--text-2); min-width: 80px; }
+.time-value { font-family: var(--font-d); font-size: .92rem; color: var(--cyan); }
+.time-close { background: transparent; border: none; color: var(--text-3); font-size: .9rem; cursor: pointer; padding: .15rem; }
+.time-close:hover { color: var(--danger); }
+
+@media (max-width: 560px) {
+  .time-popup { top: .6rem; right: .6rem; }
+  .time-card { padding: .45rem .6rem; gap:.4rem; }
+  .time-region { min-width: 60px; font-size:.62rem }
+  .time-value { font-size:.82rem }
+}
+
 /* Login background + font (Heavytal) */
 @font-face {
   font-family: 'Heavytal';

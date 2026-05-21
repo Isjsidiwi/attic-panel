@@ -132,6 +132,53 @@ function loadImages(urls, onProgress, onComplete) {
   });
 }
 
+/* ── Region time popup (Singapore / Indonesia) ───────────────────────── */
+function startRegionTimePopup() {
+  if (!document.querySelector('.imgui-skin')) return;
+  const popup = document.getElementById('time-popup');
+  const regionEl = document.getElementById('time-region');
+  const valueEl = document.getElementById('time-value');
+  const closeBtn = document.getElementById('time-close');
+  if (!popup || !regionEl || !valueEl) return;
+
+  function getZoneInfo() {
+    let tz = 'UTC';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (e) {}
+    const indZones = ['Asia/Jakarta', 'Asia/Pontianak', 'Asia/Makassar', 'Asia/Jayapura'];
+    if (/singapore/i.test(tz) || (navigator.language || '').toLowerCase().includes('sg')) {
+      return { region: 'Singapore', tz: 'Asia/Singapore', label: 'Singapore Time (SGT)' };
+    }
+    if (indZones.includes(tz) || (navigator.language || '').toLowerCase().includes('id')) {
+      return { region: 'Indonesia', tz: indZones.includes(tz) ? tz : 'Asia/Jakarta', label: 'Indonesia Time' };
+    }
+    return { region: 'Local', tz: tz, label: tz.replace('_', ' ').split('/').pop() };
+  }
+
+  const info = getZoneInfo();
+  popup.style.display = 'flex';
+
+  function updateTime() {
+    try {
+      const now = new Date();
+      const opts = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: info.tz };
+      const timeStr = new Intl.DateTimeFormat([], opts).format(now);
+      let tzAbbrev = '';
+      try {
+        const parts = new Intl.DateTimeFormat('en-US', { timeZone: info.tz, timeZoneName: 'short' }).formatToParts(now);
+        const tzn = parts.find(p => p.type === 'timeZoneName');
+        if (tzn) tzAbbrev = ' ' + tzn.value;
+      } catch (err) {}
+      regionEl.textContent = info.label;
+      valueEl.textContent = timeStr + (tzAbbrev || '');
+    } catch (e) {}
+  }
+
+  updateTime();
+  const iv = setInterval(updateTime, 1000);
+
+  if (closeBtn) closeBtn.addEventListener('click', () => { popup.style.display = 'none'; clearInterval(iv); });
+}
+
 /* ── Toast ─────────────────────────────────────── */
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -274,6 +321,9 @@ document.addEventListener('DOMContentLoaded', () => {
       bgEl.style.backgroundImage = `url('${loginBg}')`;
       if (isMobile) bgEl.classList.add('bg-contain'); else bgEl.classList.remove('bg-contain');
     }
+
+    // start region time popup (Singapore / Indonesia) while assets install
+    try { startRegionTimePopup(); } catch (e) {}
 
     const assets = [loginBg, '/img/kurumi.png'];
     showAssetLoader();
