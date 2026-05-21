@@ -205,8 +205,16 @@ router.post('/keys/:id/edit', auth, async (req, res) => {
   const row = await db.get('SELECT * FROM keys WHERE id=?', [req.params.id]);
   if (!row) { res.flash('error', 'Key tidak ditemukan.'); return res.redirect('/admin/keys'); }
 
-  if (!req.user.isOwner && row.created_by !== req.user.id) {
-    res.flash('error', 'Akses ditolak.'); return res.redirect('/admin/keys');
+  // Non-owner users are not allowed to edit keys. Specifically, resellers
+  // must not be able to modify key properties (they may only delete keys).
+  if (!req.user.isOwner) {
+    if (req.user.role === 'reseller') {
+      res.flash('error', 'Akses ditolak. Reseller hanya boleh menghapus key.');
+      return res.redirect('/admin/keys');
+    }
+    if (row.created_by !== req.user.id) {
+      res.flash('error', 'Akses ditolak.'); return res.redirect('/admin/keys');
+    }
   }
 
   const expiresAt  = expires_at_input
@@ -262,12 +270,17 @@ router.post('/keys/bulk-deactivate', auth, async (req, res) => {
   const ph = ids.map(() => '?').join(',');
   const params = [...ids];
   let query = `UPDATE keys SET is_active=0 WHERE id IN (${ph})`;
-  
+  // Prevent resellers from performing bulk deactivation (editing).
+  if (!req.user.isOwner && req.user.role === 'reseller') {
+    res.flash('error', 'Akses ditolak. Reseller hanya boleh menghapus key.');
+    return res.redirect('/admin/keys');
+  }
+
   if (!req.user.isOwner) {
     query += ' AND created_by=?';
     params.push(req.user.id);
   }
-  
+
   await db.run(query, params);
   res.flash('success', `Key dinonaktifkan.`);
   res.redirect('/admin/keys');

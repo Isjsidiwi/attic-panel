@@ -50,7 +50,9 @@
     <div class="bulk-bar" id="bulk-bar" style="display:none">
       <span id="bulk-count">0 dipilih</span>
       <button type="button" class="btn-danger btn-sm" onclick="submitBulkAction('/admin/keys/bulk-delete', 'Hapus semua yang dipilih?')">Hapus</button>
-      <button type="button" class="btn-secondary btn-sm" onclick="submitBulkAction('/admin/keys/bulk-deactivate')">Nonaktifkan</button>
+      <% if (admin.role !== 'reseller') { %>
+        <button type="button" class="btn-secondary btn-sm" onclick="submitBulkAction('/admin/keys/bulk-deactivate')">Nonaktifkan</button>
+      <% } %>
       <button type="button" class="btn-ghost btn-sm" onclick="clearSelection()">Batal</button>
     </div>
 
@@ -115,11 +117,13 @@
                 <td><span class="badge badge-count"><%= k.login_count %>×</span></td>
                 <td>
                   <div class="action-btns">
-                    <button
-                      class="btn-icon btn-edit"
-                      onclick='openEdit(<%- JSON.stringify(k) %>)'
-                      title="Edit"
-                    >✎</button>
+                    <% if (admin.role !== 'reseller') { %>
+                      <button
+                        class="btn-icon btn-edit"
+                        onclick='openEdit(<%- JSON.stringify(k) %>)'
+                        title="Edit"
+                      >✎</button>
+                    <% } %>
                     <button
                       class="btn-icon btn-del"
                       onclick="openDelete(<%= k.id %>, '<%= k.key_code %>')"
