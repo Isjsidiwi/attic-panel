@@ -63,6 +63,62 @@ async function initDB() {
       price_credit INTEGER NOT NULL DEFAULT 0,
       PRIMARY KEY (game, duration_days)
     );
+
+    CREATE TABLE IF NOT EXISTS store_products (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      slug TEXT NOT NULL UNIQUE,
+      logo_url TEXT,
+      description TEXT,
+      price INTEGER NOT NULL,
+      category TEXT DEFAULT 'umum',
+      is_active INTEGER DEFAULT 1,
+      created_at TEXT DEFAULT (datetime('now','localtime'))
+    );
+
+    CREATE TABLE IF NOT EXISTS store_product_variants (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      product_id INTEGER NOT NULL,
+      name TEXT NOT NULL,
+      price INTEGER NOT NULL,
+      original_price INTEGER,
+      created_at TEXT DEFAULT (datetime('now','localtime')),
+      FOREIGN KEY (product_id) REFERENCES store_products(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS store_keys (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      product_id INTEGER NOT NULL,
+      variant_id INTEGER,
+      key_value TEXT NOT NULL,
+      is_used INTEGER DEFAULT 0,
+      order_id TEXT,
+      used_at TEXT,
+      created_at TEXT DEFAULT (datetime('now','localtime')),
+      FOREIGN KEY (product_id) REFERENCES store_products(id),
+      FOREIGN KEY (variant_id) REFERENCES store_product_variants(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS store_orders (
+      id TEXT PRIMARY KEY,
+      product_id INTEGER NOT NULL,
+      variant_id INTEGER,
+      key_id INTEGER,
+      customer_name TEXT NOT NULL,
+      customer_email TEXT NOT NULL,
+      amount INTEGER NOT NULL,
+      unique_amount INTEGER NOT NULL,
+      unique_suffix INTEGER NOT NULL,
+      qris_id INTEGER,
+      qris_url TEXT,
+      status TEXT DEFAULT 'pending',
+      created_at TEXT DEFAULT (datetime('now','localtime')),
+      paid_at TEXT,
+      expired_at TEXT,
+      FOREIGN KEY (product_id) REFERENCES store_products(id),
+      FOREIGN KEY (variant_id) REFERENCES store_product_variants(id),
+      FOREIGN KEY (key_id) REFERENCES store_keys(id)
+    );
   `);
 
   // Migration: tabel lama mungkin punya device_serial (tanpa s)
@@ -148,4 +204,10 @@ async function run(sql, args = []) {
   return db.execute({ sql, args });
 }
 
-module.exports = { initDB, all, get, run };
+module.exports = { 
+  initDB, 
+  all, 
+  get, 
+  run,
+  db: { execute: (sql, args) => run(sql, args) } 
+};

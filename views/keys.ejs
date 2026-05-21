@@ -116,9 +116,9 @@
                 <td>
                   <div class="action-btns">
                     <% if (admin.role !== 'reseller') { %>
-                      <button class="btn-icon btn-edit" data-key-id="<%= k.id %>" title="Edit">✎</button>
+                      <button type="button" class="btn-icon btn-edit" data-key-id="<%= k.id %>" title="Edit">✎</button>
                     <% } %>
-                    <button class="btn-icon btn-del" data-delete-id="<%= k.id %>" title="Hapus">✕</button>
+                    <button type="button" class="btn-icon btn-del" data-delete-id="<%= k.id %>" title="Hapus">✕</button>
                   </div>
                 </td>
               </tr>

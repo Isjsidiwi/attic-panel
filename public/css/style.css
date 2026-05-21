@@ -412,7 +412,11 @@ body::before {
 .link-muted:hover { color: var(--cyan); }
 
 /* ── Table ─────────────────────────────────────────── */
-.table-wrap { overflow-x: auto; }
+.table-wrap { overflow-x: auto; position: relative; z-index: 2; }
+
+/* Allow buttons inside cards/tables to be clickable above decorative containers */
+.card { overflow: visible; }
+.btn-icon { position: relative; z-index: 20; pointer-events: auto; }
 
 .table {
   width: 100%;
@@ -487,7 +491,10 @@ body::before {
 }
 
 /* ── Action buttons ───────────────────────────────── */
-.action-btns { display: flex; gap: .4rem; }
+.action-btns { display: flex; gap: .4rem; position: relative; z-index: 5; }
+
+/* Ensure clickable icon buttons sit above nearby elements */
+.btn-icon { position: relative; z-index: 6; pointer-events: auto; }
 
 .btn-icon {
   width: 28px; height: 28px;

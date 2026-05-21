@@ -1,0 +1,121 @@
+<% pageTitle = 'Edit Produk' %>
+<%- include('../partials/header') %>
+
+<main class="max-w-2xl mx-auto px-6 py-10">
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <a href="/admin/store/products" class="mono text-xs mb-2 inline-block" style="color:var(--muted)">← Kembali ke Produk</a>
+      <h1 class="text-3xl font-black">Edit Produk</h1>
+    </div>
+    <a href="/admin/store/products/<%= product.id %>/keys" class="btn btn-outline text-sm py-2 px-4">Kelola Keys</a>
+  </div>
+
+  <% if (success) { %>
+  <div class="p-3 rounded-xl mb-5 text-sm" style="background:#00ff8815;border:1px solid #00ff8833;color:#00ff88">✅ <%= success %></div>
+  <% } %>
+
+  <div class="card p-6">
+    <form method="POST" action="/admin/store/products/<%= product.id %>/edit" class="flex flex-col gap-4">
+      <div>
+        <label class="block text-sm font-semibold mb-2">Nama Produk</label>
+        <input type="text" name="name" class="field" value="<%= product.name %>" required>
+      </div>
+      <input type="hidden" name="price" value="0">
+      <div>
+        <label class="block text-sm font-semibold mb-2">URL Logo</label>
+        <input type="url" name="logo_url" class="field" value="<%= product.logo_url || '' %>">
+        <% if (product.logo_url) { %>
+        <img src="<%= product.logo_url %>" class="w-16 h-16 rounded-xl object-cover mt-2" style="border:1px solid var(--border)">
+        <% } %>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-2">Kategori</label>
+        <input type="text" name="category" class="field" value="<%= product.category %>">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-2">Deskripsi</label>
+        <textarea name="description" class="field" rows="4"><%= product.description %></textarea>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="checkbox" name="is_active" id="is_active" value="1" <%= product.is_active ? 'checked' : '' %> class="w-4 h-4 accent-[var(--accent)]">
+        <label for="is_active" class="text-sm font-semibold cursor-pointer">Produk aktif (tampil di toko)</label>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="submit" class="btn btn-primary px-8">Simpan Perubahan</button>
+        <a href="/admin/store/products" class="btn btn-outline px-6">Batal</a>
+      </div>
+    </form>
+  </div>
+  <div class="card p-6 mt-10" style="border-color:var(--accent);box-shadow:0 0 24px #00d4ff11">
+    <h2 class="text-xl font-black mb-5">Manajemen Jenis (Varian)</h2>
+    
+    <div class="overflow-x-auto mb-8">
+      <table class="w-full text-sm">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border)">
+            <th class="text-left py-3 px-2 mono text-xs" style="color:var(--muted)">NAMA JENIS</th>
+            <th class="text-left py-3 px-2 mono text-xs" style="color:var(--muted)">HARGA</th>
+            <th class="text-left py-3 px-2 mono text-xs" style="color:var(--muted)">DISKON</th>
+            <th class="text-left py-3 px-2 mono text-xs" style="color:var(--muted)">STOK READY</th>
+            <th class="py-3 px-2"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (variants.length === 0) { %>
+            <tr><td colspan="5" class="py-8 text-center text-sm" style="color:var(--muted)">Belum ada varian. Tambahkan di bawah.</td></tr>
+          <% } else { %>
+            <% variants.forEach(v => { %>
+              <tr style="border-bottom:1px solid var(--border)">
+                <form method="POST" action="/admin/store/products/<%= product.id %>/variants/<%= v.id %>/edit">
+                <td class="py-3 px-2">
+                  <input type="text" name="name" value="<%= v.name %>" class="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-xs w-full focus:border-blue-500 outline-none" required>
+                </td>
+                <td class="py-3 px-2">
+                  <input type="number" name="price" value="<%= v.price %>" class="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-xs w-24 focus:border-blue-500 outline-none" required>
+                </td>
+                <td class="py-3 px-2">
+                  <input type="number" name="original_price" value="<%= v.original_price || '' %>" placeholder="Coret" class="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-xs w-24 focus:border-blue-500 outline-none">
+                </td>
+                <td class="py-3 px-2">
+                  <span class="badge <%= v.stock > 0 ? 'badge-green' : 'badge-red' %> text-[10px]"><%= v.stock %> stok</span>
+                </td>
+                <td class="py-3 px-2 text-right">
+                  <div class="flex gap-1 justify-end">
+                    <button type="submit" class="btn text-[10px] py-1 px-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20">Simpan</button>
+                    <button type="submit" form="delete-v-<%= v.id %>" class="btn text-[10px] py-1 px-2 bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20">Hapus</button>
+                  </div>
+                </td>
+                </form>
+                <form id="delete-v-<%= v.id %>" method="POST" action="/admin/store/products/<%= product.id %>/variants/<%= v.id %>/delete" onsubmit="return confirm('Hapus varian ini?')"></form>
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Add Variant Form -->
+    <div class="p-4 rounded-xl" style="background:var(--surface2)">
+      <h3 class="text-sm font-bold mb-4 uppercase tracking-widest" style="color:var(--muted)">+ Tambah Jenis Baru</h3>
+      <form method="POST" action="/admin/store/products/<%= product.id %>/variants/add" class="flex flex-wrap gap-3">
+        <div class="flex-1 min-w-[200px]">
+          <label class="block text-xs font-bold mb-1 ml-1" style="color:var(--muted)">Nama Jenis (misal: 1 Hari / 5 Hari)</label>
+          <input type="text" name="name" class="field text-sm" placeholder="Contoh: 1 Hari" required>
+        </div>
+        <div class="w-32">
+          <label class="block text-xs font-bold mb-1 ml-1" style="color:var(--muted)">Harga (Rp)</label>
+          <input type="number" name="price" class="field text-sm" placeholder="5000" required>
+        </div>
+        <div class="w-32">
+          <label class="block text-xs font-bold mb-1 ml-1" style="color:var(--muted)">Harga Coret (Opsional)</label>
+          <input type="number" name="original_price" class="field text-sm" placeholder="10000">
+        </div>
+        <div class="flex items-end">
+          <button type="submit" class="btn btn-primary px-6 h-[42px]">+ Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
