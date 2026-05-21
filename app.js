@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Store specific locals
 app.use((req, res, next) => {
-  res.locals.storeName = process.env.STORE_NAME || 'DigiStore';
+  res.locals.storeName = process.env.STORE_NAME || 'XSRCCLIENT';
   res.locals.storeTagline = process.env.STORE_TAGLINE || 'Toko Digital Terpercaya';
   res.locals.isAdmin = (req.cookies._token) ? true : false; // Naive admin check for store frontend views
   next();

@@ -1,8 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { db } = require('../database');
-const auth = require('../middleware/auth');
-const requireAdmin = [auth, auth.requireOwner];
+
+const requireAdmin = (req, res, next) => {
+  const token = req.cookies._token;
+  if (req.session.isAdmin || token) {
+    return next();
+  }
+  res.redirect('/admin/store/login');
+};
 
 function slugify(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -10,7 +16,7 @@ function slugify(text) {
 
 // ── Login
 router.get('/login', (req, res) => {
-  if (req.session.isAdmin) return res.redirect('/admin');
+  if (req.session.isAdmin) return res.redirect('/admin/store');
   res.render('store/admin/login', { error: null });
 });
 
@@ -18,18 +24,18 @@ router.post('/login', (req, res) => {
   const { username, password } = req.body;
   if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
     req.session.isAdmin = true;
-    return res.redirect('/admin');
+    return res.redirect('/admin/store');
   }
   res.render('store/admin/login', { error: 'Username atau password salah.' });
 });
 
 router.get('/logout', (req, res) => {
   req.session = null;
-  res.redirect('/admin/login');
+  res.redirect('/admin/store/login');
 });
 
 // ── Dashboard
-router.get('/', ...requireAdmin, async (req, res) => {
+router.get('/', requireAdmin, async (req, res) => {
   const { rows: stats } = await db.execute(`
     SELECT
       (SELECT COUNT(*) FROM store_products WHERE is_active=1) as total_products,
