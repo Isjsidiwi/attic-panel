@@ -1,0 +1,101 @@
+/* ImGui-like skin for login page (scoped under .imgui-skin) */
+.imgui-skin .imgui-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2.5rem;
+  min-height: calc(100vh - 4rem);
+  z-index: 2;
+}
+
+.imgui-left { width: 380px; max-width: 42vw; }
+.imgui-right { width: 420px; max-width: 46vw; }
+
+.imgui-artwrap {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));
+  border: 1px solid rgba(255,255,255,0.03);
+  border-radius: 10px;
+  overflow: hidden;
+  padding: .5rem;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.6), 0 0 40px rgba(0,229,255,0.03);
+}
+
+.imgui-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  object-fit: cover;
+  transform-origin: center;
+  animation: img-float 6s ease-in-out infinite;
+  transition: transform .2s ease;
+}
+.imgui-art.missing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  color: var(--text-3);
+  font-size: .9rem;
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 6px);
+}
+
+@keyframes img-float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+.imgui-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.65), 0 0 40px rgba(0,229,255,0.02);
+  overflow: hidden;
+}
+
+.imgui-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .6rem .9rem;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+}
+.imgui-dots { display:flex; gap:.45rem; align-items:center; }
+.imgui-dots .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+.imgui-dots .red { background:#ff5f5f; box-shadow: 0 0 8px rgba(255,95,95,0.08); }
+.imgui-dots .yellow { background:#ffd36b; box-shadow: 0 0 8px rgba(255,211,107,0.06); }
+.imgui-dots .green { background:#6bff9a; box-shadow: 0 0 8px rgba(107,255,154,0.06); }
+.imgui-title { font-family: var(--font-d); font-size: .85rem; color: var(--cyan); letter-spacing:.06em; }
+
+.imgui-body { padding: 1rem; }
+
+.imgui-form { display:flex; flex-direction:column; gap: .85rem; }
+.imgui-row { display:flex; flex-direction:column; }
+.imgui-label { font-size:.65rem; color:var(--text-2); letter-spacing:.08em; margin-bottom:.35rem; }
+.imgui-input {
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+  border: 1px solid var(--border-lit);
+  color: var(--text);
+  padding: .55rem .75rem;
+  border-radius: 4px;
+  font-family: var(--font-m);
+  outline: none;
+}
+.imgui-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 2px rgba(0,229,255,0.06); }
+
+.imgui-actions { display:flex; gap:.6rem; margin-top:.35rem; }
+.imgui-btn { padding:.5rem .9rem; border-radius:6px; border:1px solid var(--border); cursor:pointer; font-weight:600; font-family:var(--font-m); }
+.imgui-btn-primary { background:var(--cyan); color:#070b10; border-color:transparent; box-shadow: var(--glow-c); }
+.imgui-btn-ghost { background:transparent; color:var(--text-2); }
+
+.imgui-art-note { font-size:.72rem; color:var(--text-3); margin-top:.45rem; text-align:center; }
+
+/* Responsive: stack on small screens */
+@media (max-width: 900px) {
+  .imgui-container { flex-direction: column; gap: 1.25rem; padding: 1.25rem; }
+  .imgui-left, .imgui-right { width: 100%; max-width: 100%; }
+  .imgui-art { min-height: 220px; }
+}

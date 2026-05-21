@@ -1,57 +1,57 @@
 <%- include('partials/head') %>
 
-<div class="login-page">
-  <!-- Animated grid bg -->
+<div class="login-page imgui-skin">
   <div class="login-bg">
     <div class="scan-line"></div>
   </div>
 
-  <div class="login-wrap">
-    <div class="login-card">
-      <div class="login-brand">
-        <div class="login-hex">⬡</div>
-        <h1 class="login-title"><%= panel_name %></h1>
-        <p class="login-sub">RESTRICTED ACCESS — AUTHORIZED ONLY</p>
+  <div class="imgui-container">
+    <div class="imgui-left">
+      <div class="imgui-artwrap">
+        <!-- Placeholder: replace /img/kurumi.png dengan artwork Kurumi yang Anda miliki -->
+        <img src="/img/kurumi.png" alt="Kurumi" class="imgui-art" onerror="this.classList.add('missing')">
+        <div class="imgui-art-note">Letakkan gambar Kurumi di <code>/public/img/kurumi.png</code></div>
       </div>
+    </div>
 
-      <% if (error_msg.length > 0) { %>
-        <div class="alert alert-error"><%= error_msg[0] %></div>
-      <% } %>
-
-      <form action="/login" method="POST" class="login-form" autocomplete="off">
-        <div class="field">
-          <label class="field-label">USERNAME</label>
-          <input
-            type="text"
-            name="username"
-            class="field-input"
-            placeholder="admin"
-            required
-            autofocus
-            spellcheck="false"
-          >
+    <div class="imgui-right">
+      <div class="imgui-panel">
+        <div class="imgui-titlebar">
+          <div class="imgui-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <div class="imgui-title"><%= panel_name %> — Login</div>
         </div>
 
-        <div class="field">
-          <label class="field-label">PASSWORD</label>
-          <input
-            type="password"
-            name="password"
-            class="field-input"
-            placeholder="••••••••"
-            required
-          >
+        <div class="imgui-body">
+          <% if (error_msg.length > 0) { %>
+            <div class="alert alert-error"><%= error_msg[0] %></div>
+          <% } %>
+
+          <form action="/login" method="POST" class="imgui-form" autocomplete="off">
+            <div class="imgui-row">
+              <label class="imgui-label">USER</label>
+              <input type="text" name="username" class="imgui-input" placeholder="admin" required autofocus spellcheck="false">
+            </div>
+
+            <div class="imgui-row">
+              <label class="imgui-label">PASS</label>
+              <input type="password" name="password" class="imgui-input" placeholder="••••••••" required>
+            </div>
+
+            <div class="imgui-actions">
+              <button type="submit" class="imgui-btn imgui-btn-primary">AUTHENTICATE</button>
+              <button type="button" class="imgui-btn imgui-btn-ghost" onclick="toggleTheme()">Theme</button>
+            </div>
+          </form>
+
+          <div class="login-footer">
+            <span class="dot-green"></span>
+            API: <code>/api/game/MLBB</code> — ONLINE
+          </div>
         </div>
-
-        <button type="submit" class="btn-primary btn-full">
-          <span>AUTHENTICATE</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </button>
-      </form>
-
-      <div class="login-footer">
-        <span class="dot-green"></span>
-        API: <code>/api/game/MLBB</code> — ONLINE
       </div>
     </div>
   </div>
