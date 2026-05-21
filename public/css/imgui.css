@@ -131,6 +131,13 @@
   filter: brightness(0.45) saturate(0.95);
 }
 
+/* When on narrow/portrait devices, show the whole image without cropping */
+.imgui-skin .login-bg.bg-contain {
+  background-size: contain;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
 /* Asset loader overlay */
 .asset-loader {
   position: fixed;

@@ -84,6 +84,25 @@ function setVh() {
 setVh();
 window.addEventListener('resize', setVh);
 
+/* Adjust background fitting for mobile/portrait devices */
+function adjustBackgroundFit() {
+  try {
+    const bg = document.querySelector('.imgui-skin .login-bg');
+    if (!bg) return;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    // If portrait on small screens, prefer 'contain' so image isn't cropped
+    if (w <= 900 && h > w) {
+      bg.classList.add('bg-contain');
+    } else {
+      bg.classList.remove('bg-contain');
+    }
+  } catch (e) {}
+}
+adjustBackgroundFit();
+window.addEventListener('resize', adjustBackgroundFit);
+window.addEventListener('orientationchange', adjustBackgroundFit);
+
 /* ── Asset installer / loader UI helpers ─────────────────────────────── */
 function showAssetLoader() {
   const el = document.getElementById('asset-loader');
