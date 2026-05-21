@@ -15,9 +15,9 @@
     <% if (error_msg.length > 0)   { %><div class="alert alert-error"><%= error_msg[0] %></div><% } %>
 
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('tab-panel', this)"><span class="lang-id">Sistem & API</span><span class="lang-en">System & API</span></button>
-      <button class="tab-btn" onclick="switchTab('tab-reseller', this)"><span class="lang-id">Kelola Reseller</span><span class="lang-en">Manage Resellers</span></button>
-      <button class="tab-btn" onclick="switchTab('tab-price', this)"><span class="lang-id">Daftar Harga</span><span class="lang-en">Pricing</span></button>
+      <button class="tab-btn active" data-tab="tab-panel"><span class="lang-id">Sistem & API</span><span class="lang-en">System & API</span></button>
+      <button class="tab-btn" data-tab="tab-reseller"><span class="lang-id">Kelola Reseller</span><span class="lang-en">Manage Resellers</span></button>
+      <button class="tab-btn" data-tab="tab-price"><span class="lang-id">Daftar Harga</span><span class="lang-en">Pricing</span></button>
     </div>
 
     <!-- TAB 1: PANEL & API -->
@@ -265,38 +265,6 @@
 </div>
 
 <script src="/js/main.js"></script>
-<script>
-  const saltInput  = document.getElementById('salt-input');
-  const saltToggle = document.getElementById('salt-toggle');
-  if(saltInput) saltInput.type = 'password';
-
-  function toggleSalt() {
-    if (saltInput.type === 'password') {
-      saltInput.type   = 'text';
-      saltToggle.textContent = 'HIDE';
-    } else {
-      saltInput.type   = 'password';
-      saltToggle.textContent = 'SHOW';
-    }
-  }
-  if(saltToggle) saltToggle.textContent = 'SHOW';
-
-  function switchTab(tabId, btn) {
-    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-    document.getElementById(tabId).style.display = 'block';
-    btn.classList.add('active');
-    
-    // Save state so after refresh it stays on the same tab
-    localStorage.setItem('settingsTab', tabId);
-  }
-
-  // Restore tab state
-  const savedTab = localStorage.getItem('settingsTab');
-  if (savedTab && document.getElementById(savedTab)) {
-    const btn = document.querySelector(`.tab-btn[onclick*="${savedTab}"]`);
-    if(btn) switchTab(savedTab, btn);
-  }
-</script>
+<script src="/js/settings.js"></script>
 </body>
 </html>
