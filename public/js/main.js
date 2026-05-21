@@ -74,6 +74,45 @@ function copyText(text, el) {
   });
 }
 
+/* ── Mobile viewport helper (fix 100vh issues on mobile) ───────────────── */
+function setVh() {
+  try {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  } catch (e) {}
+}
+setVh();
+window.addEventListener('resize', setVh);
+
+/* ── Asset installer / loader UI helpers ─────────────────────────────── */
+function showAssetLoader() {
+  const el = document.getElementById('asset-loader');
+  if (el) el.style.display = 'flex';
+}
+function hideAssetLoader() {
+  const el = document.getElementById('asset-loader');
+  if (el) el.style.display = 'none';
+}
+function setLoaderProgress(pct, sub) {
+  const fill = document.getElementById('loader-fill');
+  const subEl = document.getElementById('loader-sub');
+  if (fill) fill.style.width = `${Math.round(pct)}%`;
+  if (subEl) subEl.textContent = sub || `Installing assets... ${Math.round(pct)}%`;
+}
+function loadImages(urls, onProgress, onComplete) {
+  if (!urls || !urls.length) { onComplete && onComplete(); return; }
+  let loaded = 0, total = urls.length;
+  urls.forEach(url => {
+    const img = new Image();
+    img.onload = img.onerror = () => {
+      loaded++;
+      onProgress && onProgress((loaded / total) * 100, url, loaded, total);
+      if (loaded >= total) onComplete && onComplete();
+    };
+    img.src = url;
+  });
+}
+
 /* ── Toast ─────────────────────────────────────── */
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -199,6 +238,21 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
+
+  // If this is the login page (imgui skin), show asset installer until images loaded
+  if (document.querySelector('.imgui-skin')) {
+    const assets = ['/img/login-bg.png', '/img/kurumi.png'];
+    showAssetLoader();
+    setLoaderProgress(6, 'Preparing download...');
+    loadImages(assets, (pct, url) => {
+      setLoaderProgress(pct, `Loading ${url.split('/').pop()}`);
+    }, () => {
+      setLoaderProgress(100, 'Assets installed');
+      setTimeout(() => {
+        hideAssetLoader();
+      }, 350);
+    });
+  }
 });
 
 /* ── Theme and Lang Toggles ─────────────────────────── */

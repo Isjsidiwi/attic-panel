@@ -5,6 +5,18 @@
     <div class="scan-line"></div>
   </div>
 
+  <!-- Asset installer / loader overlay -->
+  <div id="asset-loader" class="asset-loader" style="display:none">
+    <div class="loader-card">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="loader-title">Installing assets...</div>
+      <div class="loader-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+        <div id="loader-fill" class="loader-bar-fill" style="width:0%"></div>
+      </div>
+      <div id="loader-sub" class="loader-sub">Preparing...</div>
+    </div>
+  </div>
+
   <div class="imgui-container">
     <div class="imgui-left">
         <div class="imgui-artwrap">
