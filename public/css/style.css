@@ -81,9 +81,34 @@ body::before {
   display: flex;
   align-items: center;
   gap: .75rem;
-  padding: 1.5rem 1.25rem 1.25rem;
+  padding: 1.25rem 1rem;
   border-bottom: 1px solid var(--border);
 }
+
+.brand-controls {
+  margin-left: auto;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+}
+.brand-controls .btn-ghost {
+  padding: .35rem .45rem;
+  font-size: .78rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  border-radius: 6px;
+  min-width: 36px;
+  justify-content: center;
+}
+#theme-btn .btn-text { display: none; }
+#lang-btn .btn-text { display: inline-block; margin-left: .4rem; font-size: .85rem; }
+.brand-controls .btn-ghost[aria-label] { cursor: pointer; }
+@media (max-width: 480px) {
+  .brand-controls .btn-ghost { padding: .3rem .4rem; font-size: .72rem; }
+  #lang-btn .btn-text { display: none; } /* hide lang text on small screens */
+}
+
 
 .brand-hex {
   font-size: 1.8rem;
@@ -155,10 +180,55 @@ body::before {
   padding: 1rem .75rem 1.25rem;
   border-top: 1px solid var(--border);
   display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  align-items: stretch;
+}
+
+/* top controls (theme/lang) */
+.footer-controls {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: .25rem;
+}
+.footer-btn {
+  flex: 1;
+  padding: .5rem;
+  font-size: .8rem;
+}
+
+/* ensure admin-info alignment */
+.sidebar-footer .admin-info {
+  display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: .5rem;
 }
+.sidebar-footer form { margin: 0; }
+
+/* Larger screens: make footer a single row */
+@media (min-width: 700px) {
+  .sidebar-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-controls { margin-bottom: 0; }
+  .footer-controls { width: auto; }
+  .sidebar-footer .admin-info { flex: 1; }
+  .sidebar-footer form { margin-left: .5rem; }
+}
+
+/* Small screens: make buttons and logout full width for easy tapping */
+@media (max-width: 420px) {
+  .footer-controls .footer-btn,
+  .sidebar-footer form .btn-logout {
+    width: 100%;
+  }
+  .footer-controls { flex-direction: row; }
+  .sidebar-footer .admin-info { justify-content: space-between; }
+  .btn-logout svg { margin-right: .4rem; }
+}
+
 
 .admin-info {
   display: flex;
@@ -817,17 +887,17 @@ body::before {
   grid-column: 1 / -1;
 }
 
-/* Horizontal reseller carousel/cards */
+/* Vertical reseller list/cards */
 .reseller-carousel {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
-  overflow-x: auto;
-  padding: .5rem 0;
+  overflow-y: auto;
+  padding: .25rem 0;
   -webkit-overflow-scrolling: touch;
 }
 .reseller-card {
-  flex: 0 0 320px;
-  min-width: 260px;
+  width: 100%;
   background: rgba(255,255,255,0.02);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -835,6 +905,21 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: .6rem;
+}
+/* Make the reseller card container match the add-reseller box height in settings */
+#tab-reseller .settings-grid {
+  align-items: start; /* keep grid rows aligned at top */
+}
+#tab-reseller .settings-grid > .card {
+  /* fixed minimum height so both left (add) and right (list) boxes are visually equal */
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+}
+#tab-reseller .settings-grid > .card .card-body {
+  /* allow inner content to scroll if it overflows the fixed box */
+  flex: 1;
+  overflow: auto;
 }
 .reseller-card-header {
   display: flex;
@@ -851,6 +936,7 @@ body::before {
 
 @media (max-width: 720px) {
   .reseller-card { flex: 0 0 86%; }
+  #tab-reseller .settings-grid > .card { min-height: auto; }
 }
 
 .pricing-block {

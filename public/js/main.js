@@ -339,7 +339,33 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-/* ── Theme and Lang Toggles ─────────────────────────── */
+/* ── Theme and Lang Toggles (SVG icons) ─────────────────────────── */
+const _svgSun = `
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"></circle>
+    <path d="M12 2v2"></path>
+    <path d="M12 20v2"></path>
+    <path d="M4.93 4.93l1.41 1.41"></path>
+    <path d="M17.66 17.66l1.41 1.41"></path>
+    <path d="M2 12h2"></path>
+    <path d="M20 12h2"></path>
+    <path d="M4.93 19.07l1.41-1.41"></path>
+    <path d="M17.66 6.34l1.41-1.41"></path>
+  </svg>`;
+
+const _svgMoon = `
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>`;
+
+const _svgGlobe = `
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <circle cx="12" cy="12" r="10"></circle>
+    <path d="M2 12h20"></path>
+    <path d="M12 2a15 15 0 0 0 0 20"></path>
+    <path d="M12 2a15 15 0 0 1 0 20"></path>
+  </svg>`;
+
 function toggleTheme() {
   const isLight = document.documentElement.classList.toggle('light-theme');
   localStorage.setItem('theme', isLight ? 'light' : 'dark');
@@ -348,11 +374,9 @@ function toggleTheme() {
 function updateThemeBtn() {
   const btn = document.getElementById('theme-btn');
   if(!btn) return;
-  if(document.documentElement.classList.contains('light-theme')) {
-    btn.innerHTML = '🌙 Dark';
-  } else {
-    btn.innerHTML = '☀️ Light';
-  }
+  const isLight = document.documentElement.classList.contains('light-theme');
+  // Icon-only toggle for theme
+  btn.innerHTML = isLight ? _svgMoon : _svgSun;
 }
 function toggleLang() {
   const current = document.documentElement.getAttribute('data-lang') || 'id';
@@ -364,7 +388,7 @@ function toggleLang() {
 function updateLangUI() {
   const lang = document.documentElement.getAttribute('data-lang') || 'id';
   const btn = document.getElementById('lang-btn');
-  if(btn) btn.innerHTML = lang === 'id' ? '🇬🇧 EN' : '🇮🇩 ID';
+  if(btn) btn.innerHTML = _svgGlobe + '<span class="btn-text" style="margin-left:.45rem">' + (lang === 'id' ? 'EN' : 'ID') + '</span>';
 
   document.querySelectorAll('.lang-id').forEach(el => el.style.display = lang === 'id' ? '' : 'none');
   document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? '' : 'none');

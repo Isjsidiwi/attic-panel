@@ -1,4 +1,5 @@
 const { createClient } = require('@libsql/client');
+require('dotenv').config();
 
 let client;
 
