@@ -52,7 +52,7 @@ router.get('/', requireAdmin, async (req, res) => {
 });
 
 // ── Products List
-router.get('/products', ...requireAdmin, async (req, res) => {
+router.get('/products', requireAdmin, async (req, res) => {
   try {
     const { rows: products } = await db.execute(`
       SELECT p.*, (SELECT COUNT(*) FROM store_keys k WHERE k.product_id = p.id AND k.is_used = 0) as stock
@@ -66,27 +66,27 @@ router.get('/products', ...requireAdmin, async (req, res) => {
 });
 
 // ── Add Product
-router.post('/products/add', ...requireAdmin, async (req, res) => {
+router.post('/products/add', requireAdmin, async (req, res) => {
   try {
     const { name, logo_url, description, price, category } = req.body;
-    if (!name) return res.redirect('/admin/products?error=Nama+produk+wajib+diisi');
+    if (!name) return res.redirect('/admin/store/products?error=Nama+produk+wajib+diisi');
     const slug = slugify(name) + '-' + Date.now().toString().slice(-4);
     await db.execute(
       `INSERT INTO store_products (name, slug, logo_url, description, price, category, is_active) VALUES (?, ?, ?, ?, ?, ?, 1)`,
       [name, slug, logo_url || null, description || '', 0, category || 'umum']
     );
-    res.redirect('/admin/products?success=Produk+berhasil+ditambahkan');
+    res.redirect('/admin/store/products?success=Produk+berhasil+ditambahkan');
   } catch (err) {
     console.error('Add product error:', err.message);
-    res.redirect('/admin/products?error=Gagal+menambah+produk');
+    res.redirect('/admin/store/products?error=Gagal+menambah+produk');
   }
 });
 
 // ── Edit Product Form
-router.get('/products/:id/edit', ...requireAdmin, async (req, res) => {
+router.get('/products/:id/edit', requireAdmin, async (req, res) => {
   try {
     const { rows } = await db.execute(`SELECT * FROM store_products WHERE id = ? AND is_active = 1`, [req.params.id]);
-    if (!rows.length) return res.redirect('/admin/products');
+    if (!rows.length) return res.redirect('/admin/store/products');
     
     const { rows: variants } = await db.execute(
       `SELECT v.*, (SELECT COUNT(*) FROM store_keys k WHERE k.variant_id = v.id AND k.is_used = 0) as stock
@@ -97,52 +97,52 @@ router.get('/products/:id/edit', ...requireAdmin, async (req, res) => {
     res.render('store/admin/product-edit', { product: rows[0], variants, success: req.query.success, error: null });
   } catch (err) {
     console.error('Get edit form error:', err.message);
-    res.redirect('/admin/products');
+    res.redirect('/admin/store/products');
   }
 });
 
 // ── Update Product
-router.post('/products/:id/edit', ...requireAdmin, async (req, res) => {
+router.post('/products/:id/edit', requireAdmin, async (req, res) => {
   try {
     const { name, logo_url, description, category, is_active } = req.body;
     await db.execute(
       `UPDATE store_products SET name=?, logo_url=?, description=?, category=?, is_active=? WHERE id=?`,
       [name, logo_url || null, description || '', category || 'umum', is_active ? 1 : 0, req.params.id]
     );
-    res.redirect(`/admin/products/${req.params.id}/edit?success=Produk+berhasil+diperbarui!`);
+    res.redirect(`/admin/store/products/${req.params.id}/edit?success=Produk+berhasil+diperbarui!`);
   } catch (err) {
     console.error('Update product error:', err.message);
-    res.redirect(`/admin/products/${req.params.id}/edit?error=Gagal+memperbarui+produk`);
+    res.redirect(`/admin/store/products/${req.params.id}/edit?error=Gagal+memperbarui+produk`);
   }
 });
 
 // ── Delete Product
-router.post('/products/:id/delete', ...requireAdmin, async (req, res) => {
+router.post('/products/:id/delete', requireAdmin, async (req, res) => {
   try {
     await db.execute(`UPDATE store_products SET is_active = 0 WHERE id = ?`, [req.params.id]);
-    res.redirect('/admin/products?success=Produk+berhasil+dihapus');
+    res.redirect('/admin/store/products?success=Produk+berhasil+dihapus');
   } catch (err) {
     console.error('Delete product error:', err.message);
-    res.redirect('/admin/products?error=Gagal+menghapus+produk');
+    res.redirect('/admin/store/products?error=Gagal+menghapus+produk');
   }
 });
 
 // ── Variants Management
-router.post('/products/:id/variants/add', ...requireAdmin, async (req, res) => {
+router.post('/products/:id/variants/add', requireAdmin, async (req, res) => {
   try {
     const { name, price, original_price } = req.body;
     await db.execute(
       `INSERT INTO store_product_variants (product_id, name, price, original_price) VALUES (?, ?, ?, ?)`,
       [req.params.id, name, parseInt(price), original_price ? parseInt(original_price) : null]
     );
-    res.redirect(`/admin/products/${req.params.id}/edit?success=Varian+ditambahkan`);
+    res.redirect(`/admin/store/products/${req.params.id}/edit?success=Varian+ditambahkan`);
   } catch (err) {
     console.error('Add variant error:', err.message);
-    res.redirect(`/admin/products/${req.params.id}/edit?error=Gagal+menambah+varian`);
+    res.redirect(`/admin/store/products/${req.params.id}/edit?error=Gagal+menambah+varian`);
   }
 });
 
-router.post('/products/:id/variants/:vid/delete', ...requireAdmin, async (req, res) => {
+router.post('/products/:id/variants/:vid/delete', requireAdmin, async (req, res) => {
   try {
     const variantId = req.params.vid;
     const productId = req.params.id;
@@ -159,33 +159,33 @@ router.post('/products/:id/variants/:vid/delete', ...requireAdmin, async (req, r
     // 4. Hapus varian
     await db.execute(`DELETE FROM store_product_variants WHERE id = ?`, [variantId]);
     
-    res.redirect(`/admin/products/${productId}/edit?success=Varian+berhasil+dihapus`);
+    res.redirect(`/admin/store/products/${productId}/edit?success=Varian+berhasil+dihapus`);
   } catch (err) {
     console.error('Delete variant error:', err.message);
-    res.redirect(`/admin/products/${req.params.id}/edit?error=Gagal+menghapus+varian`);
+    res.redirect(`/admin/store/products/${req.params.id}/edit?error=Gagal+menghapus+varian`);
   }
 });
 
 // ── Update Variant
-router.post('/products/:id/variants/:vid/edit', ...requireAdmin, async (req, res) => {
+router.post('/products/:id/variants/:vid/edit', requireAdmin, async (req, res) => {
   try {
     const { name, price, original_price } = req.body;
     await db.execute(
       `UPDATE store_product_variants SET name = ?, price = ?, original_price = ? WHERE id = ?`,
       [name, parseInt(price), original_price ? parseInt(original_price) : null, req.params.vid]
     );
-    res.redirect(`/admin/products/${req.params.id}/edit?success=Varian+berhasil+diperbarui`);
+    res.redirect(`/admin/store/products/${req.params.id}/edit?success=Varian+berhasil+diperbarui`);
   } catch (err) {
     console.error('Update variant error:', err.message);
-    res.redirect(`/admin/products/${req.params.id}/edit?error=Gagal+memperbarui+varian`);
+    res.redirect(`/admin/store/products/${req.params.id}/edit?error=Gagal+memperbarui+varian`);
   }
 });
 
 // ── Keys Management
-router.get('/products/:id/keys', ...requireAdmin, async (req, res) => {
+router.get('/products/:id/keys', requireAdmin, async (req, res) => {
   try {
     const { rows: product } = await db.execute(`SELECT * FROM store_products WHERE id = ?`, [req.params.id]);
-    if (!product.length) return res.redirect('/admin/products');
+    if (!product.length) return res.redirect('/admin/store/products');
     
     const { rows: variants } = await db.execute(`SELECT * FROM store_product_variants WHERE product_id = ?`, [req.params.id]);
     
@@ -198,12 +198,12 @@ router.get('/products/:id/keys', ...requireAdmin, async (req, res) => {
     res.render('store/admin/keys', { product: product[0], variants, keys, success: req.query.success });
   } catch (err) {
     console.error('Get keys error:', err.message);
-    res.redirect('/admin/products');
+    res.redirect('/admin/store/products');
   }
 });
 
 // ── Add Keys (bulk, satu per baris)
-router.post('/products/:id/keys/add', ...requireAdmin, async (req, res) => {
+router.post('/products/:id/keys/add', requireAdmin, async (req, res) => {
   try {
     const { keys_text, variant_id } = req.body;
     const lines = keys_text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
@@ -213,18 +213,18 @@ router.post('/products/:id/keys/add', ...requireAdmin, async (req, res) => {
         [req.params.id, variant_id || null, line]
       );
     }
-    res.redirect(`/admin/products/${req.params.id}/keys?success=${lines.length}+key+ditambahkan`);
+    res.redirect(`/admin/store/products/${req.params.id}/keys?success=${lines.length}+key+ditambahkan`);
   } catch (err) {
     console.error('Add keys error:', err.message);
-    res.redirect(`/admin/products/${req.params.id}/keys?error=Gagal+menambah+key`);
+    res.redirect(`/admin/store/products/${req.params.id}/keys?error=Gagal+menambah+key`);
   }
 });
 
 // ── Bulk Delete Keys
-router.post('/products/:id/keys/bulk-delete', ...requireAdmin, async (req, res) => {
+router.post('/products/:id/keys/bulk-delete', requireAdmin, async (req, res) => {
   try {
     let { key_ids } = req.body;
-    if (!key_ids) return res.redirect(`/admin/products/${req.params.id}/keys`);
+    if (!key_ids) return res.redirect(`/admin/store/products/${req.params.id}/keys`);
     if (!Array.isArray(key_ids)) key_ids = [key_ids];
 
     const placeholders = key_ids.map(() => '?').join(',');
@@ -233,29 +233,29 @@ router.post('/products/:id/keys/bulk-delete', ...requireAdmin, async (req, res) 
     // Delete keys
     await db.execute(`DELETE FROM store_keys WHERE id IN (${placeholders})`, key_ids);
     
-    res.redirect(`/admin/products/${req.params.id}/keys?success=${key_ids.length}+key+berhasil+dihapus`);
+    res.redirect(`/admin/store/products/${req.params.id}/keys?success=${key_ids.length}+key+berhasil+dihapus`);
   } catch (err) {
     console.error('Bulk delete keys error:', err.message);
-    res.redirect(`/admin/products/${req.params.id}/keys?error=Gagal+menghapus+banyak+key`);
+    res.redirect(`/admin/store/products/${req.params.id}/keys?error=Gagal+menghapus+banyak+key`);
   }
 });
 
 // ── Delete Key
-router.post('/products/:id/keys/:kid/delete', ...requireAdmin, async (req, res) => {
+router.post('/products/:id/keys/:kid/delete', requireAdmin, async (req, res) => {
   try {
     // Putuskan hubungan key dari order (jika sudah terpakai) agar tidak error foreign key
     await db.execute(`UPDATE store_orders SET key_id = NULL WHERE key_id = ?`, [req.params.kid]);
     // Hapus key
     await db.execute(`DELETE FROM store_keys WHERE id = ?`, [req.params.kid]);
-    res.redirect(`/admin/products/${req.params.id}/keys?success=Key+berhasil+dihapus`);
+    res.redirect(`/admin/store/products/${req.params.id}/keys?success=Key+berhasil+dihapus`);
   } catch (err) {
     console.error('Delete key error:', err.message);
-    res.redirect(`/admin/products/${req.params.id}/keys?error=Gagal+menghapus+key`);
+    res.redirect(`/admin/store/products/${req.params.id}/keys?error=Gagal+menghapus+key`);
   }
 });
 
 // ── Orders
-router.get('/orders', ...requireAdmin, async (req, res) => {
+router.get('/orders', requireAdmin, async (req, res) => {
   try {
     const status = req.query.status || '';
     let query = `SELECT o.*, p.name as product_name, k.key_value FROM store_orders o
@@ -267,29 +267,29 @@ router.get('/orders', ...requireAdmin, async (req, res) => {
     res.render('store/admin/orders', { orders, status, success: req.query.success });
   } catch (err) {
     console.error('Get orders error:', err.message);
-    res.redirect('/admin');
+    res.redirect('/admin/store');
   }
 });
 
 // ── Bulk Delete Orders
-router.post('/orders/bulk-delete', ...requireAdmin, async (req, res) => {
+router.post('/orders/bulk-delete', requireAdmin, async (req, res) => {
   try {
     let { order_ids } = req.body;
-    if (!order_ids) return res.redirect('/admin/orders');
+    if (!order_ids) return res.redirect('/admin/store/orders');
     if (!Array.isArray(order_ids)) order_ids = [order_ids];
 
     const placeholders = order_ids.map(() => '?').join(',');
     await db.execute(`DELETE FROM store_orders WHERE id IN (${placeholders})`, order_ids);
     
-    res.redirect(`/admin/orders?success=${order_ids.length}+pesanan+berhasil+dihapus`);
+    res.redirect(`/admin/store/orders?success=${order_ids.length}+pesanan+berhasil+dihapus`);
   } catch (err) {
     console.error('Bulk delete orders error:', err.message);
-    res.redirect('/admin/orders?error=Gagal+menghapus+banyak+pesanan');
+    res.redirect('/admin/store/orders?error=Gagal+menghapus+banyak+pesanan');
   }
 });
 
 // ── Prune Orders (Simpan 50 terbaru)
-router.post('/orders/prune', ...requireAdmin, async (req, res) => {
+router.post('/orders/prune', requireAdmin, async (req, res) => {
   try {
     await db.execute(`
       DELETE FROM store_orders 
@@ -297,10 +297,10 @@ router.post('/orders/prune', ...requireAdmin, async (req, res) => {
         SELECT id FROM store_orders ORDER BY created_at DESC LIMIT 50
       )
     `);
-    res.redirect('/admin/orders?success=Riwayat+lama+berhasil+dibersihkan');
+    res.redirect('/admin/store/orders?success=Riwayat+lama+berhasil+dibersihkan');
   } catch (err) {
     console.error('Prune orders error:', err.message);
-    res.redirect('/admin/orders?error=Gagal+membersihkan+riwayat');
+    res.redirect('/admin/store/orders?error=Gagal+membersihkan+riwayat');
   }
 });
 
