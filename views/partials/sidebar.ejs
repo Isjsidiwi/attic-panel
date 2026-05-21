@@ -48,8 +48,8 @@
 
   <div class="sidebar-footer">
     <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; justify-content: space-between;">
-      <button class="btn-ghost" onclick="toggleTheme()" style="flex:1; padding: 0.5rem; font-size: 0.8rem;" id="theme-btn">☀️ Light</button>
-      <button class="btn-ghost" onclick="toggleLang()" style="flex:1; padding: 0.5rem; font-size: 0.8rem;" id="lang-btn">🇬🇧 EN</button>
+      <button class="btn-ghost" id="theme-btn" style="flex:1; padding: 0.5rem; font-size: 0.8rem;">☀️ Light</button>
+      <button class="btn-ghost" id="lang-btn" style="flex:1; padding: 0.5rem; font-size: 0.8rem;">🇬🇧 EN</button>
     </div>
     <div class="admin-info">
       <div class="admin-dot"></div>
@@ -70,6 +70,6 @@
   </div>
 </aside>
 
-<button class="sidebar-toggle" id="sidebarToggle" onclick="document.getElementById('sidebar').classList.toggle('open')">
+<button class="sidebar-toggle" id="sidebarToggle">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
 </button>

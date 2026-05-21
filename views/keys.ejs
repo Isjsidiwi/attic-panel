@@ -14,7 +14,7 @@
         </p>
       </div>
       <div class="topbar-right">
-        <button class="btn-primary" onclick="openModal('modal-generate')">+ Generate Key</button>
+        <button class="btn-primary" data-open-modal="modal-generate">+ Generate Key</button>
         <% if (isOwner) { %>
           <a href="/admin/keys/export" class="btn-secondary">Export</a>
         <% } %>
@@ -49,11 +49,11 @@
     <!-- Bulk action bar -->
     <div class="bulk-bar" id="bulk-bar" style="display:none">
       <span id="bulk-count">0 dipilih</span>
-      <button type="button" class="btn-danger btn-sm" onclick="submitBulkAction('/admin/keys/bulk-delete', 'Hapus semua yang dipilih?')">Hapus</button>
+      <button type="button" class="btn-danger btn-sm" data-bulk-action-url="/admin/keys/bulk-delete" data-bulk-action-confirm="Hapus semua yang dipilih?">Hapus</button>
       <% if (admin.role !== 'reseller') { %>
-        <button type="button" class="btn-secondary btn-sm" onclick="submitBulkAction('/admin/keys/bulk-deactivate')">Nonaktifkan</button>
+        <button type="button" class="btn-secondary btn-sm" data-bulk-action-url="/admin/keys/bulk-deactivate">Nonaktifkan</button>
       <% } %>
-      <button type="button" class="btn-ghost btn-sm" onclick="clearSelection()">Batal</button>
+      <button type="button" class="btn-ghost btn-sm" data-clear-selection>Batal</button>
     </div>
 
     <div class="card">
@@ -61,7 +61,7 @@
         <table class="table" id="keys-table">
             <thead>
               <tr>
-                <th><input type="checkbox" id="select-all" onchange="toggleAll(this)"></th>
+                <th><input type="checkbox" id="select-all"></th>
                 <th>KEY CODE</th>
                 <% if (isOwner) { %><th>RESELLER</th><% } %>
                 <th>RESOURCE</th>
@@ -79,9 +79,7 @@
               <tr>
                 <td><input type="checkbox" name="ids" value="<%= k.id %>" class="row-check" onchange="updateBulk()"></td>
                 <td>
-                  <code class="key-code" onclick="copyText('<%= k.key_code %>', this)" title="Klik untuk copy">
-                    <%= k.key_code %>
-                  </code>
+                  <code class="key-code key-copy" title="Klik untuk copy"><%= k.key_code %></code>
                 </td>
                 <% if (isOwner) { %>
                   <td><span class="badge badge-count"><%= k.created_by_username || 'owner' %></span></td>
@@ -118,17 +116,9 @@
                 <td>
                   <div class="action-btns">
                     <% if (admin.role !== 'reseller') { %>
-                      <button
-                        class="btn-icon btn-edit"
-                        onclick='openEdit(<%- JSON.stringify(k) %>)'
-                        title="Edit"
-                      >✎</button>
+                      <button class="btn-icon btn-edit" data-key-id="<%= k.id %>" title="Edit">✎</button>
                     <% } %>
-                    <button
-                      class="btn-icon btn-del"
-                      onclick="openDelete(<%= k.id %>, '<%= k.key_code %>')"
-                      title="Hapus"
-                    >✕</button>
+                    <button class="btn-icon btn-del" data-delete-id="<%= k.id %>" title="Hapus">✕</button>
                   </div>
                 </td>
               </tr>
@@ -161,11 +151,11 @@
 </div>
 
 <!-- ═══════════════════ MODAL: GENERATE ═══════════════════ -->
-<div class="modal-overlay" id="modal-generate" onclick="closeModalOutside(event, 'modal-generate')">
+      <div class="modal-overlay" id="modal-generate">
   <div class="modal">
     <div class="modal-header">
       <h3 class="modal-title">Generate Key</h3>
-      <button class="modal-close" onclick="closeModal('modal-generate')">✕</button>
+            <button class="modal-close">✕</button>
     </div>
     <form action="/admin/keys/generate" method="POST" class="modal-form" data-generate-form>
       <div class="field">
@@ -222,7 +212,7 @@
         </div>
       <% } %>
       <div class="modal-footer">
-        <button type="button" class="btn-ghost" onclick="closeModal('modal-generate')">Batal</button>
+        <button type="button" class="btn-ghost modal-cancel">Batal</button>
         <button type="submit" class="btn-primary">Generate</button>
       </div>
     </form>
@@ -230,11 +220,11 @@
 </div>
 
 <!-- ═══════════════════ MODAL: EDIT ═══════════════════ -->
-<div class="modal-overlay" id="modal-edit" onclick="closeModalOutside(event, 'modal-edit')">
+<div class="modal-overlay" id="modal-edit">
   <div class="modal">
     <div class="modal-header">
       <h3 class="modal-title">Edit Key</h3>
-      <button class="modal-close" onclick="closeModal('modal-edit')">✕</button>
+      <button class="modal-close">✕</button>
     </div>
     <form id="edit-form" method="POST" class="modal-form">
       <div class="field">
@@ -276,7 +266,7 @@
         <input type="text" name="notes" id="edit-notes" class="field-input">
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-ghost" onclick="closeModal('modal-edit')">Batal</button>
+        <button type="button" class="btn-ghost modal-cancel">Batal</button>
         <button type="submit" class="btn-primary">Simpan</button>
       </div>
     </form>
@@ -284,11 +274,11 @@
 </div>
 
 <!-- ═══════════════════ MODAL: DELETE ═══════════════════ -->
-<div class="modal-overlay" id="modal-delete" onclick="closeModalOutside(event, 'modal-delete')">
+<div class="modal-overlay" id="modal-delete">
   <div class="modal modal-sm">
     <div class="modal-header">
       <h3 class="modal-title text-danger">Hapus Key</h3>
-      <button class="modal-close" onclick="closeModal('modal-delete')">✕</button>
+      <button class="modal-close">✕</button>
     </div>
     <div style="padding:1.25rem">
       <p class="text-muted">Yakin ingin menghapus key:</p>
@@ -296,7 +286,7 @@
       <p class="text-muted" style="font-size:.8rem">Tindakan ini tidak bisa dibatalkan.</p>
     </div>
     <form id="delete-form" method="POST" class="modal-footer">
-      <button type="button" class="btn-ghost" onclick="closeModal('modal-delete')">Batal</button>
+      <button type="button" class="btn-ghost modal-cancel">Batal</button>
       <button type="submit" class="btn-danger">Hapus</button>
     </form>
   </div>
@@ -306,6 +296,7 @@
 <script>
   window.KEY_PRICES = <%- JSON.stringify(priceMatrix || {}) %>;
   window.USER_CREDIT = <%= Number(admin.credit) || 0 %>;
+  window.KEYS_MAP = <%- JSON.stringify((keys || []).reduce((m,k)=>{ m[k.id]=k; return m; }, {})) %>;
 </script>
 <script src="/js/main.js"></script>
 </body>

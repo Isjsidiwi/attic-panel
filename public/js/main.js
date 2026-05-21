@@ -375,3 +375,90 @@ document.addEventListener('DOMContentLoaded', () => {
   updateThemeBtn();
   updateLangUI();
 });
+
+// Attach event listeners for pages that rely on data-attributes (CSP-safe)
+document.addEventListener('DOMContentLoaded', () => {
+  // open modal buttons
+  document.querySelectorAll('[data-open-modal]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const id = btn.dataset.openModal;
+      if (id) openModal(id);
+    });
+  });
+
+  // modal overlay: click outside to close
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) {
+        if (overlay.id) closeModal(overlay.id);
+      }
+    });
+  });
+
+  // modal close buttons and cancel buttons
+  document.querySelectorAll('.modal-close, .modal-cancel').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const overlay = btn.closest('.modal-overlay');
+      if (overlay && overlay.id) closeModal(overlay.id);
+    });
+  });
+
+  // select-all checkbox
+  const selectAll = document.getElementById('select-all');
+  if (selectAll) selectAll.addEventListener('change', () => toggleAll(selectAll));
+
+  // row checkboxes
+  document.querySelectorAll('.row-check').forEach(cb => cb.addEventListener('change', updateBulk));
+
+  // bulk action buttons
+  document.querySelectorAll('[data-bulk-action-url]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const url = btn.dataset.bulkActionUrl;
+      const confirmMsg = btn.dataset.bulkActionConfirm || '';
+      submitBulkAction(url, confirmMsg || null);
+    });
+  });
+
+  // clear selection
+  document.querySelectorAll('[data-clear-selection]').forEach(btn => btn.addEventListener('click', clearSelection));
+
+  // copy key behavior (from table only)
+  document.querySelectorAll('.key-copy').forEach(el => {
+    el.addEventListener('click', () => copyText(el.textContent.trim(), el));
+  });
+
+  // edit / delete buttons for keys
+  document.querySelectorAll('.btn-edit[data-key-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.keyId;
+      if (!id) return;
+      try {
+        const key = window.KEYS_MAP && window.KEYS_MAP[id];
+        if (key) openEdit(key);
+      } catch (e) {}
+    });
+  });
+
+  document.querySelectorAll('.btn-del[data-delete-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.deleteId;
+      if (!id) return;
+      const key = window.KEYS_MAP && window.KEYS_MAP[id];
+      const code = key ? key.key_code : '';
+      openDelete(id, code);
+    });
+  });
+
+  // Theme / Lang buttons (sidebar)
+  const themeBtn = document.getElementById('theme-btn');
+  if (themeBtn) themeBtn.addEventListener('click', () => { toggleTheme(); });
+  const langBtn = document.getElementById('lang-btn');
+  if (langBtn) langBtn.addEventListener('click', () => { toggleLang(); });
+
+  // Sidebar toggle (mobile)
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  if (sidebarToggle) sidebarToggle.addEventListener('click', () => {
+    const sb = document.getElementById('sidebar');
+    if (sb) sb.classList.toggle('open');
+  });
+});
