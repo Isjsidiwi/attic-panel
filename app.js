@@ -16,6 +16,18 @@ app.use(express.urlencoded({ extended: true, limit: '500mb' }));
 app.use(express.json({ limit: '500mb' }));
 app.use(cookieParser());
 app.use(methodOverride('_method'));
+// Security headers to harden responses
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  // Basic CSP - adjust if you add external script/font providers
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'");
+  if (process.env.NODE_ENV === 'production' || req.secure || req.headers['x-forwarded-proto'] === 'https') {
+    res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  }
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {

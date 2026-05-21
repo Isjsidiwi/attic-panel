@@ -85,7 +85,8 @@ router.get('/dashboard', auth, requireOwner, async (req, res) => {
     title: 'Dashboard',
     panel_name: cfg.panel_name,
     stats: { total: total.c, active: active.c, expired: expired.c, locked: locked.c },
-    recent, now, fmtDate, parseSerials
+    recent, now, fmtDate, parseSerials,
+    show_api_info: process.env.SHOW_API_INFO === '1'
   });
 });
 

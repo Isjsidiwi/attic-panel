@@ -95,10 +95,12 @@
             </div>
           </form>
 
-          <div class="login-footer">
-            <span class="dot-green"></span>
-            API: <code>/api/game/MLBB</code> — ONLINE
-          </div>
+          <% if (show_api_info) { %>
+            <div class="login-footer">
+              <span class="dot-green"></span>
+              API: <code>/api/game/MLBB</code> — ONLINE
+            </div>
+          <% } %>
         </div>
       </div>
     </div>
