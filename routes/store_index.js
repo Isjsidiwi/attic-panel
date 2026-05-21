@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../database');
 const { createQRIS, checkPayment, generateUniqueSuffix } = require('../services/payment');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID: uuidv4 } = require('crypto');
 
 // ── Beranda
 router.get('/', async (req, res) => {
