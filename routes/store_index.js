@@ -116,9 +116,13 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
       if (qrisRes?.qris_ajaib?.success) {
         qrisId = qrisRes.qris_ajaib.results.id;
         qrisUrl = qrisRes.qris_ajaib.results.qrcode_url;
+      } else {
+        console.error('QRIS API Error:', qrisRes);
+        return res.render('store/checkout', { product, variant, error: 'Gagal membuat QRIS (API Error). Silakan coba lagi.' });
       }
     } catch (e) {
-      console.error('QRIS create error:', e.message);
+      console.error('QRIS create exception:', e.message);
+      return res.render('store/checkout', { product, variant, error: 'Sistem pembayaran sedang gangguan. Coba beberapa saat lagi.' });
     }
 
     // Expired 30 menit dari sekarang
