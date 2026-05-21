@@ -43,7 +43,8 @@ router.get('/login', async (req, res) => {
     title: 'Login',
     panel_name: cfg.panel_name || 'ATTIC PANEL',
     success_msg: [],
-    error_msg: req.query.error ? [req.query.error] : []
+    error_msg: req.query.error ? [req.query.error] : [],
+    show_reseller: req.query.show_reseller === '1'
   });
 });
 
@@ -88,7 +89,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     return res.redirect('/admin/dashboard');
   }
 
-  res.redirect('/login?error=Username+atau+password+salah.');
+  res.redirect('/login?error=Username+atau+password+salah.&show_reseller=1');
 });
 
 router.post('/logout', (req, res) => {
