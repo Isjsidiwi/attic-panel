@@ -82,10 +82,12 @@
       <%= storeName %>
     </a>
     <div class="flex items-center gap-5 text-sm font-medium">
-      <a href="/store/"" class="transition-colors hover:text-white" style="color:var(--muted)">Katalog</a>
+      <a href="/store/" class="transition-colors hover:text-white" style="color:var(--muted)">Katalog</a>
       <% if (isAdmin) { %>
-        <a href="/store/admin" class="transition-colors hover:text-white" style="color:var(--muted)">Dashboard</a>
+        <a href="/admin/store" class="transition-colors hover:text-white" style="color:var(--muted)">Dashboard</a>
         <a href="/admin/store/logout" class="transition-colors text-red-400 hover:text-red-300">Logout</a>
+      <% } else { %>
+        <a href="/admin/store/login" class="transition-colors text-blue-400 hover:text-blue-300 border border-blue-400/30 px-3 py-1.5 rounded-lg">Admin Login</a>
       <% } %>
     </div>
   </div>
