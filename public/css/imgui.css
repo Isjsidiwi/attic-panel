@@ -104,3 +104,25 @@
 .imgui-artbox .imgui-art { width: 100%; height: auto; display: block; }
 .imgui-art-fallback { display: flex; align-items: center; justify-content: center; flex-direction: column; gap: .6rem; color: var(--text-3); font-size: .9rem; min-height: 320px; }
 .imgui-art-fallback svg { width: 80%; height: auto; max-width: 280px; border-radius: 6px; }
+
+/* Login background + font (Heavytal) */
+@font-face {
+  font-family: 'Heavytal';
+  src: url('/fonts/Heavytal-PersonalUse.woff2') format('woff2'),
+       url('/fonts/Heavytal-PersonalUse.woff') format('woff');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+.imgui-skin { font-family: 'Heavytal', 'Poppins', var(--font-m), sans-serif; }
+
+.imgui-skin .login-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image: url('/img/login-bg.png');
+  background-size: cover;
+  background-position: center center;
+  filter: brightness(0.45) saturate(0.95);
+}
