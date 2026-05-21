@@ -42,7 +42,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Store specific locals
 app.use((req, res, next) => {
   res.locals.storeName = process.env.STORE_NAME || 'XSRC-CLIENT';
-  res.locals.storeTagline = process.env.STORE_TAGLINE || 'imgui';
+  res.locals.storeTagline = process.env.STORE_TAGLINE || 'cheat-store';
   res.locals.isAdmin = (req.cookies._token) ? true : false; // Naive admin check for store frontend views
   next();
 });
