@@ -144,16 +144,19 @@ function parseAmount(str) {
   return parseInt(str.toString().replace(/\./g, ''), 10);
 }
 
-// Parse tanggal format "19/04/2026 15:02:53" → Date
+// Parse tanggal format "19/04/2026 15:02:53" (WIB) → Date object (UTC)
 function parseTanggal(str) {
   const [datePart, timePart] = str.split(' ');
   const [d, m, y] = datePart.split('/');
-  return new Date(`${y}-${m}-${d}T${timePart}`);
+  // WIB is UTC+7, so we subtract 7 hours to get UTC Date
+  const dateStr = `${y}-${m}-${d}T${timePart}+07:00`;
+  return new Date(dateStr);
 }
 
 // Cek apakah ada transaksi masuk sesuai unique_amount setelah created_at
 async function checkPayment(uniqueAmount, createdAt) {
   try {
+    // Pastikan createdDate dalam UTC
     const createdDate = new Date(createdAt);
     const mutRes = await getMutations(1);
 
@@ -165,8 +168,14 @@ async function checkPayment(uniqueAmount, createdAt) {
       const trxAmount = parseAmount(trx.kredit);
       const trxDate = parseTanggal(trx.tanggal);
 
-      if (trxAmount === uniqueAmount && trxDate >= createdDate && trx.status === 'IN') {
-        return true;
+      // Beri toleransi waktu 10 menit ke belakang jika ada delay pencatatan
+      const timeBuffer = 10 * 60 * 1000; 
+      
+      if (trxAmount === uniqueAmount && trx.status === 'IN') {
+        // Jika transaksi terjadi setelah order dibuat (dengan toleransi buffer)
+        if (trxDate.getTime() >= (createdDate.getTime() - timeBuffer)) {
+          return true;
+        }
       }
     }
     return false;

@@ -147,8 +147,8 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
       return res.render('store/checkout', { product, variant, error: 'Sistem pembayaran sedang gangguan. Coba beberapa saat lagi.' });
     }
 
-    // Expired 30 menit dari sekarang
-    const expiredAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
+    // Expired 4 menit dari sekarang
+    const expiredAt = new Date(Date.now() + 4 * 60 * 1000).toISOString();
 
     await db.execute(
       `INSERT INTO store_orders (id, product_id, variant_id, customer_name, customer_email, amount, unique_amount, unique_suffix, qris_id, qris_url, status, expired_at)
