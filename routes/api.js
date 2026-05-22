@@ -247,6 +247,58 @@
     });
   });
 
+  router.post('/game/MLBB/antrxyz', async (req, res) => {
+    // Alias for mobile-legends endpoint as requested
+    const userKey = (req.body.user_key || req.body.member_key || '').trim();
+    const serial  = (req.body.serial || '').trim();
+    const appVer  = (req.body.appVer || '').trim();
+    const now     = Math.floor(Date.now() / 1000);
+
+    const fail = (reason) => res.json({ status: false, reason, data: null });
+
+    if (!userKey) return fail('user_key diperlukan');
+    if (!serial)  return fail('serial diperlukan');
+
+    const row = await db.get('SELECT * FROM keys WHERE key_code = ?', [userKey]);
+    if (!row)           return fail('Key tidak ditemukan');
+    if (!row.is_active) return fail('Key dinonaktifkan');
+    if (Number(row.expires_at) <= now) return fail('Key sudah expired');
+
+    let serials = [];
+    try { serials = JSON.parse(row.device_serials || '[]'); } catch { serials = []; }
+    const maxDevices = Number(row.max_devices) || 1;
+
+    if (!serials.includes(serial)) {
+      if (serials.length >= maxDevices) {
+        return fail(`Batas device tercapai (${maxDevices}/${maxDevices})`);
+      }
+      serials.push(serial);
+      await db.run(
+        'UPDATE keys SET device_serials=?, login_count=login_count+1, last_login=? WHERE id=?',
+        [JSON.stringify(serials), now, row.id]
+      );
+    } else {
+      await db.run('UPDATE keys SET login_count=login_count+1, last_login=? WHERE id=?', [now, row.id]);
+    }
+
+    const raw = `${userKey}${serial}ANTARXY`;
+    const token = crypto.createHash('md5').update(raw).digest('hex');
+    const expiredStr = new Date(Number(row.expires_at) * 1000).toISOString().replace('T', ' ').slice(0, 19);
+
+    res.json({
+      status: true,
+      data: {
+        token: token,
+        rng: now,
+        expired: expiredStr,
+        custom_title: "-Xive",
+        version: appVer || "1.0.0",
+        registrator: 5,
+        btData: "BattleData"
+      }
+    });
+  });
+
   router.post('/game/CFL', async (req, res) => {
     const userKey = (req.body.user_key || req.body.member_key || '').trim();
     const serial  = (req.body.serial || '').trim();
