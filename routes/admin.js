@@ -12,6 +12,7 @@ const PRICE_DAYS = Array.from({ length: 30 }, (_, i) => i + 1);
 const GAME_OPTIONS = [
   { value: 'BS', label: 'Blood Strike (BS)' },
   { value: 'MLBB', label: 'Mobile Legends (MLBB)' },
+  { value: 'ANTARXY', label: 'Mobile Legends (Antarxy)' },
   { value: 'PUBGM', label: 'PUBG Mobile (PUBGM)' },
   { value: 'CODM', label: 'Call Of Duty (CODM)' },
   { value: '8BP', label: '8 Ball Pool (8BP)' },
