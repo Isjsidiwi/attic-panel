@@ -148,21 +148,22 @@ function parseAmount(str) {
 function parseTanggal(str) {
   const [datePart, timePart] = str.split(' ');
   const [d, m, y] = datePart.split('/');
-  // WIB is UTC+7, so we subtract 7 hours to get UTC Date
-  const dateStr = `${y}-${m}-${d}T${timePart}+07:00`;
-  return new Date(dateStr);
+  // Orkut return WIB (UTC+7). We force the offset to get a correct UTC Date object.
+  const isoStr = `${y}-${m}-${d}T${timePart}+07:00`;
+  return new Date(isoStr);
 }
 
 // Cek apakah ada transaksi masuk sesuai unique_amount setelah created_at
 async function checkPayment(uniqueAmount, createdAt) {
   try {
-    // Pastikan createdDate dalam UTC
+    // Pastikan createdDate dibaca sebagai UTC (ISO format)
     const createdDate = new Date(createdAt);
     const mutRes = await getMutations(1);
 
     if (!mutRes?.qris_history?.success) return false;
 
     const results = mutRes.qris_history.results || [];
+    console.log(`[PaymentCheck] Checking ${uniqueAmount} after ${createdDate.toISOString()}. Mutations: ${results.length}`);
 
     for (const trx of results) {
       const trxAmount = parseAmount(trx.kredit);
@@ -172,8 +173,10 @@ async function checkPayment(uniqueAmount, createdAt) {
       const timeBuffer = 10 * 60 * 1000; 
       
       if (trxAmount === uniqueAmount && trx.status === 'IN') {
-        // Jika transaksi terjadi setelah order dibuat (dengan toleransi buffer)
-        if (trxDate.getTime() >= (createdDate.getTime() - timeBuffer)) {
+        const isRecent = trxDate.getTime() >= (createdDate.getTime() - timeBuffer);
+        console.log(`[PaymentCheck] Found match amount ${trxAmount}. TrxDate: ${trxDate.toISOString()}, Recent: ${isRecent}`);
+        
+        if (isRecent) {
           return true;
         }
       }

@@ -148,12 +148,13 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
     }
 
     // Expired 4 menit dari sekarang
+    const nowIso = new Date().toISOString();
     const expiredAt = new Date(Date.now() + 4 * 60 * 1000).toISOString();
 
     await db.execute(
-      `INSERT INTO store_orders (id, product_id, variant_id, customer_name, customer_email, amount, unique_amount, unique_suffix, qris_id, qris_url, status, expired_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)`,
-      [orderId, product.id, variant.id, customer_name, customer_email, finalPrice, uniqueAmount, suffix, qrisId, qrisUrl, expiredAt]
+      `INSERT INTO store_orders (id, product_id, variant_id, customer_name, customer_email, amount, unique_amount, unique_suffix, qris_id, qris_url, status, created_at, expired_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)`,
+      [orderId, product.id, variant.id, customer_name, customer_email, finalPrice, uniqueAmount, suffix, qrisId, qrisUrl, nowIso, expiredAt]
     );
 
     res.redirect('/store/order/' + orderId);
