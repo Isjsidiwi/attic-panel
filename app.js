@@ -93,12 +93,13 @@ app.post('/mod/LoginData.php', (req, res) => {
     const iv = Buffer.alloc(16, 0);
 
     // --- 2. DATA JSON BYPASS ---
-    const responseJson = JSON.stringify({
-        "ConnectSt_hk": "Failed",
-        "mensagem": "suki mawwahh",
-        "timestamp": Math.floor(Date.now() / 1000),
-        "nonce": crypto.randomBytes(16).toString('hex')
-    });
+    // Kita tes menggunakan balasan FAILED asli dari tangkapan Frida sebelumnya
+const responseJson = JSON.stringify({
+    "ConnectSt_hk": "Failed",
+    "mensagem": "The key is invalid.",
+    "timestamp": Math.floor(Date.now() / 1000),
+    "nonce": crypto.randomBytes(16).toString('hex')
+});
 
     try {
         // --- 3. PROSES ENKRIPSI ---
