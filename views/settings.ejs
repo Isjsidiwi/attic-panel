@@ -175,6 +175,18 @@
                 </select>
               </div>
             </div>
+            <div class="field">
+              <label class="field-label">GAME YANG DIIZINKAN</label>
+              <div class="game-permission-grid">
+                <% pricingGames.forEach(g => { %>
+                  <label class="permission-chip">
+                    <input type="checkbox" name="allowed_games" value="<%= g.value %>">
+                    <span><%= g.label %></span>
+                  </label>
+                <% }) %>
+              </div>
+              <p class="field-hint">Reseller hanya melihat dan bisa generate game yang dicentang owner.</p>
+            </div>
             <button type="submit" class="btn-primary btn-full">Tambah Reseller</button>
           </form>
         </div>
@@ -220,6 +232,18 @@
                             <option value="1" <%= r.is_active ? 'selected' : '' %>>Aktif</option>
                             <option value="0" <%= !r.is_active ? 'selected' : '' %>>Nonaktif</option>
                           </select>
+                        </div>
+                        <div class="field">
+                          <label class="field-label">GAME YANG DIIZINKAN</label>
+                          <div class="game-permission-grid">
+                            <% pricingGames.forEach(g => { %>
+                              <label class="permission-chip">
+                                <input type="checkbox" name="allowed_games" value="<%= g.value %>" <%= r.allowedGames && r.allowedGames.includes(g.value) ? 'checked' : '' %>>
+                                <span><%= g.label %></span>
+                              </label>
+                            <% }) %>
+                          </div>
+                          <p class="field-hint">Game yang tidak dicentang tidak muncul di panel reseller.</p>
                         </div>
                         <div class="field">
                           <label class="field-label">PASSWORD BARU</label>

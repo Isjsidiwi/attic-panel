@@ -1274,3 +1274,57 @@ code, .key-code, .field-hint code, .font-mono { font-family: var(--font-m) !impo
 .tab-btn:hover { color: var(--text); background: var(--bg-hover); }
 .tab-btn.active { color: var(--cyan); background: var(--bg-hover); font-weight: bold; border-bottom: 2px solid var(--cyan); border-radius: var(--radius) var(--radius) 0 0; }
 
+button:disabled,
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.game-permission-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: .5rem;
+}
+
+.permission-chip {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .55rem .65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,.02);
+  color: var(--text-2);
+  font-size: .72rem;
+  cursor: pointer;
+}
+
+.permission-chip:hover {
+  border-color: var(--border-lit);
+  color: var(--text);
+}
+
+.permission-chip input {
+  accent-color: var(--cyan);
+}
+
+.file-inline-form {
+  display: flex;
+  gap: .5rem;
+  align-items: center;
+  min-width: 260px;
+}
+
+.file-rename-input {
+  min-width: 150px;
+  padding: .42rem .55rem;
+  font-size: .76rem;
+}
+
+@media (max-width: 600px) {
+  .file-inline-form {
+    min-width: 220px;
+  }
+}

@@ -385,6 +385,126 @@ function toggleLang() {
   localStorage.setItem('lang', next);
   updateLangUI();
 }
+
+const I18N_TEXT = {
+  'Dashboard': 'Dashboard',
+  'Kelola Key': 'Manage Keys',
+  'Kelola File': 'Manage Files',
+  'Pengaturan': 'Settings',
+  'Profil Saya': 'My Profile',
+  'Kelola Store (Toko)': 'Manage Store',
+  'Manage Keys': 'Manage Keys',
+  'Manage Files': 'Manage Files',
+  'Upload dan kelola file - Storage:': 'Upload and manage files - Storage:',
+  'Generate Key': 'Generate Key',
+  '+ Generate Key': '+ Generate Key',
+  'Export': 'Export',
+  'Cari': 'Search',
+  'Semua': 'All',
+  'Aktif': 'Active',
+  'Expired': 'Expired',
+  'Terkunci': 'Locked',
+  'Nonaktif': 'Inactive',
+  'Hapus': 'Delete',
+  'Edit': 'Edit',
+  'Batal': 'Cancel',
+  'Simpan': 'Save',
+  'Simpan Perubahan': 'Save Changes',
+  'Upload': 'Upload',
+  '+ Upload File': '+ Upload File',
+  'Upload File Baru': 'Upload New File',
+  'PILIH FILE': 'CHOOSE FILE',
+  'NAMA FILE': 'FILE NAME',
+  'UKURAN': 'SIZE',
+  'TANGGAL UPLOAD': 'UPLOAD DATE',
+  'AKSI': 'ACTION',
+  'RENAME': 'RENAME',
+  'Buka/Download': 'Open/Download',
+  'Belum ada file yang diupload.': 'No uploaded files yet.',
+  'GAME': 'GAME',
+  'RESOURCE': 'RESOURCE',
+  'DURASI': 'DURATION',
+  'UNIT': 'UNIT',
+  'JUMLAH KEY (bulk)': 'KEY COUNT (bulk)',
+  'MAX DEVICE / KEY': 'MAX DEVICE / KEY',
+  'NOTES (opsional)': 'NOTES (optional)',
+  'Harga akan dihitung dari credit kamu.': 'Price will be calculated from your credit.',
+  'Edit Key': 'Edit Key',
+  'Hapus Key': 'Delete Key',
+  'Tidak ada key ditemukan': 'No keys found',
+  'Settings': 'Settings',
+  'Panel & API Configuration': 'Panel & API Configuration',
+  'Sistem & API': 'System & API',
+  'Kelola Reseller': 'Manage Resellers',
+  'Daftar Harga': 'Pricing',
+  'Panel Settings': 'Panel Settings',
+  'Admin Credentials': 'Admin Credentials',
+  'MAINTENANCE MODE': 'MAINTENANCE MODE',
+  'USERNAME': 'USERNAME',
+  'PASSWORD': 'PASSWORD',
+  'PASSWORD BARU': 'NEW PASSWORD',
+  'KONFIRMASI PASSWORD': 'CONFIRM PASSWORD',
+  'Buat Reseller': 'Create Reseller',
+  'Tambah Reseller': 'Add Reseller',
+  'Credit Reseller': 'Reseller Credit',
+  'GAME YANG DIIZINKAN': 'ALLOWED GAMES',
+  'Harga Key Reseller': 'Reseller Key Pricing',
+  'Belum ada akun reseller.': 'No reseller accounts yet.',
+  'Harga': 'Price',
+  'Total': 'Total',
+  'Sisa': 'Remaining',
+  'Logout': 'Logout',
+  'Selamat datang': 'Welcome',
+  'Key Terbaru': 'Latest Keys',
+  'Lihat semua': 'View all'
+};
+
+const I18N_ATTRS = {
+  'Cari key, serial, notes...': 'Search key, serial, notes...',
+  'reseller01': 'reseller01',
+  'Min 6 karakter': 'Minimum 6 characters',
+  'Kosongkan jika tetap': 'Leave blank to keep current',
+  'e.g. untuk user A': 'e.g. for user A'
+};
+
+function applyUniversalTranslations(lang) {
+  document.documentElement.lang = lang;
+
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent || ['SCRIPT', 'STYLE', 'CODE', 'PRE', 'TEXTAREA'].includes(parent.tagName)) {
+        return NodeFilter.FILTER_REJECT;
+      }
+      return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+    }
+  });
+
+  const nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+
+  nodes.forEach(node => {
+    if (!node.__i18nOriginal) node.__i18nOriginal = node.nodeValue;
+    const original = node.__i18nOriginal;
+    const compact = original.replace(/\s+/g, ' ').trim();
+    if (lang === 'en' && I18N_TEXT[compact]) {
+      node.nodeValue = original.replace(compact, I18N_TEXT[compact]);
+    } else {
+      node.nodeValue = original;
+    }
+  });
+
+  document.querySelectorAll('[placeholder], [title], [aria-label]').forEach(el => {
+    ['placeholder', 'title', 'aria-label'].forEach(attr => {
+      if (!el.hasAttribute(attr)) return;
+      const key = `i18nOriginal${attr.replace(/[^a-z]/gi, '')}`;
+      if (!el.dataset[key]) el.dataset[key] = el.getAttribute(attr);
+      const original = el.dataset[key];
+      el.setAttribute(attr, lang === 'en' && I18N_ATTRS[original] ? I18N_ATTRS[original] : original);
+    });
+  });
+}
+
 function updateLangUI() {
   const lang = document.documentElement.getAttribute('data-lang') || 'id';
   const btn = document.getElementById('lang-btn');
@@ -392,6 +512,7 @@ function updateLangUI() {
 
   document.querySelectorAll('.lang-id').forEach(el => el.style.display = lang === 'id' ? '' : 'none');
   document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? '' : 'none');
+  applyUniversalTranslations(lang);
 }
 
 // Init on load

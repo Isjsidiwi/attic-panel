@@ -16,6 +16,11 @@ Di Vercel → Settings → Environment Variables, tambahkan:
 | `ADMIN_PASSWORD` | `admin123` |
 | `PANEL_NAME` | `ATTIC PANEL` |
 | `SALT` | `Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E` |
+| `GITHUB_TOKEN` | fine-grained token dengan akses Contents: read/write |
+| `GITHUB_OWNER` | username/organisasi GitHub, default dari Vercel atau `Isjsidiwi` |
+| `GITHUB_REPO` | nama repository tujuan upload file, default dari Vercel atau `attic-panel` |
+| `GITHUB_BRANCH` | branch tujuan, default `main` |
+| `GITHUB_UPLOAD_PATH` | folder repo tujuan, default `public/uploads` |
 
 > Setelah deploy pertama, langsung ganti password via halaman Settings.
 

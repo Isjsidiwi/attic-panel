@@ -7,10 +7,10 @@
     <div class="topbar">
       <div>
         <h2 class="page-title">Manage Files</h2>
-        <p class="page-sub">Upload dan kelola file (hanya untuk Admin)</p>
+        <p class="page-sub">Upload dan kelola file - Storage: <strong><%= storageMode %></strong></p>
       </div>
       <div class="topbar-right">
-        <button class="btn-primary" onclick="openModal('modal-upload')">+ Upload File</button>
+        <button class="btn-primary" data-open-modal="modal-upload">+ Upload File</button>
       </div>
     </div>
 
@@ -26,6 +26,7 @@
               <th>UKURAN</th>
               <th>TANGGAL UPLOAD</th>
               <th>URL</th>
+              <th>RENAME</th>
               <th>AKSI</th>
             </tr>
           </thead>
@@ -34,20 +35,29 @@
             <tr>
               <td><%= file.name %></td>
               <td><%= file.size %></td>
-              <td class="text-muted"><%= file.date.toLocaleString('id-ID') %></td>
+              <td class="text-muted"><%= file.date ? new Date(file.date).toLocaleString('id-ID') : '-' %></td>
               <td>
-                <a href="/uploads/<%= file.name %>" target="_blank" class="text-muted" style="text-decoration:underline;">Buka/Download</a>
+                <a href="<%= file.url %>" target="_blank" rel="noopener noreferrer" class="text-muted" style="text-decoration:underline;">Buka/Download</a>
               </td>
               <td>
-                <form action="/admin/files/delete/<%= file.name %>" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus file ini?');">
-                  <button type="submit" class="btn-icon btn-del" title="Hapus">✕</button>
+                <form action="/admin/files/rename" method="POST" class="file-inline-form">
+                  <input type="hidden" name="path" value="<%= file.path %>">
+                  <input type="text" name="new_name" value="<%= file.name %>" class="field-input file-rename-input" required>
+                  <button type="submit" class="btn-secondary btn-sm">Rename</button>
+                </form>
+              </td>
+              <td>
+                <form action="/admin/files/delete" method="POST" style="display:inline;" onsubmit="return confirm('Yakin ingin menghapus file ini?');">
+                  <input type="hidden" name="path" value="<%= file.path %>">
+                  <input type="hidden" name="sha" value="<%= file.sha || '' %>">
+                  <button type="submit" class="btn-icon btn-del" title="Hapus">x</button>
                 </form>
               </td>
             </tr>
             <% }) %>
             <% if (files.length === 0) { %>
             <tr>
-              <td colspan="5" class="text-center text-muted" style="padding:3rem">Belum ada file yang diupload.</td>
+              <td colspan="6" class="text-center text-muted" style="padding:3rem">Belum ada file yang diupload.</td>
             </tr>
             <% } %>
           </tbody>
@@ -57,20 +67,20 @@
   </main>
 </div>
 
-<!-- MODAL: UPLOAD -->
-<div class="modal-overlay" id="modal-upload" onclick="closeModalOutside(event, 'modal-upload')">
+<div class="modal-overlay" id="modal-upload">
   <div class="modal">
     <div class="modal-header">
       <h3 class="modal-title">Upload File Baru</h3>
-      <button class="modal-close" onclick="closeModal('modal-upload')">✕</button>
+      <button class="modal-close">x</button>
     </div>
     <form action="/admin/files/upload" method="POST" enctype="multipart/form-data" class="modal-form">
       <div class="field">
         <label class="field-label">PILIH FILE</label>
         <input type="file" name="file" class="field-input" required style="padding: 1rem 0;">
+        <p class="field-hint">Jika GitHub env sudah diatur, file akan disimpan ke <code><%= githubConfig.owner || 'GITHUB_OWNER' %>/<%= githubConfig.repo || 'GITHUB_REPO' %>:<%= githubConfig.basePath %></code>.</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn-ghost" onclick="closeModal('modal-upload')">Batal</button>
+        <button type="button" class="btn-ghost modal-cancel">Batal</button>
         <button type="submit" class="btn-primary">Upload</button>
       </div>
     </form>

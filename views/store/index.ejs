@@ -1,70 +1,90 @@
 <% pageTitle = 'Beranda' %>
 <%- include('partials/header') %>
 
-<main class="max-w-6xl mx-auto px-6 py-20 md:py-28">
-  <div class="text-center mb-24 flex flex-col items-center">
-    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border mb-6" style="border-color:var(--border); background:rgba(255,255,255,0.03)">
-      <span class="w-2 h-2 rounded-full" style="background:var(--accent)"></span>
-      <span class="text-xs font-semibold tracking-wide uppercase text-white"><%= storeTagline %></span>
+<main class="max-w-6xl mx-auto px-6 py-14 md:py-20">
+  <section class="mb-12 grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-end">
+    <div>
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border mb-5" style="border-color:var(--border); background:rgba(255,255,255,0.04)">
+        <span class="w-2 h-2 rounded-full" style="background:var(--accent)"></span>
+        <span class="text-xs font-semibold tracking-wide uppercase text-white"><%= storeTagline %></span>
+      </div>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.05] mb-5 max-w-3xl">
+        <span class="text-3d-animated text-white">Produk Digital</span>
+        <span class="block text-3d-animated text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Dikirim Instan</span>
+      </h1>
+      <p class="text-base md:text-lg max-w-2xl text-zinc-400">Pilih produk, bayar dengan QRIS, dan dapatkan key secara otomatis dalam hitungan detik. Aktif 24/7.</p>
     </div>
-    <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6 max-w-4xl px-2">
-      <div class="text-3d-animated text-white" style="margin-bottom: 0.5rem;">Produk Digital</div> <br class="hidden md:block">
-      <div class="text-3d-animated text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Dikirim Instan</div>
-    </h1>
-    <p class="text-lg md:text-xl max-w-2xl text-zinc-400">Pilih produk, bayar dengan QRIS, dan dapatkan key secara otomatis dalam hitungan detik. Aktif 24/7.</p>
-  </div>
 
-  <% if (categories.length > 1) { %>
-  <div class="flex flex-wrap gap-2 mb-10 justify-center">
-    <a href="/store/"" class="badge badge-green hover:scale-105 transition-transform cursor-pointer">Semua</a>
+    <form action="/store/" method="GET" class="card p-4 flex flex-col gap-3">
+      <label class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Cari Katalog</label>
+      <div class="flex gap-2">
+        <input type="text" name="q" value="<%= q || '' %>" class="field" placeholder="Cari game atau produk">
+        <% if (selectedCategory) { %><input type="hidden" name="cat" value="<%= selectedCategory %>"><% } %>
+        <button class="btn btn-primary px-4" type="submit">Cari</button>
+      </div>
+    </form>
+  </section>
+
+  <div class="flex flex-wrap gap-2 mb-8">
+    <a href="/store/" class="badge <%= !selectedCategory || selectedCategory === 'all' ? 'badge-green' : 'badge-gray' %> hover:scale-105 transition-transform cursor-pointer">Semua</a>
     <% categories.forEach(c => { %>
-      <a href="/store/"?cat=<%= c.category %>" class="badge badge-gray hover:bg-zinc-800 transition-colors cursor-pointer"><%= c.category %></a>
+      <a href="/store/?cat=<%= encodeURIComponent(c.category) %>" class="badge <%= selectedCategory === c.category ? 'badge-green' : 'badge-gray' %> hover:bg-zinc-800 transition-colors cursor-pointer"><%= c.category %></a>
     <% }) %>
   </div>
-  <% } %>
 
   <% if (products.length === 0) { %>
-  <div class="text-center py-20 text-zinc-500 border border-dashed rounded-3xl" style="border-color:var(--border)">
-    <div class="text-6xl mb-4 grayscale opacity-50">📦</div>
+  <div class="text-center py-20 text-zinc-500 border border-dashed rounded-lg" style="border-color:var(--border)">
+    <div class="text-5xl mb-4 opacity-50">BOX</div>
     <p class="text-xl font-medium">Katalog kosong</p>
   </div>
   <% } else { %>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
     <% products.forEach(p => { %>
     <a href="/store/produk/<%= p.slug %>" class="group block h-full">
-      <div class="card p-6 flex flex-col gap-4 h-full relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-        
+      <article class="card p-5 flex flex-col gap-4 h-full relative overflow-hidden">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 opacity-70"></div>
+
         <div class="flex items-start gap-4 relative z-10">
           <% if (p.logo_url) { %>
-            <img src="<%= p.logo_url %>" alt="<%= p.name %>" class="w-14 h-14 rounded-xl object-cover border border-zinc-700/50 shadow-sm">
+            <img src="<%= p.logo_url %>" alt="<%= p.name %>" class="w-14 h-14 rounded-lg object-cover border border-zinc-700/50 shadow-sm">
           <% } else { %>
-            <div class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl border border-zinc-700/50" style="background:var(--surface2)">📦</div>
+            <div class="w-14 h-14 rounded-lg flex items-center justify-center text-xs font-black border border-zinc-700/50" style="background:var(--surface2)">XSRC</div>
           <% } %>
-          <div class="pt-1">
+          <div class="pt-1 min-w-0">
             <div class="text-[10px] font-bold uppercase tracking-wider text-blue-400 mb-1"><%= p.category %></div>
             <h3 class="font-bold text-lg leading-tight text-zinc-100 group-hover:text-blue-400 transition-colors"><%= p.name %></h3>
           </div>
         </div>
-        
+
         <p class="text-sm flex-1 leading-relaxed text-zinc-400 relative z-10">
-          <%= p.description ? p.description.substring(0,100) + (p.description.length > 100 ? '...' : '') : 'Produk digital.' %>
+          <%= p.description ? p.description.substring(0,110) + (p.description.length > 110 ? '...' : '') : 'Produk digital.' %>
         </p>
-        
-        <div class="flex items-end justify-between mt-4 pt-4 border-t border-zinc-800/50 relative z-10">
+
+        <div class="grid grid-cols-2 gap-3 pt-4 border-t border-zinc-800/50 relative z-10">
           <div>
-            <div class="font-semibold text-sm text-zinc-400 mb-1">
-              Harga sesuai jenis
-            </div>
-            <div>
-              <span class="badge <%= p.stock > 0 ? 'badge-green' : 'badge-red' %>"><%= p.stock > 0 ? 'Stok ' + p.stock : 'Habis' %></span>
+            <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Harga</div>
+            <div class="font-black text-white">
+              <% if (p.min_price) { %>
+                <% if (p.max_price && Number(p.max_price) !== Number(p.min_price)) { %>
+                  Rp <%= Number(p.min_price).toLocaleString('id-ID') %>+
+                <% } else { %>
+                  Rp <%= Number(p.min_price).toLocaleString('id-ID') %>
+                <% } %>
+              <% } else { %>
+                -
+              <% } %>
             </div>
           </div>
-          <div class="btn <%= p.stock > 0 ? 'bg-white text-black hover:bg-zinc-200' : 'bg-zinc-800 text-zinc-500' %> text-sm py-2 px-4 shadow-sm">
-            <%= p.stock > 0 ? 'Lihat Jenis' : 'Habis' %>
+          <div class="text-right">
+            <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Stock</div>
+            <span class="badge <%= p.stock > 0 ? 'badge-green' : 'badge-red' %>"><%= p.stock > 0 ? p.stock + ' ready' : 'Habis' %></span>
           </div>
         </div>
-      </div>
+
+        <div class="btn <%= p.stock > 0 ? 'bg-white text-black hover:bg-zinc-200' : 'bg-zinc-800 text-zinc-500' %> text-sm py-2 px-4 shadow-sm relative z-10 w-full">
+          <%= p.stock > 0 ? 'Lihat Jenis' : 'Habis' %>
+        </div>
+      </article>
     </a>
     <% }) %>
   </div>

@@ -120,7 +120,7 @@ const expiredTs = new Date(order.expired_at).getTime();
 
     async function checkStatus() {
       try {
-        const res = await fetch(`/api/order/${orderId}/status`);
+        const res = await fetch(`/api/store/order/${orderId}/status`);
         const data = await res.json();
         const box = document.getElementById('status-box');
 
@@ -142,7 +142,7 @@ const expiredTs = new Date(order.expired_at).getTime();
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
-    pollInterval = setInterval(checkStatus, 5000);
+    pollInterval = setInterval(checkStatus, 3000);
     checkStatus();
   </script>
   <% } %>
@@ -189,7 +189,7 @@ const expiredTs = new Date(order.expired_at).getTime();
     <% if (isExpired) { %>
       <a href="/store/produk/<%= order.slug %>" class="btn w-full block text-center py-4 text-base bg-white text-black hover:bg-zinc-200 transition-all font-bold rounded-xl">Buat Pesanan Baru</a>
     <% } %>
-    <a href="/store/"" class="btn btn-outline w-full block text-center py-3 text-sm border-zinc-800 hover:bg-zinc-900 rounded-xl">Kembali ke Katalog Toko</a>
+    <a href="/store/" class="btn btn-outline w-full block text-center py-3 text-sm border-zinc-800 hover:bg-zinc-900 rounded-xl">Kembali ke Katalog Toko</a>
   </div>
 
 </main>

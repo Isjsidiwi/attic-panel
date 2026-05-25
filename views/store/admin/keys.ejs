@@ -91,7 +91,7 @@
               <%= k.order_id ? '#' + k.order_id.substring(0,8).toUpperCase() : '-' %>
             </td>
             <td class="p-4">
-              <a href="#" onclick="event.preventDefault(); if(confirm('Hapus key ini? <%= k.is_used ? '\\n\\nPERHATIAN: Key ini sudah terpakai oleh pesanan. Menghapus key akan menghilangkan data key dari riwayat pesanan pembeli.' : '' %>')) { const f = document.createElement('form'); f.method='POST'; f.action='/admin/products/<%= product.id %>/keys/<%= k.id %>/delete'; document.body.appendChild(f); f.submit(); }" class="btn text-xs py-1 px-2.5" style="background:#ff444415;color:#ff8888;border:1px solid #ff444433">Hapus</a>
+              <a href="#" onclick="event.preventDefault(); if(confirm('Hapus key ini? <%= k.is_used ? '\\n\\nPERHATIAN: Key ini sudah terpakai oleh pesanan. Menghapus key akan menghilangkan data key dari riwayat pesanan pembeli.' : '' %>')) { const f = document.createElement('form'); f.method='POST'; f.action='/admin/store/products/<%= product.id %>/keys/<%= k.id %>/delete'; document.body.appendChild(f); f.submit(); }" class="btn text-xs py-1 px-2.5" style="background:#ff444415;color:#ff8888;border:1px solid #ff444433">Hapus</a>
             </td>
           </tr>
           <% }) %>

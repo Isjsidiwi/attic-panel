@@ -2,7 +2,7 @@
 <%- include('partials/header') %>
 
 <main class="max-w-3xl mx-auto px-6 py-12">
-  <a href="/store/"" class="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors mb-10">
+  <a href="/store/" class="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors mb-10">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
     Kembali ke Katalog
   </a>
@@ -70,7 +70,7 @@
       </ol>
     </div>
 
-    <a id="buy-btn" href="#" class="btn w-full block text-center py-4 text-base bg-zinc-800 text-zinc-500 cursor-not-allowed shadow-none border-0 rounded-xl">Pilih Jenis Terlebih Dahulu</a>
+    <a id="buy-btn" href="#" class="btn w-full block text-center py-4 text-base bg-zinc-800 text-zinc-500 cursor-not-allowed shadow-none border-0 rounded-lg">Pilih Jenis Terlebih Dahulu</a>
 
     <script>
       let selectedVariantId = null;
@@ -91,7 +91,7 @@
         // Update button
         const btn = document.getElementById('buy-btn');
         btn.href = '/store/checkout/' + slug + '/' + id;
-        btn.className = 'btn w-full block text-center py-4 text-base bg-white text-black hover:bg-zinc-200 hover:-translate-y-0.5 transition-all shadow-xl shadow-white/10 rounded-xl font-bold';
+        btn.className = 'btn w-full block text-center py-4 text-base bg-white text-black hover:bg-zinc-200 hover:-translate-y-0.5 transition-all shadow-xl shadow-white/10 rounded-lg font-bold';
         btn.textContent = 'Beli Sekarang →';
       }
     </script>

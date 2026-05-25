@@ -1,28 +1,47 @@
 const express = require('express');
 const router = express.Router();
 const { db } = require('../database');
-const { createQRIS, checkPayment, generateUniqueSuffix } = require('../services/payment');
+const { createQRIS, generateUniqueSuffix } = require('../services/payment');
+const { verifyAndFulfillOrder } = require('../services/storeOrders');
 const { randomUUID: uuidv4 } = require('crypto');
 
 // ── Beranda
 router.get('/', async (req, res) => {
   try {
-    const { rows: products } = await db.execute(`
+    const selectedCategory = (req.query.cat || '').trim();
+    const q = (req.query.q || '').trim();
+    const where = ['p.is_active = 1'];
+    const params = [];
+
+    if (selectedCategory && selectedCategory !== 'all') {
+      where.push('p.category = ?');
+      params.push(selectedCategory);
+    }
+    if (q) {
+      where.push('(p.name LIKE ? OR p.description LIKE ? OR p.category LIKE ?)');
+      params.push(`%${q}%`, `%${q}%`, `%${q}%`);
+    }
+
+    const productQuery = `
       SELECT p.*, 
         (SELECT COUNT(*) FROM store_keys k WHERE k.product_id = p.id AND k.is_used = 0) as stock,
         (SELECT MIN(price) FROM store_product_variants pv WHERE pv.product_id = p.id) as min_price,
+        (SELECT MAX(price) FROM store_product_variants pv WHERE pv.product_id = p.id) as max_price,
         (SELECT COUNT(*) FROM store_product_variants pv WHERE pv.product_id = p.id) as variant_count
-      FROM store_products p WHERE p.is_active = 1 ORDER BY p.created_at DESC
-    `);
+      FROM store_products p
+      WHERE ${where.join(' AND ')}
+      ORDER BY p.created_at DESC
+      `;
+    const { rows: products } = await db.execute(productQuery, params);
 
     const { rows: categories } = await db.execute(
       `SELECT DISTINCT category FROM store_products WHERE is_active = 1`
     );
 
-    res.render('store/index', { products, categories });
+    res.render('store/index', { products, categories, selectedCategory, q });
   } catch (err) {
     console.error(err);
-    res.render('store/index', { products: [], categories: [] });
+    res.render('store/index', { products: [], categories: [], selectedCategory: '', q: '' });
   }
 });
 
@@ -147,9 +166,10 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
       return res.render('store/checkout', { product, variant, error: 'Sistem pembayaran sedang gangguan. Coba beberapa saat lagi.' });
     }
 
-    // Expired 4 menit dari sekarang
+    // Waktu bayar dibuat cukup longgar agar mutasi QRIS yang telat tetap sempat terbaca.
     const nowIso = new Date().toISOString();
-    const expiredAt = new Date(Date.now() + 4 * 60 * 1000).toISOString();
+    const expireMinutes = Math.max(5, Number(process.env.STORE_ORDER_EXPIRE_MINUTES || 10));
+    const expiredAt = new Date(Date.now() + expireMinutes * 60 * 1000).toISOString();
 
     await db.execute(
       `INSERT INTO store_orders (id, product_id, variant_id, customer_name, customer_email, amount, unique_amount, unique_suffix, qris_id, qris_url, status, created_at, expired_at)
@@ -167,6 +187,8 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
 // ── Halaman Status Order
 router.get('/order/:id', async (req, res) => {
   try {
+    await verifyAndFulfillOrder(req.params.id);
+
     const { rows } = await db.execute(
       `SELECT o.*, p.name as product_name, p.logo_url, p.slug,
               pv.name as variant_name,

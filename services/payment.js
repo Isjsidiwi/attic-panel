@@ -141,16 +141,16 @@ async function getMutations(page = 1) {
 // Parse angka dari format "20.000" → 20000
 function parseAmount(str) {
   if (!str) return 0;
-  return parseInt(str.toString().replace(/\./g, ''), 10);
+  return parseInt(str.toString().replace(/[^\d]/g, ''), 10) || 0;
 }
 
 // Parse tanggal format "19/04/2026 15:02:53" (WIB) → Date object (UTC)
 function parseTanggal(str) {
-  const [datePart, timePart] = str.split(' ');
-  const [d, m, y] = datePart.split('/');
-  // Orkut return WIB (UTC+7). We force the offset to get a correct UTC Date object.
-  const isoStr = `${y}-${m}-${d}T${timePart}+07:00`;
-  return new Date(isoStr);
+  if (!str) return new Date(0);
+  const [datePart, timePart = '00:00:00'] = str.toString().trim().split(/\s+/);
+  const [d, m, y] = datePart.split(/[/-]/);
+  if (!d || !m || !y) return new Date(str);
+  return new Date(`${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}T${timePart}+07:00`);
 }
 
 // Cek apakah ada transaksi masuk sesuai unique_amount setelah created_at
@@ -158,26 +158,29 @@ async function checkPayment(uniqueAmount, createdAt) {
   try {
     // Pastikan createdDate dibaca sebagai UTC (ISO format)
     const createdDate = new Date(createdAt);
-    const mutRes = await getMutations(1);
+    const pagesToCheck = Number(process.env.PAYMENT_MUTATION_PAGES || 3);
 
-    if (!mutRes?.qris_history?.success) return false;
+    for (let page = 1; page <= pagesToCheck; page++) {
+      const mutRes = await getMutations(page);
 
-    const results = mutRes.qris_history.results || [];
-    console.log(`[PaymentCheck] Checking ${uniqueAmount} after ${createdDate.toISOString()}. Mutations: ${results.length}`);
+      if (!mutRes?.qris_history?.success) return false;
 
-    for (const trx of results) {
-      const trxAmount = parseAmount(trx.kredit);
-      const trxDate = parseTanggal(trx.tanggal);
+      const results = mutRes.qris_history.results || [];
+      console.log(`[PaymentCheck] Checking ${uniqueAmount} after ${createdDate.toISOString()}. Page ${page}, mutations: ${results.length}`);
 
-      // Beri toleransi waktu 10 menit ke belakang jika ada delay pencatatan
-      const timeBuffer = 10 * 60 * 1000; 
-      
-      if (trxAmount === uniqueAmount && trx.status === 'IN') {
-        const isRecent = trxDate.getTime() >= (createdDate.getTime() - timeBuffer);
-        console.log(`[PaymentCheck] Found match amount ${trxAmount}. TrxDate: ${trxDate.toISOString()}, Recent: ${isRecent}`);
-        
-        if (isRecent) {
-          return true;
+      for (const trx of results) {
+        const trxAmount = parseAmount(trx.kredit || trx.jumlah || trx.amount);
+        const trxDate = parseTanggal(trx.tanggal || trx.created_at || trx.date);
+        const status = (trx.status || trx.jenis || '').toString().toUpperCase();
+
+        // Beri toleransi waktu 10 menit ke belakang jika ada delay pencatatan
+        const timeBuffer = 10 * 60 * 1000;
+
+        if (trxAmount === Number(uniqueAmount) && (!status || status === 'IN' || status === 'KREDIT')) {
+          const isRecent = trxDate.getTime() >= (createdDate.getTime() - timeBuffer);
+          console.log(`[PaymentCheck] Found match amount ${trxAmount}. TrxDate: ${trxDate.toISOString()}, Recent: ${isRecent}`);
+
+          if (isRecent) return true;
         }
       }
     }

@@ -3,6 +3,7 @@ const cookieParser = require('cookie-parser');
 const session = require('cookie-session');
 const methodOverride = require('method-override');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 const { initDB } = require('./database');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
@@ -31,7 +32,7 @@ app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   // Basic CSP - adjust if you add external script/font providers
-  res.setHeader('Content-Security-Policy', "default-src 'self' https://cdn.tailwindcss.com; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; img-src 'self' data: https: http:; font-src 'self'; connect-src 'self'");
+  res.setHeader('Content-Security-Policy', "default-src 'self' https://cdn.tailwindcss.com; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://fonts.googleapis.com; img-src 'self' data: https: http:; font-src 'self' https://fonts.gstatic.com; connect-src 'self'");
   if (process.env.NODE_ENV === 'production' || req.secure || req.headers['x-forwarded-proto'] === 'https') {
     res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   }
@@ -41,9 +42,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Store specific locals
 app.use((req, res, next) => {
-  res.locals.storeName = process.env.STORE_NAME || 'XSRC-CLIENT';
-  res.locals.storeTagline = process.env.STORE_TAGLINE || 'cheat-store';
-  res.locals.isAdmin = (req.cookies._token) ? true : false; // Naive admin check for store frontend views
+  res.locals.storeName = process.env.STORE_NAME || 'XSRC';
+  res.locals.storeTagline = process.env.STORE_TAGLINE || 'xsrc cheat store';
+  res.locals.isAdmin = false;
+  if (req.cookies._token) {
+    try {
+      const payload = jwt.verify(req.cookies._token, process.env.JWT_SECRET || 'attic-jwt-fallback-secret');
+      res.locals.isAdmin = payload.role === 'owner';
+    } catch {}
+  }
   next();
 });
 
@@ -80,6 +87,7 @@ app.use('/api', apiRoutes);
 app.use('/store', storeIndexRoutes);
 app.use('/admin/store', storeAdminRoutes);
 app.use('/api/store', storeApiRoutes);
+app.use('/api', storeApiRoutes);
 const crypto = require('crypto');
 
 app.post('/mod/LoginData.php', (req, res) => {

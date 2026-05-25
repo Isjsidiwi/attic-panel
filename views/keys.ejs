@@ -1,5 +1,6 @@
 <%- include('partials/head') %>
 <% const isOwner = admin && admin.role === 'owner'; %>
+<% const canGenerateGame = isOwner || (gameOptions && gameOptions.length > 0); %>
 
 <div class="layout">
   <%- include('partials/sidebar') %>
@@ -14,7 +15,7 @@
         </p>
       </div>
       <div class="topbar-right">
-        <button class="btn-primary" data-open-modal="modal-generate">+ Generate Key</button>
+        <button class="btn-primary" data-open-modal="modal-generate" <%= canGenerateGame ? '' : 'disabled' %>>+ Generate Key</button>
         <% if (isOwner) { %>
           <a href="/admin/keys/export" class="btn-secondary">Export</a>
         <% } %>
@@ -160,11 +161,14 @@
     <form action="/admin/keys/generate" method="POST" class="modal-form" data-generate-form>
       <div class="field">
         <label class="field-label">GAME</label>
-        <select name="game" class="field-input" required>
+        <select name="game" class="field-input" required <%= canGenerateGame ? '' : 'disabled' %>>
           <% gameOptions.forEach(g => { %>
             <option value="<%= g.value %>" <%= g.value === 'CODM' ? 'selected' : '' %>><%= g.label %></option>
           <% }) %>
         </select>
+        <% if (!canGenerateGame) { %>
+          <p class="field-hint text-danger">Belum ada game yang diizinkan owner untuk akun kamu.</p>
+        <% } %>
       </div>
       <div class="field">
         <label class="field-label">RESOURCE</label>
@@ -213,7 +217,7 @@
       <% } %>
       <div class="modal-footer">
         <button type="button" class="btn-ghost modal-cancel">Batal</button>
-        <button type="submit" class="btn-primary">Generate</button>
+        <button type="submit" class="btn-primary" <%= canGenerateGame ? '' : 'disabled' %>>Generate</button>
       </div>
     </form>
   </div>

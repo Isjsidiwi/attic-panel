@@ -2,26 +2,105 @@
   <div class="max-w-4xl mx-auto px-6">
     <p class="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-4">Payment Support</p>
     <div class="flex flex-wrap justify-center gap-3 mb-8">
-      <span class="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-xs font-bold text-white shadow-sm">QRIS</span>
-      <span class="px-3 py-1.5 rounded-lg bg-[#00AED6]/10 border border-[#00AED6]/20 text-xs font-bold text-[#00AED6] shadow-sm">GoPay</span>
-      <span class="px-3 py-1.5 rounded-lg bg-[#118EEA]/10 border border-[#118EEA]/20 text-xs font-bold text-[#118EEA] shadow-sm">DANA</span>
-      <span class="px-3 py-1.5 rounded-lg bg-[#4C3494]/10 border border-[#4C3494]/20 text-xs font-bold text-[#9b7df0] shadow-sm">OVO</span>
-      <span class="px-3 py-1.5 rounded-lg bg-[#0066AE]/10 border border-[#0066AE]/20 text-xs font-bold text-[#459ce0] shadow-sm">BCA</span>
-      <span class="px-3 py-1.5 rounded-lg bg-[#00529C]/10 border border-[#00529C]/20 text-xs font-bold text-[#4e9de2] shadow-sm">BRI</span>
-      <span class="px-3 py-1.5 rounded-lg bg-[#FF6B00]/10 border border-[#FF6B00]/20 text-xs font-bold text-[#ff8f3d] shadow-sm">SeaBank</span>
-      <span class="px-3 py-1.5 rounded-lg bg-[#F7A600]/10 border border-[#F7A600]/20 text-xs font-bold text-[#ffc145] shadow-sm">Bank Jago</span>
+      <span class="payment-chip"><span class="payment-logo qris">QR</span>QRIS</span>
+      <span class="payment-chip"><span class="payment-logo gopay">GP</span>GoPay</span>
+      <span class="payment-chip"><span class="payment-logo dana">DANA</span>DANA</span>
+      <span class="payment-chip"><span class="payment-logo ovo">OVO</span>OVO</span>
+      <span class="payment-chip"><span class="payment-logo bca">BCA</span>BCA</span>
+      <span class="payment-chip"><span class="payment-logo bri">BRI</span>BRI</span>
+      <span class="payment-chip"><span class="payment-logo seabank">S</span>SeaBank</span>
+      <span class="payment-chip"><span class="payment-logo jago">J</span>Bank Jago</span>
     </div>
-    <p class="mono text-xs" style="color:var(--muted);opacity:.5">&copy; <%= new Date().getFullYear() %> <%= storeName %></p>
+    <p class="mono text-xs" style="color:var(--muted);opacity:.65">&copy; <%= new Date().getFullYear() %> <%= storeName %></p>
   </div>
 </footer>
 </div><!-- wrap -->
 <script>
-  window.addEventListener('load', () => {
-    const loader = document.getElementById('loader');
-    if (loader) {
-      loader.classList.add('loading-finished');
-      setTimeout(() => loader.remove(), 600);
-    }
+  const STORE_I18N = {
+    'Katalog': 'Catalog',
+    'Dashboard': 'Dashboard',
+    'Logout': 'Logout',
+    'Admin Login': 'Admin Login',
+    'Produk Digital': 'Digital Products',
+    'Dikirim Instan': 'Instant Delivery',
+    'Pilih produk, bayar dengan QRIS, dan dapatkan key secara otomatis dalam hitungan detik. Aktif 24/7.': 'Choose a product, pay with QRIS, and receive your key automatically in seconds. Online 24/7.',
+    'Semua': 'All',
+    'Katalog kosong': 'Catalog is empty',
+    'Harga sesuai jenis': 'Price by variant',
+    'Lihat Jenis': 'View Types',
+    'Habis': 'Sold Out',
+    'Kembali ke Katalog': 'Back to Catalog',
+    'Pilih Jenis Produk:': 'Choose Product Type:',
+    'Cara Beli Instan': 'Instant Purchase Flow',
+    'Pilih jenis produk pada daftar di atas': 'Choose a product type above',
+    'Isi nama serta email di halaman checkout': 'Fill your name and email on checkout',
+    'Scan kode QRIS dengan nominal pembayaran tepat': 'Scan QRIS with the exact payment amount',
+    'Produk digital (Key) langsung dikirim otomatis!': 'Digital key is delivered automatically',
+    'Pilih Jenis Terlebih Dahulu': 'Choose a Type First',
+    'Beli Sekarang ->': 'Buy Now ->',
+    'Checkout': 'Checkout',
+    'Kembali': 'Back',
+    'Nama Lengkap': 'Full Name',
+    'Email Aktif': 'Active Email',
+    'Kode Referral (Opsional)': 'Referral Code (Optional)',
+    'Cek': 'Check',
+    'Total Transfer': 'Total Transfer',
+    'Lanjut ke Pembayaran QRIS ->': 'Continue to QRIS Payment ->',
+    'Menunggu Pembayaran': 'Waiting for Payment',
+    'Pembayaran Berhasil!': 'Payment Successful!',
+    'Pesanan Kadaluarsa': 'Order Expired',
+    'Produk Key Anda': 'Your Product Key',
+    'Salin Key': 'Copy Key',
+    'Kembali ke Katalog Toko': 'Back to Store Catalog',
+    'Payment Support': 'Payment Support',
+    'Hubungi Kami': 'Contact Us',
+    'Customer Service': 'Customer Service'
+  };
+
+  function storeApplyLanguage() {
+    const lang = localStorage.getItem('lang') || 'id';
+    document.documentElement.setAttribute('data-lang', lang);
+    document.documentElement.lang = lang;
+    const btn = document.getElementById('store-lang-btn');
+    if (btn) btn.textContent = lang === 'id' ? 'EN' : 'ID';
+
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        const parent = node.parentElement;
+        if (!parent || ['SCRIPT', 'STYLE', 'CODE', 'PRE', 'TEXTAREA'].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+        return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(node => {
+      if (!node.__originalText) node.__originalText = node.nodeValue;
+      const original = node.__originalText;
+      const key = original.replace(/\s+/g, ' ').trim();
+      node.nodeValue = lang === 'en' && STORE_I18N[key] ? original.replace(key, STORE_I18N[key]) : original;
+    });
+  }
+
+  function storeApplyTheme() {
+    const isLight = localStorage.getItem('theme') === 'light';
+    document.documentElement.classList.toggle('light-theme', isLight);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    storeApplyTheme();
+    storeApplyLanguage();
+    const themeBtn = document.getElementById('store-theme-btn');
+    const langBtn = document.getElementById('store-lang-btn');
+    if (themeBtn) themeBtn.addEventListener('click', () => {
+      const next = document.documentElement.classList.contains('light-theme') ? 'dark' : 'light';
+      localStorage.setItem('theme', next);
+      storeApplyTheme();
+    });
+    if (langBtn) langBtn.addEventListener('click', () => {
+      const next = (localStorage.getItem('lang') || 'id') === 'id' ? 'en' : 'id';
+      localStorage.setItem('lang', next);
+      storeApplyLanguage();
+    });
   });
 </script>
 </body>

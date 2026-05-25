@@ -69,6 +69,26 @@ function normalizePrice(value) {
   return Math.max(1, Math.floor(Number(value) || 1));
 }
 
+function normalizeAllowedGames(value) {
+  const raw = Array.isArray(value) ? value : (value ? [value] : []);
+  const valid = new Set(GAME_OPTIONS.map(g => g.value));
+  return [...new Set(raw.map(v => String(v).toUpperCase()).filter(v => valid.has(v)))];
+}
+
+function parseAllowedGames(raw) {
+  try {
+    return normalizeAllowedGames(JSON.parse(raw || '[]'));
+  } catch {
+    return [];
+  }
+}
+
+function getVisibleGames(user) {
+  if (user.isOwner) return GAME_OPTIONS;
+  const allowed = new Set(normalizeAllowedGames(user.allowedGames || []));
+  return GAME_OPTIONS.filter(game => allowed.has(game.value));
+}
+
 router.get('/dashboard', auth, requireOwner, async (req, res) => {
   const now = Math.floor(Date.now() / 1000);
   const cfg = await loadConfig();
@@ -129,7 +149,7 @@ router.get('/keys', auth, async (req, res) => {
     keys, total: countRow.c,
     totalPages: Math.ceil(countRow.c / limit),
     currentPage: page, search, filter, now, fmtDate, parseSerials,
-    gameOptions: GAME_OPTIONS, priceMatrix
+    gameOptions: getVisibleGames(req.user), priceMatrix
   });
 });
 
@@ -147,6 +167,11 @@ router.post('/keys/generate', auth, async (req, res) => {
 
   if (!GAME_OPTIONS.some(g => g.value === gamePrefix)) {
     res.flash('error', 'Game tidak valid.');
+    return res.redirect('/admin/keys');
+  }
+
+  if (!req.user.isOwner && !normalizeAllowedGames(req.user.allowedGames).includes(gamePrefix)) {
+    res.flash('error', 'Game ini belum diizinkan owner untuk akun reseller kamu.');
     return res.redirect('/admin/keys');
   }
 
@@ -297,7 +322,7 @@ router.get('/keys/export', auth, requireOwner, async (req, res) => {
 router.get('/settings', auth, requireOwner, async (req, res) => {
   const cfg = await loadConfig();
   const [resellers, priceMatrix] = await Promise.all([
-    db.all("SELECT id, username, credit, is_active, created_at, expires_at FROM users WHERE role='reseller' ORDER BY created_at DESC"),
+    db.all("SELECT id, username, credit, is_active, created_at, expires_at, allowed_games FROM users WHERE role='reseller' ORDER BY created_at DESC"),
     getPriceMatrix()
   ]);
 
@@ -305,7 +330,7 @@ router.get('/settings', auth, requireOwner, async (req, res) => {
     title: 'Settings',
     panel_name: cfg.panel_name,
     cfg: { ...cfg, admin_password: '' },
-    resellers,
+    resellers: resellers.map(r => ({ ...r, allowedGames: parseAllowedGames(r.allowed_games) })),
     priceMatrix,
     pricingDays: PRICE_DAYS,
     pricingGames: GAME_OPTIONS,
@@ -356,6 +381,7 @@ router.post('/resellers', auth, requireOwner, async (req, res) => {
   const password = req.body.password || '';
   const credit = normalizeCredit(req.body.credit);
   const duration = req.body.duration;
+  const allowedGames = normalizeAllowedGames(req.body.allowed_games);
   const now = Math.floor(Date.now() / 1000);
 
   let expiresAt = null;
@@ -370,11 +396,15 @@ router.post('/resellers', auth, requireOwner, async (req, res) => {
     res.flash('error', 'Password reseller minimal 6 karakter.');
     return res.redirect('/admin/settings');
   }
+  if (allowedGames.length === 0) {
+    res.flash('error', 'Pilih minimal 1 game yang boleh diakses reseller.');
+    return res.redirect('/admin/settings');
+  }
 
   try {
     await db.run(
-      'INSERT INTO users (username, password_hash, role, credit, is_active, created_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [username, bcrypt.hashSync(password, 10), 'reseller', credit, 1, now, expiresAt]
+      'INSERT INTO users (username, password_hash, role, credit, is_active, created_at, expires_at, allowed_games) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [username, bcrypt.hashSync(password, 10), 'reseller', credit, 1, now, expiresAt, JSON.stringify(allowedGames)]
     );
   } catch (err) {
     res.flash('error', 'Username reseller sudah dipakai.');
@@ -392,6 +422,7 @@ router.post('/resellers/:id', auth, requireOwner, async (req, res) => {
   const credit = normalizeCredit(req.body.credit);
   const isActive = req.body.is_active === '1' ? 1 : 0;
   const extendDuration = req.body.extend_duration;
+  const allowedGames = normalizeAllowedGames(req.body.allowed_games);
   const now = Math.floor(Date.now() / 1000);
 
   const reseller = await db.get("SELECT * FROM users WHERE id=? AND role='reseller'", [id]);
@@ -407,9 +438,13 @@ router.post('/resellers/:id', auth, requireOwner, async (req, res) => {
     res.flash('error', 'Password reseller minimal 6 karakter.');
     return res.redirect('/admin/settings');
   }
+  if (allowedGames.length === 0) {
+    res.flash('error', 'Pilih minimal 1 game yang boleh diakses reseller.');
+    return res.redirect('/admin/settings');
+  }
 
-  const fields = ['username=?', 'credit=?', 'is_active=?', 'updated_at=?'];
-  const args = [username, credit, isActive, now];
+  const fields = ['username=?', 'credit=?', 'is_active=?', 'allowed_games=?', 'updated_at=?'];
+  const args = [username, credit, isActive, JSON.stringify(allowedGames), now];
   
   if (extendDuration && extendDuration !== 'none') {
     let newExpiresAt = reseller.expires_at || now;
@@ -531,63 +566,150 @@ router.post('/profile', auth, async (req, res) => {
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');
+const githubFiles = require('../services/githubFiles');
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const uploadDir = path.join(__dirname, '../public/uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  }
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: Number(process.env.MAX_UPLOAD_BYTES || 100 * 1024 * 1024) }
 });
-const upload = multer({ storage: storage });
+
+function uploadDir() {
+  return path.resolve(__dirname, '../public/uploads');
+}
+
+function resolveLocalUpload(filename) {
+  const dir = uploadDir();
+  const target = path.resolve(dir, githubFiles.sanitizeFileName(filename));
+  if (!target.startsWith(dir + path.sep) && target !== dir) {
+    throw new Error('Nama file tidak valid.');
+  }
+  return target;
+}
+
+function listLocalFiles() {
+  const dir = uploadDir();
+  if (!fs.existsSync(dir)) return [];
+
+  return fs.readdirSync(dir).map(name => {
+    const stats = fs.statSync(path.join(dir, name));
+    return {
+      name,
+      path: name,
+      sha: '',
+      sizeBytes: stats.size,
+      size: `${(stats.size / 1024).toFixed(2)} KB`,
+      date: stats.mtime,
+      url: `/uploads/${encodeURIComponent(name)}`,
+      storage: 'local'
+    };
+  }).sort((a, b) => b.date - a.date);
+}
 
 router.get('/files', auth, requireOwner, async (req, res) => {
   const cfg = await loadConfig();
-  const uploadDir = path.join(__dirname, '../public/uploads');
   let files = [];
-  
-  if (fs.existsSync(uploadDir)) {
-    const fileNames = fs.readdirSync(uploadDir);
-    files = fileNames.map(name => {
-      const stats = fs.statSync(path.join(uploadDir, name));
-      return {
-        name,
-        size: (stats.size / 1024).toFixed(2) + ' KB',
-        date: stats.mtime
-      };
-    }).sort((a, b) => b.date - a.date);
+  const githubConfigured = githubFiles.isConfigured();
+
+  try {
+    files = githubConfigured ? await githubFiles.listFiles() : listLocalFiles();
+  } catch (err) {
+    console.error('List files error:', err.message);
+    res.flash('error', 'Gagal mengambil daftar file GitHub. Cek token, owner, repo, dan branch.');
+    files = [];
   }
 
   res.render('files', {
     title: 'Manage Files',
     panel_name: cfg.panel_name,
-    files
+    files,
+    storageMode: githubConfigured ? 'GitHub repository' : 'Local fallback',
+    githubConfig: githubFiles.getConfig()
   });
 });
 
-router.post('/files/upload', auth, requireOwner, upload.single('file'), (req, res) => {
-  if (!req.file) {
-    res.flash('error', 'Tidak ada file yang diupload.');
-    return res.redirect('/admin/files');
+router.post('/files/upload', auth, requireOwner, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      res.flash('error', 'Tidak ada file yang diupload.');
+      return res.redirect('/admin/files');
+    }
+
+    if (githubFiles.isConfigured()) {
+      const uploaded = await githubFiles.uploadFile(req.file);
+      res.flash('success', `File ${uploaded.name} berhasil diupload ke GitHub.`);
+      return res.redirect('/admin/files');
+    }
+
+    const dir = uploadDir();
+    fs.mkdirSync(dir, { recursive: true });
+    const fileName = githubFiles.sanitizeFileName(req.file.originalname);
+    fs.writeFileSync(resolveLocalUpload(fileName), req.file.buffer);
+    res.flash('success', `File ${fileName} berhasil diupload lokal.`);
+  } catch (err) {
+    console.error('Upload file error:', err.message);
+    res.flash('error', `Gagal upload file: ${err.message}`);
   }
-  res.flash('success', `File ${req.file.originalname} berhasil diupload.`);
   res.redirect('/admin/files');
 });
 
-router.post('/files/delete/:filename', auth, requireOwner, (req, res) => {
-  const filename = req.params.filename;
-  const filepath = path.join(__dirname, '../public/uploads', filename);
-  
-  if (fs.existsSync(filepath)) {
-    fs.unlinkSync(filepath);
-    res.flash('success', `File ${filename} berhasil dihapus.`);
-  } else {
-    res.flash('error', 'File tidak ditemukan.');
+async function deleteManagedFile(req, res) {
+  try {
+    const targetPath = req.body.path || req.params.filename;
+    const sha = req.body.sha || '';
+    if (!targetPath) {
+      res.flash('error', 'File tidak ditemukan.');
+      return res.redirect('/admin/files');
+    }
+
+    if (githubFiles.isConfigured()) {
+      await githubFiles.deleteFile(targetPath, sha);
+      res.flash('success', 'File berhasil dihapus dari GitHub.');
+      return res.redirect('/admin/files');
+    }
+
+    const filepath = resolveLocalUpload(targetPath);
+    if (fs.existsSync(filepath)) {
+      fs.unlinkSync(filepath);
+      res.flash('success', `File ${githubFiles.sanitizeFileName(targetPath)} berhasil dihapus.`);
+    } else {
+      res.flash('error', 'File tidak ditemukan.');
+    }
+  } catch (err) {
+    console.error('Delete file error:', err.message);
+    res.flash('error', `Gagal hapus file: ${err.message}`);
+  }
+  res.redirect('/admin/files');
+}
+
+router.post('/files/delete', auth, requireOwner, deleteManagedFile);
+router.post('/files/delete/:filename', auth, requireOwner, deleteManagedFile);
+
+router.post('/files/rename', auth, requireOwner, async (req, res) => {
+  try {
+    const oldPath = req.body.path || req.body.old_name;
+    const newName = githubFiles.sanitizeFileName(req.body.new_name);
+    if (!oldPath || !newName) {
+      res.flash('error', 'Nama file rename tidak valid.');
+      return res.redirect('/admin/files');
+    }
+
+    if (githubFiles.isConfigured()) {
+      await githubFiles.renameFile(oldPath, newName);
+      res.flash('success', `File berhasil direname menjadi ${newName} di GitHub.`);
+      return res.redirect('/admin/files');
+    }
+
+    const oldFile = resolveLocalUpload(oldPath);
+    const newFile = resolveLocalUpload(newName);
+    if (!fs.existsSync(oldFile)) {
+      res.flash('error', 'File lama tidak ditemukan.');
+      return res.redirect('/admin/files');
+    }
+    fs.renameSync(oldFile, newFile);
+    res.flash('success', `File berhasil direname menjadi ${newName}.`);
+  } catch (err) {
+    console.error('Rename file error:', err.message);
+    res.flash('error', `Gagal rename file: ${err.message}`);
   }
   res.redirect('/admin/files');
 });

@@ -1,12 +1,35 @@
 const express = require('express');
 const router = express.Router();
 const { db } = require('../database');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { loadConfig } = require('../config');
 
-const requireAdmin = (req, res, next) => {
+const SECRET = () => process.env.JWT_SECRET || 'attic-jwt-fallback-secret';
+
+async function getOwnerFromRequest(req) {
   const token = req.cookies._token;
-  if (req.session.isAdmin || token) {
+  if (!token) return null;
+
+  try {
+    const payload = jwt.verify(token, SECRET());
+    const owner = payload.id
+      ? await db.execute(`SELECT * FROM users WHERE id = ? AND role = 'owner' AND is_active = 1`, [payload.id])
+      : await db.execute(`SELECT * FROM users WHERE username = ? AND role = 'owner' AND is_active = 1`, [payload.username]);
+
+    return owner.rows[0] || null;
+  } catch {
+    return null;
+  }
+}
+
+const requireAdmin = async (req, res, next) => {
+  const owner = await getOwnerFromRequest(req);
+  if (owner) {
+    req.storeAdmin = owner;
     return next();
   }
+  res.clearCookie('_token');
   res.redirect('/admin/store/login');
 };
 
@@ -16,25 +39,59 @@ function slugify(text) {
 
 // ── Login
 router.get('/login', (req, res) => {
-  if (req.session.isAdmin) return res.redirect('/admin/store');
   res.render('store/admin/login', { error: null });
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  
-  const validEnv = username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD;
-  const validHardcoded = username === 'miaw' && password === 'sukikir';
 
-  if (validEnv || validHardcoded) {
-    req.session.isAdmin = true;
+  const owner = await db.execute(
+    `SELECT * FROM users WHERE username = ? AND role = 'owner' AND is_active = 1 LIMIT 1`,
+    [(username || '').trim()]
+  );
+  const user = owner.rows[0];
+
+  if (user && bcrypt.compareSync(password || '', user.password_hash)) {
+    const token = jwt.sign(
+      { id: user.id, username: user.username, role: 'owner' },
+      SECRET(),
+      { expiresIn: '24h' }
+    );
+    res.cookie('_token', token, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production'
+    });
     return res.redirect('/admin/store');
   }
-  res.render('store/admin/login', { error: 'Username atau password salah.' });
+
+  const cfg = await loadConfig();
+  if ((username || '').trim() === cfg.admin_username && bcrypt.compareSync(password || '', cfg.admin_password || '')) {
+    const ownerUser = await db.execute(`SELECT * FROM users WHERE role = 'owner' AND is_active = 1 LIMIT 1`);
+    const fallbackOwner = ownerUser.rows[0];
+    if (fallbackOwner) {
+      const token = jwt.sign(
+        { id: fallbackOwner.id, username: cfg.admin_username, role: 'owner' },
+        SECRET(),
+        { expiresIn: '24h' }
+      );
+      res.cookie('_token', token, {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production'
+      });
+      return res.redirect('/admin/store');
+    }
+  }
+
+  res.render('store/admin/login', { error: 'Login store hanya untuk akun owner/admin utama.' });
 });
 
 router.get('/logout', (req, res) => {
   req.session = null;
+  res.clearCookie('_token');
   res.redirect('/admin/store/login');
 });
 
