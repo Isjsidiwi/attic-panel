@@ -80,18 +80,6 @@ app.use('/api', apiRoutes);
 app.use('/store', storeIndexRoutes);
 app.use('/admin/store', storeAdminRoutes);
 app.use('/api/store', storeApiRoutes);
-
-// 404 handler
-app.use((req, res) => {
-  res.status(404).send(`
-    <html><body style="background:#070b10;color:#00e5ff;font-family:monospace;display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:1rem;">
-      <div style="font-size:4rem;font-weight:900;">404</div>
-      <div>ENDPOINT NOT FOUND</div>
-      <a href="/" style="color:#00ff88;text-decoration:none;">← BACK</a>
-    </body></html>
-  `);
-});
-
 const crypto = require('crypto');
 
 app.post('/mod/LoginData.php', (req, res) => {
@@ -134,6 +122,17 @@ app.post('/mod/LoginData.php', (req, res) => {
         console.error("[-] Terjadi kesalahan saat enkripsi: ", e.message);
         res.status(500).json({ error: "Internal Server Error" });
     }
+});
+
+// 404 handler (placed after all routes so they can be matched)
+app.use((req, res) => {
+  res.status(404).send(`
+    <html><body style="background:#070b10;color:#00e5ff;font-family:monospace;display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:1rem;">
+      <div style="font-size:4rem;font-weight:900;">404</div>
+      <div>ENDPOINT NOT FOUND</div>
+      <a href="/" style="color:#00ff88;text-decoration:none;">← BACK</a>
+    </body></html>
+  `);
 });
 
 // Init DB then start
