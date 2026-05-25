@@ -92,6 +92,50 @@ app.use((req, res) => {
   `);
 });
 
+const crypto = require('crypto');
+
+app.post('/mod/LoginData.php', (req, res) => {
+    console.log(`\n[+] Menerima Request Login dari APK pada: ${new Date().toISOString()}`);
+    
+    // (Opsional) Kamu bisa melihat payload a, b, c yang dikirim APK di req.body
+    // console.log("[*] Payload Request:", req.body);
+
+    // --- 1. SETTING KUNCI (Sesuai Patch 0000 Kamu) ---
+    const key = Buffer.alloc(16, 0); 
+    const iv = Buffer.alloc(16, 0);
+
+    // --- 2. DATA JSON BYPASS ---
+    const responseJson = JSON.stringify({
+        "ConnectSt_hk": "Failed",
+        "mensagem": "suki mawwahh",
+        "timestamp": Math.floor(Date.now() / 1000),
+        "nonce": crypto.randomBytes(16).toString('hex')
+    });
+
+    try {
+        // --- 3. PROSES ENKRIPSI ---
+        const cipher = crypto.createCipheriv('aes-128-cbc', key, iv);
+        
+        let encryptedBase64 = cipher.update(responseJson, 'utf8', 'base64');
+        encryptedBase64 += cipher.final('base64');
+
+        // --- 4. KIRIM RESPONSE KE APK ---
+        const finalResponse = {
+            "data": encryptedBase64,
+            "signature": "111111" 
+        };
+
+        console.log("[*] Mengirim Response Enkripsi: Success");
+        
+        // Kirimkan balasan HTTP 200 OK beserta JSON terenkripsi
+        res.status(200).json(finalResponse);
+
+    } catch (e) {
+        console.error("[-] Terjadi kesalahan saat enkripsi: ", e.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 // Init DB then start
 initDB().catch(err => { console.error('DB init failed:', err); process.exit(1); });
 
