@@ -252,9 +252,14 @@
 </div>
 
 <script src="/js/main.js"></script>
-</body>
-</html>
-     return;
+<script>
+  function updateCountdowns() {
+    const now = Math.floor(Date.now() / 1000);
+    document.querySelectorAll('.countdown-timer').forEach(el => {
+      const expiresAt = parseInt(el.dataset.expires, 10);
+      if (!expiresAt) {
+        el.style.display = 'none';
+        return;
       }
       const diff = expiresAt - now;
       if (diff <= 0) {

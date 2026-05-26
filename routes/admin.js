@@ -111,6 +111,15 @@ router.get('/dashboard', auth, requireOwner, async (req, res) => {
   });
 });
 
+router.get('/tools', auth, async (req, res) => {
+  const cfg = await loadConfig();
+  res.render('tools', {
+    title: 'CyberChef (Enc/Dec Tools)',
+    panel_name: cfg.panel_name,
+    admin: req.user
+  });
+});
+
 router.get('/keys', auth, async (req, res) => {
   const now    = Math.floor(Date.now() / 1000);
   const page   = Math.max(1, parseInt(req.query.page) || 1);
