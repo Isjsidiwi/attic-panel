@@ -1,0 +1,11 @@
+CRITICAL - 2024-11-11 15:57:26 --> Undefined index: HTTP_USER_AGENT
+#0 /home/apikeyon/praso.synax.site/app/Views/Auth/login.php(57): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Undefined index...', '/home/apikeyon/...', 57, Array)
+#1 /home/apikeyon/praso.synax.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/apikeyon/...')
+#2 /home/apikeyon/praso.synax.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/apikeyon/praso.synax.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Auth/login', Array, true)
+#4 /home/apikeyon/praso.synax.site/app/Controllers/Auth.php(54): view('Auth/login', Array)
+#5 /home/apikeyon/praso.synax.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Auth->login()
+#6 /home/apikeyon/praso.synax.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Auth))
+#7 /home/apikeyon/praso.synax.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/apikeyon/praso.synax.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}

@@ -1,0 +1,27 @@
+CRITICAL - 2024-12-06 18:00:10 --> mysqli_connect(): (HY000/2002): No such file or directory
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli_connect(...', '/home/divyajis/...', 8, Array)
+#1 /home/divyajis/prasoyt.divyaji.shop/conn.php(8): mysqli_connect('localhost', 'divyajis_praso', 'divyajis_praso', 'divyajis_praso')
+#2 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Connect.php(13): include('/home/divyajis/...')
+#3 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(801): App\Controllers\Connect->__construct()
+#4 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(401): CodeIgniter\CodeIgniter->createController()
+#5 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/divyajis/prasoyt.divyaji.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}
+CRITICAL - 2024-12-06 18:00:11 --> mysqli_connect(): (HY000/2002): No such file or directory
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli_connect(...', '/home/divyajis/...', 8, Array)
+#1 /home/divyajis/prasoyt.divyaji.shop/conn.php(8): mysqli_connect('localhost', 'divyajis_praso', 'divyajis_praso', 'divyajis_praso')
+#2 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Connect.php(13): include('/home/divyajis/...')
+#3 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(801): App\Controllers\Connect->__construct()
+#4 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(401): CodeIgniter\CodeIgniter->createController()
+#5 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/divyajis/prasoyt.divyaji.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}
+CRITICAL - 2024-12-06 18:00:12 --> mysqli_connect(): (HY000/2002): No such file or directory
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli_connect(...', '/home/divyajis/...', 8, Array)
+#1 /home/divyajis/prasoyt.divyaji.shop/conn.php(8): mysqli_connect('localhost', 'divyajis_praso', 'divyajis_praso', 'divyajis_praso')
+#2 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Connect.php(13): include('/home/divyajis/...')
+#3 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(801): App\Controllers\Connect->__construct()
+#4 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(401): CodeIgniter\CodeIgniter->createController()
+#5 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/divyajis/prasoyt.divyaji.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}

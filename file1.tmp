@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<meta name="csrf-token" content="FJPvwCsRnNY8aoMlzsm3fP4diGeA23xLqTOBHkCT" />
+<meta name="theme-color" content="#948B56">
+<meta name="title" content="Catbox - PRINCEVIPv8.zip">
+<meta name="description" content="Upload your images, documents, music, and video in a single place and access them anywhere and share them everywhere.">
+<meta name="keywords" content="upload,share files,uploadfile,upload files,host files">
+<link rel="alternate" hreflang="x-default" href="https://www.catbox.to" />
+<meta name="robots" content="index, follow">
+<meta name="language" content="English">
+<meta name="author" content="Catbox">
+<meta property="og:url" content="https://www.catbox.to/Bryf4ysyx6kWIw0/file">
+<meta property="og:image" content="https://www.catbox.to/images/social-image.jpg">
+<meta property="og:site_name" content="Catbox">
+<meta property="og:locale" content="en">
+<meta property="og:locale:alternate" content="en_EN">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Catbox - PRINCEVIPv8.zip">
+<meta property="og:description" content="Upload your images, documents, music, and video in a single place and access them anywhere and share them everywhere.">
+<meta property="og:image:width" content="600">
+<meta property="og:image:height" content="315">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Catbox - PRINCEVIPv8.zip">
+<meta name="twitter:image:src" content="https://www.catbox.to/images/social-image.jpg">
+<meta name="twitter:description" content="Upload your images, documents, music, and video in a single place and access them anywhere and share them everywhere.">
+<meta name="application-name" content="Catbox"/>
+<meta name="msapplication-TileImage" content="https://www.catbox.to/images/favicon.png"/>
+<meta name="msapplication-TileColor" content="#948B56"/>
+<meta name="msapplication-square70x70logo" content="https://www.catbox.to/images/favicon.png"/>
+<meta name="msapplication-square150x150logo" content="https://www.catbox.to/images/favicon.png"/>
+<meta name="msapplication-wide310x150logo" content="https://www.catbox.to/images/favicon.png"/>
+<meta name="msapplication-square310x310logo" content="https://www.catbox.to/images/favicon.png"/>
+<title>Catbox — Download — PRINCEVIPv8.zip</title>
+<link rel="apple-touch-icon-precomposed" href="https://www.catbox.to/images/favicon.png"/>
+<link rel="icon" href="https://www.catbox.to/images/favicon.png" sizes="16x16 32x32 48x48 64x64"type="image/vnd.microsoft.icon"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700&display=swap">
+    <link rel="stylesheet" href="https://www.catbox.to/assets/vendor/libs/bootstrap/bootstrap.min.css">
+<link rel="stylesheet" href="https://www.catbox.to/assets/vendor/libs/fontawesome/fontawesome.min.css">
+<link rel="stylesheet" href="https://www.catbox.to/assets/vendor/libs/toastr/toastr.min.css">
+<link rel="stylesheet" href="https://www.catbox.to/assets/css/extra/colors.css">
+<link rel="stylesheet" href="https://www.catbox.to/assets/css/extra/extra.css">
+        <link rel="stylesheet" href="https://www.catbox.to/assets/vendor/libs/vironeer/vironeer-icons.min.css">
+    <link rel="stylesheet" href="https://www.catbox.to/assets/css/application.css?id=065f120719d6ca486110">
+<style>
+    /* Фон для всей страницы скачивания */
+    body {
+        background-image: url('/images/background-download/bg-download.jpeg') !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+        /* Добавляем полупрозрачный слой для лучшей читаемости */
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        background-blend-mode: overlay !important;
+    }
+    
+    /* Стили для основного контента */
+    .filebox {
+        background: rgba(255, 255, 255, 0) !important;
+        border-radius: 15px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 255, 255, 0) !important;
+    }
+    
+    /* Стили для рекламных блоков (если есть) */
+    .col-12.col-lg-4 > div {
+        background: rgba(255, 255, 255, 0) !important;
+        border-radius: 10px !important;
+        padding: 15px !important;
+        margin-bottom: 15px !important;
+        backdrop-filter: blur(5px) !important;
+    }
+    
+    /* Улучшенные стили для кнопок */
+    .btn {
+        backdrop-filter: blur(10px) !important;
+        border: 1px solid rgba(255, 255, 255, 0) !important;
+    }
+    
+    /* Стили для модальных окон */
+    .modal-content {
+        background: rgba(255, 255, 255, 0) !important;
+        backdrop-filter: blur(15px) !important;
+        border-radius: 15px !important;
+    }
+    
+    /* Прозрачный фон для filebox-info */
+    .filebox-info {
+        background: rgba(255, 255, 255, 0) !important;
+        backdrop-filter: blur(0px) !important;
+        border-radius: 10px !important;
+        padding: 15px !important;
+    }
+    .nav-bar {
+        background: rgba(255, 255, 255, 0) !important;
+        backdrop-filter: blur(0px) !important;
+        border-radius: 10px !important;
+        padding: 15px !important;
+    }
+    .header .nav-bar .logo img {
+        margin-top: 5px;
+        padding: 10px;
+        height: 90%;
+    }
+    .footer.mt-auto {
+        background: rgba(255, 255, 255, 0) !important;
+        border-top: 0px solid #e6e6e6;
+        backdrop-filter: blur(0px) !important;
+        padding: 15px !important;
+    }
+    
+    /* Прозрачный фон для рекламного блока */
+    .d-flex.justify-content-center.flex-lg-column.flex-wrap {
+        background: rgba(255, 255, 255, 0) !important;
+        backdrop-filter: blur(5px) !important;
+        border-radius: 10px !important;
+        padding: 15px !important;
+    }
+    
+    /* Прозрачный фон для list-group */
+    .list-group.list-group-flush {
+        background: rgba(255, 255, 255, 0) !important;
+        backdrop-filter: blur(5px) !important;
+        border-radius: 10px !important;
+    }
+    
+    /* Прозрачный фон для элементов списка */
+    .list-group.list-group-flush .list-group-item {
+        background: rgba(255, 255, 255, 0) !important;
+        border-color: rgba(255, 255, 255, 0) !important;
+    }
+    
+    /* Прозрачный фон для карточек */
+    .card.p-0.mb-3.shadow-none {
+        background: rgba(255, 255, 255, 0) !important;
+        border: 1px solid rgba(255, 255, 255, 0) !important;
+        backdrop-filter: blur(5px) !important;
+        border-radius: 10px !important;
+    }
+    
+    /* Белый цвет для всего текста на странице */
+    body, 
+    body * {
+        color: white !important;
+    }
+    
+    /* Белый цвет для ссылок */
+    a, 
+    a:hover, 
+    a:focus, 
+    a:visited {
+        color: white !important;
+    }
+    
+    /* Белый цвет для заголовков */
+    h1, h2, h3, h4, h5, h6 {
+        color: white !important;
+    }
+    
+    /* Белый цвет для параграфов и текста */
+    p, span, div, li, td, th {
+        color: white !important;
+    }
+    
+    /* Белый цвет для кнопок */
+    .btn {
+        color: white !important;
+    }
+    
+    /* Белый цвет для форм */
+    input, textarea, select {
+        color: white !important;
+    }
+</style>
+<link rel="stylesheet" href="https://www.catbox.to/assets/css/extra/custom.css">
+    <!--Head code -->
+</head>
+
+
+<body class="only-nav px-3">
+    <header class="header v3">
+        <nav class="nav-bar">
+    <div class="container d-flex align-items-center">
+        <a href="https://www.catbox.to" class="logo">
+            <img src="https://www.catbox.to/images/light-logo.png" alt="Catbox" />
+            <!-- <img src="https://www.catbox.to/images/dark-logo.png" alt="Catbox" /> -->
+        </a>
+        <div class="nav-bar-actions ms-auto">
+            <div class="nav-bar-menu">
+                <div class="overlay"></div>
+                <div class="nav-bar-links">
+                    <div class="d-flex justify-content-between w-100 mb-3 d-lg-none">
+                        <button class="btn-close"></button>
+                    </div>
+                                            <a class="nav-bar-link"
+                            href=/>
+                            Home
+                        </a>
+                                        <div class="dropdown language">
+                        <button data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="language-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            English
+                            <div class="language-arrow">
+                                <i class="fas fa-chevron-down fa-xs"></i>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                            <li><a class="dropdown-item active"
+                                        href="https://www.catbox.to/en">English</a></li>
+                                                    </ul>
+                    </div>
+                </div>
+            </div>
+                        <div class="nav-bar-menu-icon d-lg-none">
+                <i class="fa fa-bars fa-lg"></i>
+            </div>
+        </div>
+    </div>
+</nav>
+            </header>
+        <center>
+           <div class="d-flex justify-content-center pt-4">
+               <div class="vr-adv-unit vr-adv-unit-728x90 download-page-header-ad"><img src="https://dummyimage.com/720x90" width="100%" height="100%"></div>
+           </div>
+        </center>
+    <div class="section-content py-4">
+        <div class="contain">
+            <div class="row g-3">
+                                    <div class="col-12 col-lg-4 order-2 order-lg-1">
+                        <div class="d-flex justify-content-center flex-lg-column flex-wrap">
+                            
+                            
+                        </div>
+                    </div>
+                                <div class="col-12  col-lg-8 order-1 order-lg-5">
+                    <div class="filebox">
+                        <div class="filebox-info">
+                            <span class="vi vi-file " data-type="zip"></span>
+                            <div class="filebox-desc mx-3">
+                                <p class="filebox-title mb-1">PRINCEVIPv8.zip</p>
+                                <div class="filebox-actions">
+                                    <a data-bs-toggle="modal" data-bs-target="#share" rel="tooltip" data-bs-placement="top"
+                                        title="Share File">
+                                        <i class="fas fa-share-alt"></i>
+                                    </a>
+                                                                                                                <a data-bs-toggle="modal" data-bs-target="#report" rel="tooltip"
+                                            data-bs-placement="top" title="Report File">
+                                            <i class="far fa-flag"></i>
+                                        </a>
+                                                                    </div>
+                            </div>
+                            <div class="filebox-download">
+                                                                                                            <a class="download-link"
+                                            href="https://www.catbox.to/download/Bryf4ysyx6kWIw0/EQN9mEwVpz6dW/PRINCEVIPv8.zip">Download (14.15 MB)</a>
+                                                                                                </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12 col-md-8">
+                            <div class="px-3">
+                                <div class="d-flex align-items-center mb-3">
+                                    <span class="vi vi-file flex-shrink-0" data-type="zip"></span>
+                                    <div class="ms-3">
+                                        <p class="mb-0 text-ellipsis">PRINCEVIPv8.zip</p>
+                                                                                    <span class="h6">
+                                                <strong>File extension (.ZIP)</strong>
+                                            </span>
+                                                                            </div>
+                                </div>
+                                <p class="mb-1 small">
+                                    <strong>File size :</strong>
+                                    14.15 MB
+                                </p>
+                                <p class="mb-1 small">
+                                    <strong>Uploaded at:</strong>
+                                    May 25, 2026 08:09 PM
+                                </p>
+                                <div class="small mt-3">
+                                    <p class="mb-2">
+                                        <strong>About PRINCEVIPv8.zip</strong>
+                                    </p>
+                                    <p clas="mb-0">File name PRINCEVIPv8.zip, which is a zip format, and it its one of the files that can be downloaded and used easily. You can upload similar files without the need for a Catbox account, or you can create an account by clicking on the sign-up button and you will be able to upload and manage your files. Catbox supports many file formats and you can upload your files and share them anywhere and download them anytime</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="card p-0 mb-3 shadow-none">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <strong><i
+                                                class="fas fa-download me-1"></i>Downloads</strong>
+                                        <span>0</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <strong><i class="fa fa-eye me-1"></i>Views</strong>
+                                        <span>2</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+            
+                <div id="report" class="modal fade" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Report this file</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="https://www.catbox.to/Bryf4ysyx6kWIw0/file/report" method="POST">
+                            <input type="hidden" name="_token" value="FJPvwCsRnNY8aoMlzsm3fP4diGeA23xLqTOBHkCT">                            <div class="row g-3 mb-3">
+                                <div class="col-lg-6">
+                                    <label class="form-label">Name : <span
+                                            class="red">*</span></label>
+                                    <input type="name" name="name" class="form-control form-control-lg"
+                                        value="" required>
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label">Email : <span
+                                            class="red">*</span></label>
+                                    <input type="email" name="email" class="form-control form-control-lg"
+                                        value="" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Reason for reporting :
+                                    <span class="red">*</span></label>
+                                <select name="reason" class="form-select form-select-lg" required>
+                                                                            <option value="0">Privacy, copyright or legal complaints</option>
+                                                                            <option value="1">Spam or misleading</option>
+                                                                            <option value="2">Malware, virus or malicious content</option>
+                                                                            <option value="3">Child abuse</option>
+                                                                            <option value="4">Other</option>
+                                                                    </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Details : <span
+                                        class="red">*</span></label>
+                                <textarea name="details" class="form-control" rows="7"
+                                    placeholder="Describe the reason why you reported the file to a maximum of 600 characters"
+                                    required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Send</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="share" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 pt-1 mb-1">
+                <h5 class="mb-4"><i class="fas fa-share-alt me-2"></i>Share this file</h5>
+                <p class="mb-4 text-ellipsis"><strong>PRINCEVIPv8.zip</strong></p>
+                                    <div class="mb-3">
+                        <div class="share">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.catbox.to/Bryf4ysyx6kWIw0/file" target="_blank" class="bg-facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://twitter.com/intent/tweet?text=https://www.catbox.to/Bryf4ysyx6kWIw0/file" target="_blank" class="bg-twitter"><i class="fab fa-twitter"></i></a>
+    <a href="https://wa.me/?text=https://www.catbox.to/Bryf4ysyx6kWIw0/file" target="_blank" class="bg-whatsapp"><i class="fab fa-whatsapp"></i></a>
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://www.catbox.to/Bryf4ysyx6kWIw0/file" target="_blank" class="bg-linkedin"><i class="fab fa-linkedin"></i></a>
+    <a href="https://pinterest.com/pin/create/button/?url=https://www.catbox.to/Bryf4ysyx6kWIw0/file" target="_blank" class="bg-pinterest"><i class="fab fa-pinterest"></i></a>
+                        </div>
+                    </div>
+                                        <div class="mb-3">
+                        <label class="form-label"><strong>Download link</strong></label>
+                        <div class="input-group">
+                            <input id="copy-download-link" type="text" class="form-control"
+                                value="https://www.catbox.to/Bryf4ysyx6kWIw0/file" readonly>
+                            <button type="button" class="btn btn-primary btn-md copy"
+                                data-clipboard-target="#copy-download-link"><i class="far fa-clone"></i></button>
+                        </div>
+                    </div>
+                            </div>
+        </form>
+    </div>
+</div>
+                <footer class="footer mt-auto ">
+    <div class="container">
+        <div class="d-flex align-items-center flex-column flex-md-row">
+            <p class="mb-0 text-muted mb-3 mb-md-0">&copy; <span data-year></span> Catbox -
+                All rights reserved.</p>
+                            <div class="footer-links ms-md-auto">
+                                            <div class="footer-link">
+                            <a href="/terms-of-service.html">Terms of service</a>
+                        </div>
+                                            <div class="footer-link">
+                            <a href="/privacy-policy.html">Privacy policy</a>
+                        </div>
+                                            <div class="footer-link">
+                            <a href="/acceptable-use-policy.html">Acceptable use policy</a>
+                        </div>
+                                    </div>
+                    </div>
+    </div>
+</footer>
+    <script>
+    "use strict";
+    const config = {
+        lang: "en",
+        baseURL: "https://www.catbox.to",
+        countryCode: "ID",
+        primaryColor: "#948B56",
+        secondaryColor: "#948B56",
+        alertActionTitle: "Are you sure?",
+        alertActionText: "Confirm that you want do this action",
+        alertActionConfirmButton: "Confirm",
+        alertActionCancelButton: "Cancel",
+        copiedToClipboardSuccess: "Copied to clipboard",
+        LoadingOverlayColor: "#948B56",
+    };
+    let configObjects = JSON.stringify(config),
+        getConfig = JSON.parse(configObjects);
+</script>
+        <script>
+            "use strict";
+            const downloadWaitingTime = "0";
+            const downloadBtnTxt = "Download (14.15 MB)";
+            const downloadingBtnTxt = "Downloading...";
+            const reDownloadBtnTxt = "Re-download";
+            const clickHereTxt = "Click here";
+            const downloadId = "Bryf4ysyx6kWIw0";
+        </script>
+    <script src="https://www.catbox.to/assets/vendor/libs/jquery/jquery.min.js"></script>
+<script src="https://www.catbox.to/assets/vendor/libs/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="https://www.catbox.to/assets/vendor/libs/jqueryloadingoverlay/loadingoverlay.min.js"></script>
+<script src="https://www.catbox.to/assets/vendor/libs/clipboard/clipboard.min.js"></script>
+<script src="https://www.catbox.to/assets/vendor/libs/toastr/toastr.min.js"></script>
+<script src="https://www.catbox.to/assets/js/application.js?id=4b0647a06f3051189d8d"></script>
+<script src="https://www.catbox.to/assets/js/extra/extra.js"></script>
+        
+    <script type="text/javascript">toastr.options = {"closeButton":true,"closeClass":"toast-close-button","closeDuration":300,"closeEasing":"swing","closeHtml":"<button><i class=\"icon-off\"><\/i><\/button>","closeMethod":"fadeOut","closeOnHover":true,"containerId":"toast-container","debug":false,"escapeHtml":false,"extendedTimeOut":10000,"hideDuration":1000,"hideEasing":"linear","hideMethod":"fadeOut","iconClass":"toast-info","iconClasses":{"error":"toast-error","info":"toast-info","success":"toast-success","warning":"toast-warning"},"messageClass":"toast-message","newestOnTop":false,"onHidden":null,"onShown":null,"positionClass":"toast-top-right","preventDuplicates":true,"progressBar":true,"progressClass":"toast-progress","rtl":false,"showDuration":1000,"showEasing":"swing","showMethod":"fadeIn","tapToDismiss":true,"target":"body","timeOut":3000,"titleClass":"toast-title","toastClass":"toast"};</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"bac9fdeaf5ce43e5b201959905dddea1","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a018babc9fe2fd6b',t:'MTc3OTc1NjAzNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+</html>

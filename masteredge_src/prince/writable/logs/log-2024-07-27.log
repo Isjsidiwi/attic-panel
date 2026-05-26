@@ -1,0 +1,22 @@
+CRITICAL - 2024-07-27 23:53:22 --> Table 'vipkey_jashan.Keygen_Links' doesn't exist
+#0 /home/vipkey/jashandeveloper.vipkey.site/app/Views/Server/ManageShortenerLinks.php(88): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/ja...')
+#2 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageSh...', Array, true)
+#4 /home/vipkey/jashandeveloper.vipkey.site/app/Controllers/User.php(154): view('Server/ManageSh...', Array)
+#5 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageShortenerLinks()
+#6 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/jashandeveloper.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-07-27 23:53:39 --> Table 'vipkey_jashan.visitor_logs' doesn't exist
+#0 /home/vipkey/jashandeveloper.vipkey.site/app/Views/Server/ManageHackingAttempt.php(34): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/ja...')
+#2 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageHa...', Array, true)
+#4 /home/vipkey/jashandeveloper.vipkey.site/app/Controllers/User.php(116): view('Server/ManageHa...', Array)
+#5 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageHackingAttempt()
+#6 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/vipkey/jashandeveloper.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/jashandeveloper.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}

@@ -1,0 +1,9 @@
+CRITICAL - 2024-12-04 17:10:52 --> A non-numeric value encountered
+#0 /home/divyajis/prasoyt.divyaji.shop/app/Helpers/nata_helper.php(88): CodeIgniter\Debug\Exceptions->errorHandler(2, 'A non-numeric v...', '/home/divyajis/...', 88, Array)
+#1 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Keys.php(372): getPrice(Array, '2', '')
+#2 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Keys.php(339): App\Controllers\Keys->generate_action()
+#3 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Keys->generate()
+#4 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Keys))
+#5 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/divyajis/prasoyt.divyaji.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}

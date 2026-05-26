@@ -1,0 +1,31 @@
+CRITICAL - 2024-09-01 09:28:31 --> A non-numeric value encountered
+#0 /home/imdaduro/alfas-xd.imdadur.online/app/Helpers/nata_helper.php(88): CodeIgniter\Debug\Exceptions->errorHandler(2, 'A non-numeric v...', '/home/imdaduro/...', 88, Array)
+#1 /home/imdaduro/alfas-xd.imdadur.online/app/Controllers/Keys.php(372): getPrice(Array, '168', '')
+#2 /home/imdaduro/alfas-xd.imdadur.online/app/Controllers/Keys.php(339): App\Controllers\Keys->generate_action()
+#3 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Keys->generate()
+#4 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Keys))
+#5 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/imdaduro/alfas-xd.imdadur.online/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}
+CRITICAL - 2024-09-01 18:13:35 --> Table 'imdaduro_alfas.Keygen_Links' doesn't exist
+#0 /home/imdaduro/alfas-xd.imdadur.online/app/Views/Server/ManageShortenerLinks.php(88): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/imdaduro/...')
+#2 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageSh...', Array, true)
+#4 /home/imdaduro/alfas-xd.imdadur.online/app/Controllers/User.php(154): view('Server/ManageSh...', Array)
+#5 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageShortenerLinks()
+#6 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/imdaduro/alfas-xd.imdadur.online/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-09-01 18:15:36 --> Table 'imdaduro_alfas.visitor_logs' doesn't exist
+#0 /home/imdaduro/alfas-xd.imdadur.online/app/Views/Server/ManageHackingAttempt.php(34): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/imdaduro/...')
+#2 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageHa...', Array, true)
+#4 /home/imdaduro/alfas-xd.imdadur.online/app/Controllers/User.php(116): view('Server/ManageHa...', Array)
+#5 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageHackingAttempt()
+#6 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/imdaduro/alfas-xd.imdadur.online/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/imdaduro/alfas-xd.imdadur.online/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}

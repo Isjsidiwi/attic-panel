@@ -1,0 +1,70 @@
+ERROR - 2024-12-05 20:20:31 --> Error connecting to the database: Too many connections
+CRITICAL - 2024-12-05 20:20:31 --> Unable to connect to the database.
+Main connection [MySQLi]: Too many connections
+#0 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/Database/BaseConnection.php(577): CodeIgniter\Database\BaseConnection->initialize()
+#1 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1443): CodeIgniter\Database\BaseConnection->query('SELECT 1\nFROM `...', Array, false)
+#2 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/Validation/Rules.php(116): CodeIgniter\Database\BaseBuilder->get()
+#3 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/Validation/Validation.php(277): CodeIgniter\Validation\Rules->is_not_unique('MRZEROGAMING', 'username', Array, NULL)
+#4 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/Validation/Validation.php(151): CodeIgniter\Validation\Validation->processRules('username', 'username', 'MRZEROGAMING', Array, Array)
+#5 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/Controller.php(160): CodeIgniter\Validation\Validation->run()
+#6 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Auth.php(94): CodeIgniter\Controller->validate(Array)
+#7 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Auth.php(49): App\Controllers\Auth->login_action()
+#8 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Auth->login()
+#9 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Auth))
+#10 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 /home/divyajis/prasoyt.divyaji.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#12 {main}
+CRITICAL - 2024-12-05 20:21:05 --> mysqli_connect(): (HY000/1040): Too many connections
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli_connect(...', '/home/divyajis/...', 8, Array)
+#1 /home/divyajis/prasoyt.divyaji.shop/conn.php(8): mysqli_connect('localhost', 'divyajis_praso', 'divyajis_praso', 'divyajis_praso')
+#2 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Connect.php(13): include('/home/divyajis/...')
+#3 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(801): App\Controllers\Connect->__construct()
+#4 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(401): CodeIgniter\CodeIgniter->createController()
+#5 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/divyajis/prasoyt.divyaji.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}
+CRITICAL - 2024-12-05 20:22:25 --> Too many connections
+#0 /home/divyajis/prasoyt.divyaji.shop/conn.php(8): mysqli_connect('localhost', 'divyajis_praso', 'divyajis_praso', 'divyajis_praso')
+#1 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Connect.php(153): include('/home/divyajis/...')
+#2 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Connect.php(38): App\Controllers\Connect->index_post()
+#3 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Connect->index()
+#4 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Connect))
+#5 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/divyajis/prasoyt.divyaji.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}
+CRITICAL - 2024-12-05 20:23:13 --> mysqli_connect(): (HY000/1040): Too many connections
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli_connect(...', '/home/divyajis/...', 8, Array)
+#1 /home/divyajis/prasoyt.divyaji.shop/conn.php(8): mysqli_connect('localhost', 'divyajis_praso', 'divyajis_praso', 'divyajis_praso')
+#2 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Connect.php(13): include('/home/divyajis/...')
+#3 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(801): App\Controllers\Connect->__construct()
+#4 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(401): CodeIgniter\CodeIgniter->createController()
+#5 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/divyajis/prasoyt.divyaji.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}
+CRITICAL - 2024-12-05 20:23:49 --> mysqli_connect(): (HY000/1040): Too many connections
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli_connect(...', '/home/divyajis/...', 8, Array)
+#1 /home/divyajis/prasoyt.divyaji.shop/conn.php(8): mysqli_connect('localhost', 'divyajis_praso', 'divyajis_praso', 'divyajis_praso')
+#2 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Connect.php(13): include('/home/divyajis/...')
+#3 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(801): App\Controllers\Connect->__construct()
+#4 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(401): CodeIgniter\CodeIgniter->createController()
+#5 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/divyajis/prasoyt.divyaji.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}
+CRITICAL - 2024-12-05 20:29:05 --> mysqli_connect(): (HY000/1040): Too many connections
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli_connect(...', '/home/divyajis/...', 8, Array)
+#1 /home/divyajis/prasoyt.divyaji.shop/conn.php(8): mysqli_connect('localhost', 'divyajis_praso', 'divyajis_praso', 'divyajis_praso')
+#2 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Connect.php(13): include('/home/divyajis/...')
+#3 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(801): App\Controllers\Connect->__construct()
+#4 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(401): CodeIgniter\CodeIgniter->createController()
+#5 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/divyajis/prasoyt.divyaji.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}
+CRITICAL - 2024-12-05 20:31:06 --> mysqli_connect(): (HY000/1040): Too many connections
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli_connect(...', '/home/divyajis/...', 8, Array)
+#1 /home/divyajis/prasoyt.divyaji.shop/conn.php(8): mysqli_connect('localhost', 'divyajis_praso', 'divyajis_praso', 'divyajis_praso')
+#2 /home/divyajis/prasoyt.divyaji.shop/app/Controllers/Connect.php(13): include('/home/divyajis/...')
+#3 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(801): App\Controllers\Connect->__construct()
+#4 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(401): CodeIgniter\CodeIgniter->createController()
+#5 /home/divyajis/prasoyt.divyaji.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/divyajis/prasoyt.divyaji.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}

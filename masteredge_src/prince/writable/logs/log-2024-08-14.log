@@ -1,0 +1,132 @@
+CRITICAL - 2024-08-14 18:31:41 --> Table 'vipkey_ashwani.visitor_logs' doesn't exist
+#0 /home/vipkey/ashwanicheat.vipkey.site/app/Views/Server/ManageHackingAttempt.php(34): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/as...')
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageHa...', Array, true)
+#4 /home/vipkey/ashwanicheat.vipkey.site/app/Controllers/User.php(116): view('Server/ManageHa...', Array)
+#5 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageHackingAttempt()
+#6 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/ashwanicheat.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-08-14 19:11:20 --> Table 'vipkey_ashwani.Keygen_Links' doesn't exist
+#0 /home/vipkey/ashwanicheat.vipkey.site/app/Views/Server/ManageShortenerLinks.php(88): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/as...')
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageSh...', Array, true)
+#4 /home/vipkey/ashwanicheat.vipkey.site/app/Controllers/User.php(154): view('Server/ManageSh...', Array)
+#5 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageShortenerLinks()
+#6 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/ashwanicheat.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-08-14 19:13:07 --> Table 'vipkey_ashwani.Keygen_Links' doesn't exist
+#0 /home/vipkey/ashwanicheat.vipkey.site/app/Views/Server/ManageShortenerLinks.php(88): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/as...')
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageSh...', Array, true)
+#4 /home/vipkey/ashwanicheat.vipkey.site/app/Controllers/User.php(154): view('Server/ManageSh...', Array)
+#5 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageShortenerLinks()
+#6 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/ashwanicheat.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-08-14 21:54:49 --> Undefined index: HTTP_USER_AGENT
+#0 /home/vipkey/ashwanicheat.vipkey.site/app/Views/Auth/login.php(96): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Undefined index...', '/home/vipkey/as...', 96, Array)
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/as...')
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Auth/login', Array, true)
+#4 /home/vipkey/ashwanicheat.vipkey.site/app/Controllers/Auth.php(54): view('Auth/login', Array)
+#5 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Auth->login()
+#6 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Auth))
+#7 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/ashwanicheat.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-08-14 21:54:49 --> Uncaught CodeIgniter\Format\Exceptions\FormatException: Failed to parse json string, error: "Type is not supported". in /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Format/JSONFormatter.php:41
+Stack trace:
+#0 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Format/JSONFormatter.php(41): CodeIgniter\Format\Exceptions\FormatException::forInvalidJSON('Type is not sup...')
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/API/ResponseTrait.php(341): CodeIgniter\Format\JSONFormatter->format(Array)
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/API/ResponseTrait.php(99): CodeIgniter\Debug\Exceptions->format(Array)
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Debug/Exceptions.php(110): CodeIgniter\Debug\Exceptions->respond(Array, 500)
+#4 [internal function]: CodeIgniter\Debug\Exceptions->exceptionHandler(Object(ErrorException))
+#5 {main}
+  thrown
+#0 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+#1 {main}
+CRITICAL - 2024-08-14 22:10:51 --> Table 'vipkey_ashwani.visitor_logs' doesn't exist
+#0 /home/vipkey/ashwanicheat.vipkey.site/app/Views/Server/ManageHackingAttempt.php(34): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/as...')
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageHa...', Array, true)
+#4 /home/vipkey/ashwanicheat.vipkey.site/app/Controllers/User.php(116): view('Server/ManageHa...', Array)
+#5 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageHackingAttempt()
+#6 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/ashwanicheat.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-08-14 22:23:42 --> Table 'vipkey_ashwani.Keygen_Links' doesn't exist
+#0 /home/vipkey/ashwanicheat.vipkey.site/app/Views/Server/ManageShortenerLinks.php(88): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/as...')
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageSh...', Array, true)
+#4 /home/vipkey/ashwanicheat.vipkey.site/app/Controllers/User.php(154): view('Server/ManageSh...', Array)
+#5 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageShortenerLinks()
+#6 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/ashwanicheat.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-08-14 22:23:53 --> Table 'vipkey_ashwani.visitor_logs' doesn't exist
+#0 /home/vipkey/ashwanicheat.vipkey.site/app/Views/Server/ManageHackingAttempt.php(34): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/as...')
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageHa...', Array, true)
+#4 /home/vipkey/ashwanicheat.vipkey.site/app/Controllers/User.php(116): view('Server/ManageHa...', Array)
+#5 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageHackingAttempt()
+#6 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/ashwanicheat.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-08-14 22:26:10 --> Table 'vipkey_ashwani.Keygen_Links' doesn't exist
+#0 /home/vipkey/ashwanicheat.vipkey.site/app/Views/Server/ManageShortenerLinks.php(88): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/as...')
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageSh...', Array, true)
+#4 /home/vipkey/ashwanicheat.vipkey.site/app/Controllers/User.php(154): view('Server/ManageSh...', Array)
+#5 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageShortenerLinks()
+#6 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/ashwanicheat.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-08-14 22:40:23 --> Table 'vipkey_ashwani.Keygen_Links' doesn't exist
+#0 /home/vipkey/ashwanicheat.vipkey.site/app/Views/Server/ManageShortenerLinks.php(88): mysqli_query(Object(mysqli), 'SELECT * FROM `...')
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/as...')
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/ManageSh...', Array, true)
+#4 /home/vipkey/ashwanicheat.vipkey.site/app/Controllers/User.php(154): view('Server/ManageSh...', Array)
+#5 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->ManageShortenerLinks()
+#6 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/ashwanicheat.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-08-14 23:56:32 --> Undefined index: HTTP_USER_AGENT
+#0 /home/vipkey/ashwanicheat.vipkey.site/app/Views/Auth/login.php(96): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Undefined index...', '/home/vipkey/as...', 96, Array)
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/vipkey/as...')
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Auth/login', Array, true)
+#4 /home/vipkey/ashwanicheat.vipkey.site/app/Controllers/Auth.php(54): view('Auth/login', Array)
+#5 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Auth->login()
+#6 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Auth))
+#7 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/vipkey/ashwanicheat.vipkey.site/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2024-08-14 23:56:32 --> Uncaught CodeIgniter\Format\Exceptions\FormatException: Failed to parse json string, error: "Type is not supported". in /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Format/JSONFormatter.php:41
+Stack trace:
+#0 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Format/JSONFormatter.php(41): CodeIgniter\Format\Exceptions\FormatException::forInvalidJSON('Type is not sup...')
+#1 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/API/ResponseTrait.php(341): CodeIgniter\Format\JSONFormatter->format(Array)
+#2 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/API/ResponseTrait.php(99): CodeIgniter\Debug\Exceptions->format(Array)
+#3 /home/vipkey/ashwanicheat.vipkey.site/vendor/codeigniter4/framework/system/Debug/Exceptions.php(110): CodeIgniter\Debug\Exceptions->respond(Array, 500)
+#4 [internal function]: CodeIgniter\Debug\Exceptions->exceptionHandler(Object(ErrorException))
+#5 {main}
+  thrown
+#0 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+#1 {main}

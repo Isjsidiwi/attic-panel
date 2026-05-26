@@ -1,0 +1,69 @@
+CRITICAL - 2025-06-03 20:14:15 --> mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, bool given
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli_fetch_as...', '/home/kuropan2/...', 15, Array)
+#1 /home/kuropan2/tigergamer.kuro-panel.com/mail.php(15): mysqli_fetch_assoc(false)
+#2 /home/kuropan2/tigergamer.kuro-panel.com/app/Views/Auth/register.php(4): include('/home/kuropan2/...')
+#3 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/kuropan2/...')
+#4 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#5 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Auth/register', Array, true)
+#6 /home/kuropan2/tigergamer.kuro-panel.com/app/Controllers/Auth.php(68): view('Auth/register', Array)
+#7 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Auth->register()
+#8 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Auth))
+#9 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 /home/kuropan2/tigergamer.kuro-panel.com/index.php(37): CodeIgniter\CodeIgniter->run()
+#11 {main}
+CRITICAL - 2025-06-03 20:30:11 --> Trying to get property 'level' of non-object
+#0 /home/kuropan2/tigergamer.kuro-panel.com/app/Models/UserModel.php(71): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Trying to get p...', '/home/kuropan2/...', 71, Array)
+#1 /home/kuropan2/tigergamer.kuro-panel.com/app/Filters/AuthFilter.php(19): App\Models\UserModel->checkAuthFilter()
+#2 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/Filters/Filters.php(173): App\Filters\AuthFilter->before(Object(CodeIgniter\HTTP\IncomingRequest), NULL)
+#3 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(384): CodeIgniter\Filters\Filters->run('logout', 'before')
+#4 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#5 /home/kuropan2/tigergamer.kuro-panel.com/index.php(37): CodeIgniter\CodeIgniter->run()
+#6 {main}
+CRITICAL - 2025-06-03 20:30:18 --> Trying to get property 'level' of non-object
+#0 /home/kuropan2/tigergamer.kuro-panel.com/app/Models/UserModel.php(71): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Trying to get p...', '/home/kuropan2/...', 71, Array)
+#1 /home/kuropan2/tigergamer.kuro-panel.com/app/Filters/AuthFilter.php(19): App\Models\UserModel->checkAuthFilter()
+#2 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/Filters/Filters.php(173): App\Filters\AuthFilter->before(Object(CodeIgniter\HTTP\IncomingRequest), NULL)
+#3 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(384): CodeIgniter\Filters\Filters->run('logout', 'before')
+#4 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#5 /home/kuropan2/tigergamer.kuro-panel.com/index.php(37): CodeIgniter\CodeIgniter->run()
+#6 {main}
+CRITICAL - 2025-06-03 20:30:36 --> Trying to get property 'level' of non-object
+#0 /home/kuropan2/tigergamer.kuro-panel.com/app/Models/UserModel.php(71): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Trying to get p...', '/home/kuropan2/...', 71, Array)
+#1 /home/kuropan2/tigergamer.kuro-panel.com/app/Filters/AuthFilter.php(19): App\Models\UserModel->checkAuthFilter()
+#2 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/Filters/Filters.php(173): App\Filters\AuthFilter->before(Object(CodeIgniter\HTTP\IncomingRequest), NULL)
+#3 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(384): CodeIgniter\Filters\Filters->run('dashboard', 'before')
+#4 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#5 /home/kuropan2/tigergamer.kuro-panel.com/index.php(37): CodeIgniter\CodeIgniter->run()
+#6 {main}
+CRITICAL - 2025-06-03 20:30:38 --> Trying to get property 'level' of non-object
+#0 /home/kuropan2/tigergamer.kuro-panel.com/app/Models/UserModel.php(71): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Trying to get p...', '/home/kuropan2/...', 71, Array)
+#1 /home/kuropan2/tigergamer.kuro-panel.com/app/Filters/AuthFilter.php(19): App\Models\UserModel->checkAuthFilter()
+#2 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/Filters/Filters.php(173): App\Filters\AuthFilter->before(Object(CodeIgniter\HTTP\IncomingRequest), NULL)
+#3 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(384): CodeIgniter\Filters\Filters->run('dashboard', 'before')
+#4 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#5 /home/kuropan2/tigergamer.kuro-panel.com/index.php(37): CodeIgniter\CodeIgniter->run()
+#6 {main}
+CRITICAL - 2025-06-03 20:30:42 --> Trying to get property 'level' of non-object
+#0 /home/kuropan2/tigergamer.kuro-panel.com/app/Models/UserModel.php(71): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Trying to get p...', '/home/kuropan2/...', 71, Array)
+#1 /home/kuropan2/tigergamer.kuro-panel.com/app/Filters/AuthFilter.php(19): App\Models\UserModel->checkAuthFilter()
+#2 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/Filters/Filters.php(173): App\Filters\AuthFilter->before(Object(CodeIgniter\HTTP\IncomingRequest), NULL)
+#3 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(384): CodeIgniter\Filters\Filters->run('dashboard', 'before')
+#4 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#5 /home/kuropan2/tigergamer.kuro-panel.com/index.php(37): CodeIgniter\CodeIgniter->run()
+#6 {main}
+CRITICAL - 2025-06-03 20:31:32 --> Trying to get property 'level' of non-object
+#0 /home/kuropan2/tigergamer.kuro-panel.com/app/Models/UserModel.php(71): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Trying to get p...', '/home/kuropan2/...', 71, Array)
+#1 /home/kuropan2/tigergamer.kuro-panel.com/app/Filters/AuthFilter.php(19): App\Models\UserModel->checkAuthFilter()
+#2 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/Filters/Filters.php(173): App\Filters\AuthFilter->before(Object(CodeIgniter\HTTP\IncomingRequest), NULL)
+#3 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(384): CodeIgniter\Filters\Filters->run('dashboard', 'before')
+#4 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#5 /home/kuropan2/tigergamer.kuro-panel.com/index.php(37): CodeIgniter\CodeIgniter->run()
+#6 {main}
+CRITICAL - 2025-06-03 20:34:53 --> Trying to get property 'level' of non-object
+#0 /home/kuropan2/tigergamer.kuro-panel.com/app/Models/UserModel.php(71): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Trying to get p...', '/home/kuropan2/...', 71, Array)
+#1 /home/kuropan2/tigergamer.kuro-panel.com/app/Filters/AuthFilter.php(19): App\Models\UserModel->checkAuthFilter()
+#2 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/Filters/Filters.php(173): App\Filters\AuthFilter->before(Object(CodeIgniter\HTTP\IncomingRequest), NULL)
+#3 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(384): CodeIgniter\Filters\Filters->run('dashboard', 'before')
+#4 /home/kuropan2/tigergamer.kuro-panel.com/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#5 /home/kuropan2/tigergamer.kuro-panel.com/index.php(37): CodeIgniter\CodeIgniter->run()
+#6 {main}

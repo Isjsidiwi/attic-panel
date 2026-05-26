@@ -1,0 +1,281 @@
+CRITICAL - 2025-06-14 10:42:32 --> Undefined variable: validation
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Keys/list.php(143): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Undefined varia...', '/home/aalyan/ch...', 143, Array)
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Keys/list', Array, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Controllers/Keys.php(69): view('Keys/list', Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Keys->index()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Keys))
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2025-06-14 10:42:34 --> Undefined variable: validation
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Keys/list.php(143): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Undefined varia...', '/home/aalyan/ch...', 143, Array)
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Keys/list', Array, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Controllers/Keys.php(69): view('Keys/list', Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Keys->index()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Keys))
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2025-06-14 10:42:35 --> Undefined variable: validation
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Keys/list.php(143): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Undefined varia...', '/home/aalyan/ch...', 143, Array)
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Keys/list', Array, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Controllers/Keys.php(69): view('Keys/list', Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Keys->index()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Keys))
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2025-06-14 10:42:39 --> Undefined variable: validation
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Keys/list.php(143): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Undefined varia...', '/home/aalyan/ch...', 143, Array)
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Keys/list', Array, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Controllers/Keys.php(69): view('Keys/list', Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Keys->index()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Keys))
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+ERROR - 2025-06-14 10:57:09 --> Error connecting to the database: Too many connections
+CRITICAL - 2025-06-14 10:57:09 --> Unable to connect to the database.
+Main connection [MySQLi]: Too many connections
+#0 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseConnection.php(577): CodeIgniter\Database\BaseConnection->initialize()
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1443): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Model.php(723): CodeIgniter\Database\BaseBuilder->get()
+#3 /home/aalyan/chat.aalyan.shop/app/Models/UserModel.php(29): CodeIgniter\Model->__call('get', Array)
+#4 /home/aalyan/chat.aalyan.shop/app/Models/UserModel.php(70): App\Models\UserModel->getUser('61')
+#5 /home/aalyan/chat.aalyan.shop/app/Filters/AuthFilter.php(19): App\Models\UserModel->checkAuthFilter()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Filters/Filters.php(173): App\Filters\AuthFilter->before(Object(CodeIgniter\HTTP\IncomingRequest), NULL)
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(384): CodeIgniter\Filters\Filters->run('keys', 'before')
+#8 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#9 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#10 {main}
+ERROR - 2025-06-14 10:57:11 --> Error connecting to the database: Too many connections
+CRITICAL - 2025-06-14 10:57:11 --> Unable to connect to the database.
+Main connection [MySQLi]: Too many connections
+#0 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseConnection.php(577): CodeIgniter\Database\BaseConnection->initialize()
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1443): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Model.php(723): CodeIgniter\Database\BaseBuilder->get()
+#3 /home/aalyan/chat.aalyan.shop/app/Models/UserModel.php(29): CodeIgniter\Model->__call('get', Array)
+#4 /home/aalyan/chat.aalyan.shop/app/Models/UserModel.php(70): App\Models\UserModel->getUser('61')
+#5 /home/aalyan/chat.aalyan.shop/app/Filters/AuthFilter.php(19): App\Models\UserModel->checkAuthFilter()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Filters/Filters.php(173): App\Filters\AuthFilter->before(Object(CodeIgniter\HTTP\IncomingRequest), NULL)
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(384): CodeIgniter\Filters\Filters->run('keys', 'before')
+#8 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#9 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#10 {main}
+ERROR - 2025-06-14 11:01:25 --> Error connecting to the database: Too many connections
+CRITICAL - 2025-06-14 11:01:25 --> Unable to connect to the database.
+Main connection [MySQLi]: Too many connections
+#0 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseConnection.php(577): CodeIgniter\Database\BaseConnection->initialize()
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1443): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Model.php(723): CodeIgniter\Database\BaseBuilder->get()
+#3 /home/aalyan/chat.aalyan.shop/app/Models/UserModel.php(29): CodeIgniter\Model->__call('get', Array)
+#4 /home/aalyan/chat.aalyan.shop/app/Models/UserModel.php(70): App\Models\UserModel->getUser('61')
+#5 /home/aalyan/chat.aalyan.shop/app/Filters/AuthFilter.php(19): App\Models\UserModel->checkAuthFilter()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Filters/Filters.php(173): App\Filters\AuthFilter->before(Object(CodeIgniter\HTTP\IncomingRequest), NULL)
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(384): CodeIgniter\Filters\Filters->run('keys', 'before')
+#8 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#9 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#10 {main}
+ERROR - 2025-06-14 11:03:37 --> Error connecting to the database: Too many connections
+CRITICAL - 2025-06-14 11:03:37 --> Unable to connect to the database.
+Main connection [MySQLi]: Too many connections
+#0 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseConnection.php(577): CodeIgniter\Database\BaseConnection->initialize()
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1443): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Model.php(723): CodeIgniter\Database\BaseBuilder->get()
+#3 /home/aalyan/chat.aalyan.shop/app/Models/UserModel.php(29): CodeIgniter\Model->__call('get', Array)
+#4 /home/aalyan/chat.aalyan.shop/app/Models/UserModel.php(70): App\Models\UserModel->getUser('61')
+#5 /home/aalyan/chat.aalyan.shop/app/Filters/AuthFilter.php(19): App\Models\UserModel->checkAuthFilter()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Filters/Filters.php(173): App\Filters\AuthFilter->before(Object(CodeIgniter\HTTP\IncomingRequest), NULL)
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(384): CodeIgniter\Filters\Filters->run('keys/generate', 'before')
+#8 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#9 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#10 {main}
+ERROR - 2025-06-14 11:10:49 --> Error connecting to the database: Too many connections
+CRITICAL - 2025-06-14 11:10:49 --> Unable to connect to the database.
+Main connection [MySQLi]: Too many connections
+#0 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseConnection.php(577): CodeIgniter\Database\BaseConnection->initialize()
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1443): CodeIgniter\Database\BaseConnection->query('SELECT 1\nFROM `...', Array, false)
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Validation/Rules.php(116): CodeIgniter\Database\BaseBuilder->get()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Validation/Validation.php(277): CodeIgniter\Validation\Rules->is_not_unique('admin', 'username', Array, NULL)
+#4 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Validation/Validation.php(151): CodeIgniter\Validation\Validation->processRules('username', 'username', 'admin', Array, Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Controller.php(160): CodeIgniter\Validation\Validation->run()
+#6 /home/aalyan/chat.aalyan.shop/app/Controllers/Auth.php(94): CodeIgniter\Controller->validate(Array)
+#7 /home/aalyan/chat.aalyan.shop/app/Controllers/Auth.php(49): App\Controllers\Auth->login_action()
+#8 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Auth->login()
+#9 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Auth))
+#10 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#12 {main}
+CRITICAL - 2025-06-14 11:10:49 --> Uncaught ErrorException: print_r(): Property access is not allowed yet in /home/aalyan/chat.aalyan.shop/app/Views/errors/html/error_exception.php:99
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'print_r(): Prop...', '/home/aalyan/ch...', 99, Array)
+#1 /home/aalyan/chat.aalyan.shop/app/Views/errors/html/error_exception.php(99): print_r(Object(App\Controllers\Auth), true)
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Debug/Exceptions.php(229): include('/home/aalyan/ch...')
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Debug/Exceptions.php(232): CodeIgniter\Debug\Exceptions->CodeIgniter\Debug\{closure}()
+#4 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Debug/Exceptions.php(116): CodeIgniter\Debug\Exceptions->render(Object(CodeIgniter\Database\Exceptions\DatabaseException), 500)
+#5 [internal function]: CodeIgniter\Debug\Exceptions->exceptionHandler(Object(CodeIgniter\Database\Exceptions\DatabaseException))
+#
+#0 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+#1 {main}
+ERROR - 2025-06-14 11:10:54 --> Error connecting to the database: Too many connections
+CRITICAL - 2025-06-14 11:10:54 --> Unable to connect to the database.
+Main connection [MySQLi]: Too many connections
+#0 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseConnection.php(577): CodeIgniter\Database\BaseConnection->initialize()
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Database/BaseBuilder.php(1443): CodeIgniter\Database\BaseConnection->query('SELECT 1\nFROM `...', Array, false)
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Validation/Rules.php(116): CodeIgniter\Database\BaseBuilder->get()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Validation/Validation.php(277): CodeIgniter\Validation\Rules->is_not_unique('admin', 'username', Array, NULL)
+#4 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Validation/Validation.php(151): CodeIgniter\Validation\Validation->processRules('username', 'username', 'admin', Array, Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Controller.php(160): CodeIgniter\Validation\Validation->run()
+#6 /home/aalyan/chat.aalyan.shop/app/Controllers/Auth.php(94): CodeIgniter\Controller->validate(Array)
+#7 /home/aalyan/chat.aalyan.shop/app/Controllers/Auth.php(49): App\Controllers\Auth->login_action()
+#8 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Auth->login()
+#9 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Auth))
+#10 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#12 {main}
+CRITICAL - 2025-06-14 11:10:54 --> Uncaught ErrorException: print_r(): Property access is not allowed yet in /home/aalyan/chat.aalyan.shop/app/Views/errors/html/error_exception.php:99
+Stack trace:
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'print_r(): Prop...', '/home/aalyan/ch...', 99, Array)
+#1 /home/aalyan/chat.aalyan.shop/app/Views/errors/html/error_exception.php(99): print_r(Object(App\Controllers\Auth), true)
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Debug/Exceptions.php(229): include('/home/aalyan/ch...')
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Debug/Exceptions.php(232): CodeIgniter\Debug\Exceptions->CodeIgniter\Debug\{closure}()
+#4 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Debug/Exceptions.php(116): CodeIgniter\Debug\Exceptions->render(Object(CodeIgniter\Database\Exceptions\DatabaseException), 500)
+#5 [internal function]: CodeIgniter\Debug\Exceptions->exceptionHandler(Object(CodeIgniter\Database\Exceptions\DatabaseException))
+#
+#0 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
+#1 {main}
+CRITICAL - 2025-06-14 12:23:19 --> Undefined variable: userDetails1
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Layout/Header.php(263): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Undefined varia...', '/home/aalyan/ch...', 263, Array)
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(432): CodeIgniter\View\View->render('Layout/Header', NULL, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Views/Layout/Starter.php(101): CodeIgniter\View\View->include('Layout/Header')
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(230): CodeIgniter\View\View->render('Layout/Starter', Array, true)
+#8 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('User/settings', Array, true)
+#9 /home/aalyan/chat.aalyan.shop/app/Controllers/User.php(407): view('User/settings', Array)
+#10 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->settings()
+#11 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#12 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#13 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#14 {main}
+CRITICAL - 2025-06-14 12:23:23 --> Undefined variable: userDetails1
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Layout/Header.php(263): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Undefined varia...', '/home/aalyan/ch...', 263, Array)
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(432): CodeIgniter\View\View->render('Layout/Header', NULL, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Views/Layout/Starter.php(101): CodeIgniter\View\View->include('Layout/Header')
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(230): CodeIgniter\View\View->render('Layout/Starter', Array, true)
+#8 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('User/settings', Array, true)
+#9 /home/aalyan/chat.aalyan.shop/app/Controllers/User.php(407): view('User/settings', Array)
+#10 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->settings()
+#11 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#12 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#13 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#14 {main}
+CRITICAL - 2025-06-14 12:31:59 --> Table 'aalyan_youtube.YOUR_ACTUAL_TABLE_NAME' doesn't exist
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Server/Server.php(26): mysqli_query(Object(mysqli), 'SELECT modname ...')
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/Server', Array, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Controllers/User.php(474): view('Server/Server', Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->Server()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2025-06-14 12:33:27 --> Table 'aalyan_youtube.mod_settings' doesn't exist
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Server/Server.php(26): mysqli_query(Object(mysqli), 'SELECT modname ...')
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/Server', Array, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Controllers/User.php(474): view('Server/Server', Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->Server()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2025-06-14 12:34:50 --> Table 'aalyan_youtube.mod_settings' doesn't exist
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Server/Server.php(24): mysqli_query(Object(mysqli), 'SELECT modname ...')
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/Server', Array, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Controllers/User.php(474): view('Server/Server', Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->Server()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2025-06-14 12:35:04 --> Undefined variable: result_modname
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Server/Server.php(25): CodeIgniter\Debug\Exceptions->errorHandler(8, 'Undefined varia...', '/home/aalyan/ch...', 25, Array)
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/Server', Array, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Controllers/User.php(474): view('Server/Server', Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->Server()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2025-06-14 12:37:19 --> Table 'aalyan_youtube.mod_settings' doesn't exist
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Server/Server.php(24): mysqli_query(Object(mysqli), 'SELECT modname ...')
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/Server', Array, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Controllers/User.php(474): view('Server/Server', Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->Server()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2025-06-14 12:39:07 --> Table 'aalyan_youtube.mod_settings' doesn't exist
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Server/Server.php(24): mysqli_query(Object(mysqli), 'SELECT modname ...')
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/Server', Array, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Controllers/User.php(474): view('Server/Server', Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->Server()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2025-06-14 12:48:48 --> Table 'aalyan_youtube.mod_settings' doesn't exist
+#0 /home/aalyan/chat.aalyan.shop/app/Views/Server/Server.php(24): mysqli_query(Object(mysqli), 'SELECT modname ...')
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(214): include('/home/aalyan/ch...')
+#2 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Server/Server', Array, true)
+#4 /home/aalyan/chat.aalyan.shop/app/Controllers/User.php(474): view('Server/Server', Array)
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->Server()
+#6 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
+#7 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#8 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#9 {main}
+CRITICAL - 2025-06-14 13:24:57 --> Invalid file: Connect/welcome_splash.php
+#0 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(198): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('Connect/welcome...')
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Connect/welcome...', Array, true)
+#2 /home/aalyan/chat.aalyan.shop/app/Controllers/Connect.php(41): view('Connect/welcome...')
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Connect->index()
+#4 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Connect))
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}
+CRITICAL - 2025-06-14 13:25:01 --> Invalid file: Connect/welcome_splash.php
+#0 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/View/View.php(198): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('Connect/welcome...')
+#1 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('Connect/welcome...', Array, true)
+#2 /home/aalyan/chat.aalyan.shop/app/Controllers/Connect.php(41): view('Connect/welcome...')
+#3 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Connect->index()
+#4 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Connect))
+#5 /home/aalyan/chat.aalyan.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/aalyan/chat.aalyan.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}

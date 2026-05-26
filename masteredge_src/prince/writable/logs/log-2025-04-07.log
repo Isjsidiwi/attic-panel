@@ -1,0 +1,27 @@
+CRITICAL - 2025-04-07 22:51:09 --> mysqli_connect(): (08004/1040): Too many connections
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli_connect(...', '/home/kuropane/...', 8, Array)
+#1 /home/kuropane/skmodz.kuropanel.shop/conn.php(8): mysqli_connect('localhost', 'kuropane_skmodz', 'kuropane_skmodz', 'kuropane_skmodz')
+#2 /home/kuropane/skmodz.kuropanel.shop/app/Controllers/Connect.php(13): include('/home/kuropane/...')
+#3 /home/kuropane/skmodz.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(801): App\Controllers\Connect->__construct()
+#4 /home/kuropane/skmodz.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(401): CodeIgniter\CodeIgniter->createController()
+#5 /home/kuropane/skmodz.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/kuropane/skmodz.kuropanel.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}
+CRITICAL - 2025-04-07 22:51:09 --> mysqli_connect(): (08004/1040): Too many connections
+#0 [internal function]: CodeIgniter\Debug\Exceptions->errorHandler(2, 'mysqli_connect(...', '/home/kuropane/...', 8, Array)
+#1 /home/kuropane/skmodz.kuropanel.shop/conn.php(8): mysqli_connect('localhost', 'kuropane_skmodz', 'kuropane_skmodz', 'kuropane_skmodz')
+#2 /home/kuropane/skmodz.kuropanel.shop/app/Controllers/Connect.php(13): include('/home/kuropane/...')
+#3 /home/kuropane/skmodz.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(801): App\Controllers\Connect->__construct()
+#4 /home/kuropane/skmodz.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(401): CodeIgniter\CodeIgniter->createController()
+#5 /home/kuropane/skmodz.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/kuropane/skmodz.kuropanel.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}
+CRITICAL - 2025-04-07 22:51:10 --> Too many connections
+#0 /home/kuropane/skmodz.kuropanel.shop/conn.php(8): mysqli_connect('localhost', 'kuropane_skmodz', 'kuropane_skmodz', 'kuropane_skmodz')
+#1 /home/kuropane/skmodz.kuropanel.shop/app/Controllers/Connect.php(153): include('/home/kuropane/...')
+#2 /home/kuropane/skmodz.kuropanel.shop/app/Controllers/Connect.php(38): App\Controllers\Connect->index_post()
+#3 /home/kuropane/skmodz.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\Connect->index()
+#4 /home/kuropane/skmodz.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Connect))
+#5 /home/kuropane/skmodz.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#6 /home/kuropane/skmodz.kuropanel.shop/index.php(37): CodeIgniter\CodeIgniter->run()
+#7 {main}

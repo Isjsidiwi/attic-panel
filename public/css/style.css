@@ -68,12 +68,13 @@ body::before {
 .sidebar {
   width: var(--sidebar-w);
   background: var(--bg-sidebar);
+  background-color: var(--bg-sidebar) !important;
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   position: fixed;
   top: 0; left: 0; bottom: 0;
-  z-index: 100;
+  z-index: 1000;
   transition: transform .25s ease;
 }
 
@@ -769,6 +770,7 @@ body::before {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,.7);
+  background-color: rgba(0,0,0,.85) !important;
   backdrop-filter: blur(4px);
   z-index: 500;
   align-items: center;
@@ -780,6 +782,7 @@ body::before {
 
 .modal {
   background: var(--bg-card);
+  background-color: var(--bg-card) !important;
   border: 1px solid var(--border-lit);
   border-radius: var(--radius);
   width: 100%;
