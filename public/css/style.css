@@ -156,7 +156,7 @@ body::before {
   text-decoration: none;
   font-size: .8rem;
   letter-spacing: .06em;
-  transition: all .18s ease;
+  transition: all .25s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid transparent;
 }
 
@@ -164,6 +164,7 @@ body::before {
   background: var(--bg-hover);
   color: var(--text);
   border-color: var(--border-lit);
+  transform: translateX(8px);
 }
 
 .nav-item.active {

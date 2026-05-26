@@ -125,25 +125,32 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
 
     let finalPrice = variant.price;
     let appliedDiscount = 0;
-
-    // Cek referral code jika ada
-    if (referral_code) {
-      const { rows: refRows } = await db.execute(
-        `SELECT * FROM store_referrals WHERE code = ? AND is_active = 1`,
-        [referral_code.trim().toUpperCase()]
-      );
-      if (refRows.length > 0) {
-        const ref = refRows[0];
-        let isExpired = false;
-        if (ref.expired_at && new Date(ref.expired_at) < new Date()) {
-          isExpired = true;
-        }
-        if (!isExpired) {
-          appliedDiscount = ref.discount_amount;
-          finalPrice = Math.max(0, finalPrice - appliedDiscount);
-        }
-      }
+// Cek referral code jika ada
+if (referral_code) {
+  const { rows: refRows } = await db.execute(
+    `SELECT * FROM store_referrals WHERE code = ? AND is_active = 1`,
+    [referral_code.trim().toUpperCase()]
+  );
+  if (refRows.length > 0) {
+    const ref = refRows[0];
+    let isExpired = false;
+    if (ref.expired_at && new Date(ref.expired_at) < new Date()) {
+      isExpired = true;
     }
+
+    let isProductAllowed = true;
+    try {
+      const allowed = JSON.parse(ref.allowed_products || '[]');
+      if (allowed.length > 0 && !allowed.includes(product.id)) {
+        isProductAllowed = false;
+      }
+    } catch(e) {}
+
+    if (!isExpired && isProductAllowed) {
+      appliedDiscount = ref.discount_amount;
+    }
+  }
+}
 
     // Unique amount untuk verifikasi pembayaran
     const suffix = generateUniqueSuffix();

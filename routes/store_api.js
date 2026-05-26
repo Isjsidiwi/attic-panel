@@ -16,7 +16,7 @@ router.get('/order/:id/status', async (req, res) => {
 // Referral check API.
 router.post('/referral/check', async (req, res) => {
   try {
-    const { code } = req.body;
+    const { code, productId } = req.body;
     if (!code) return res.json({ valid: false, reason: 'Kode kosong.' });
 
     const { rows } = await db.execute(
@@ -28,6 +28,15 @@ router.post('/referral/check', async (req, res) => {
     const ref = rows[0];
     if (ref.expired_at && new Date(ref.expired_at) < new Date()) {
       return res.json({ valid: false, reason: 'Kode referral sudah kedaluwarsa.' });
+    }
+
+    if (productId) {
+      try {
+        const allowed = JSON.parse(ref.allowed_products || '[]');
+        if (allowed.length > 0 && !allowed.includes(Number(productId))) {
+          return res.json({ valid: false, reason: 'Kode ini tidak berlaku untuk produk ini.' });
+        }
+      } catch (e) {}
     }
 
     return res.json({ valid: true, discount: ref.discount_amount });

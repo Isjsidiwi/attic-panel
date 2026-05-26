@@ -369,7 +369,8 @@ router.post('/orders/prune', requireAdmin, async (req, res) => {
 router.get('/referrals', requireAdmin, async (req, res) => {
   try {
     const { rows: referrals } = await db.execute(`SELECT * FROM store_referrals ORDER BY created_at DESC`);
-    res.render('store/admin/referrals', { referrals, success: req.query.success, error: req.query.error });
+    const { rows: products } = await db.execute(`SELECT id, name FROM store_products ORDER BY name ASC`);
+    res.render('store/admin/referrals', { referrals, products, success: req.query.success, error: req.query.error });
   } catch (err) {
     console.error('Get referrals error:', err.message);
     res.redirect('/admin/store');
@@ -378,7 +379,7 @@ router.get('/referrals', requireAdmin, async (req, res) => {
 
 router.post('/referrals/add', requireAdmin, async (req, res) => {
   try {
-    const { code, discount_amount, expired_at } = req.body;
+    const { code, discount_amount, expired_at, allowed_products } = req.body;
     if (!code || !discount_amount) return res.redirect('/admin/store/referrals?error=Kode+dan+Diskon+wajib+diisi');
     
     // Parse expired_at to local ISO if provided
@@ -390,9 +391,15 @@ router.post('/referrals/add', requireAdmin, async (req, res) => {
       }
     }
     
+    let allowedProductsJson = '[]';
+    if (allowed_products) {
+      const arr = Array.isArray(allowed_products) ? allowed_products : [allowed_products];
+      allowedProductsJson = JSON.stringify(arr.map(Number));
+    }
+    
     await db.execute(
-      `INSERT INTO store_referrals (code, discount_amount, expired_at, is_active) VALUES (?, ?, ?, 1)`,
-      [code.trim().toUpperCase(), parseInt(discount_amount), expiry]
+      `INSERT INTO store_referrals (code, discount_amount, expired_at, allowed_products, is_active) VALUES (?, ?, ?, ?, 1)`,
+      [code.trim().toUpperCase(), parseInt(discount_amount), expiry, allowedProductsJson]
     );
     res.redirect('/admin/store/referrals?success=Kode+referral+berhasil+ditambahkan');
   } catch (err) {
