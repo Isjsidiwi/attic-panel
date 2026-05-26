@@ -1,9 +1,0 @@
-CRITICAL - 2025-02-24 15:45:28 --> syntax error, unexpected '<', expecting end of file
-#0 /home/kuropane/madhu.kuropanel.shop/vendor/codeigniter4/framework/system/View/View.php(217): CodeIgniter\View\View->CodeIgniter\View\{closure}()
-#1 /home/kuropane/madhu.kuropanel.shop/vendor/codeigniter4/framework/system/Common.php(1097): CodeIgniter\View\View->render('User/dashboard', Array, true)
-#2 /home/kuropane/madhu.kuropanel.shop/app/Controllers/User.php(51): view('User/dashboard', Array)
-#3 /home/kuropane/madhu.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(824): App\Controllers\User->index()
-#4 /home/kuropane/madhu.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(410): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\User))
-#5 /home/kuropane/madhu.kuropanel.shop/vendor/codeigniter4/framework/system/CodeIgniter.php(318): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
-#6 /home/kuropane/madhu.kuropanel.shop/index.php(37): CodeIgniter\CodeIgniter->run()
-#7 {main}
