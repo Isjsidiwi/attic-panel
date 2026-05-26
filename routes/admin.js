@@ -376,6 +376,27 @@ router.post('/settings', auth, requireOwner, async (req, res) => {
   res.redirect('/admin/settings');
 });
 
+router.post('/masteredge', auth, requireOwner, async (req, res) => {
+  const { telegram_bot_token, telegram_chat_id, mod_status, feat_esp, feat_aimbot, feat_silent_aim, feat_memory } = req.body;
+  const updates = {};
+  
+  if (telegram_bot_token !== undefined) updates.telegram_bot_token = telegram_bot_token.trim();
+  if (telegram_chat_id !== undefined) updates.telegram_chat_id = telegram_chat_id.trim();
+  if (mod_status !== undefined) updates.mod_status = mod_status;
+  
+  const modFeatures = {
+    esp: feat_esp === '1',
+    aimbot: feat_aimbot === '1',
+    silent_aim: feat_silent_aim === '1',
+    memory: feat_memory === '1'
+  };
+  updates.mod_features = JSON.stringify(modFeatures);
+  
+  await saveConfig(updates);
+  res.flash('success', 'Masteredge Settings berhasil disimpan.');
+  res.redirect('/admin/settings');
+});
+
 router.post('/resellers', auth, requireOwner, async (req, res) => {
   const username = (req.body.username || '').trim();
   const password = req.body.password || '';
@@ -640,8 +661,13 @@ router.post('/files/upload', auth, requireOwner, upload.single('file'), async (r
       return res.redirect('/admin/files');
     }
 
+    if (process.env.VERCEL || process.env.AWS_REGION) {
+      res.flash('error', 'Sistem read-only (Vercel) terdeteksi. Anda wajib mengatur GITHUB_TOKEN di Environment Variables untuk mengupload file.');
+      return res.redirect('/admin/files');
+    }
+
     const dir = uploadDir();
-    fs.mkdirSync(dir, { recursive: true });
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     const fileName = githubFiles.sanitizeFileName(req.file.originalname);
     fs.writeFileSync(resolveLocalUpload(fileName), req.file.buffer);
     res.flash('success', `File ${fileName} berhasil diupload lokal.`);

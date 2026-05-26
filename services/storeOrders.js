@@ -1,5 +1,24 @@
 const { db } = require('../database');
 const { checkPayment } = require('./payment');
+const { loadConfig } = require('../config');
+const axios = require('axios');
+
+async function sendTelegramNotification(message) {
+  try {
+    const cfg = await loadConfig();
+    const token = cfg.telegram_bot_token;
+    const chatId = cfg.telegram_chat_id;
+    if (token && chatId) {
+      await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'Markdown'
+      });
+    }
+  } catch (err) {
+    console.error('Telegram notification error:', err.message);
+  }
+}
 
 async function getOrderWithKey(orderId) {
   const { rows } = await db.execute(
@@ -66,6 +85,7 @@ async function fulfillPaidOrder(order) {
        WHERE id = ?`,
       [order.id]
     );
+    sendTelegramNotification(`⚠️ *ORDER BERHASIL TAPI STOK HABIS*\n\nOrder ID: \`${order.id}\`\nPembeli: ${order.customer_name} (${order.customer_email})\nJumlah: Rp ${order.amount}\n\nSegera hubungi pembeli dan tambahkan stok!`);
     return {
       success: true,
       status: 'paid_no_stock',
@@ -79,6 +99,8 @@ async function fulfillPaidOrder(order) {
      WHERE id = ?`,
     [key.id, order.id]
   );
+  
+  sendTelegramNotification(`✅ *ORDER BERHASIL*\n\nOrder ID: \`${order.id}\`\nPembeli: ${order.customer_name}\nJumlah: Rp ${order.amount}\nKey yang diberikan: \`${key.key_value}\``);
 
   return { success: true, status: 'paid', key: key.key_value };
 }

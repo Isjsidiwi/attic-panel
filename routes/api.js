@@ -40,6 +40,27 @@
     return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
   }
 
+  // Masteredge Mod Features endpoint
+  router.get('/mod_config', async (req, res) => {
+    try {
+      const cfg = await loadConfig();
+      let modFeatures = {};
+      try { modFeatures = JSON.parse(cfg.mod_features || '{}'); } catch(e) {}
+      
+      res.json({
+        success: true,
+        data: {
+          panel_name: cfg.panel_name,
+          mod_status: cfg.mod_status || 'online',
+          maintenance_mode: cfg.maintenance_mode === '1',
+          features: modFeatures
+        }
+      });
+    } catch (err) {
+      res.json({ success: false, error: 'Failed to load config' });
+    }
+  });
+
   router.post('/game/MLBB', async (req, res) => {
     const userKey  = (req.body.user_key  || '').trim();
     const serial   = (req.body.serial    || '').trim();

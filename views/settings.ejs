@@ -18,6 +18,7 @@
       <button class="tab-btn active" data-tab="tab-panel"><span class="lang-id">Sistem & API</span><span class="lang-en">System & API</span></button>
       <button class="tab-btn" data-tab="tab-reseller"><span class="lang-id">Kelola Reseller</span><span class="lang-en">Manage Resellers</span></button>
       <button class="tab-btn" data-tab="tab-price"><span class="lang-id">Daftar Harga</span><span class="lang-en">Pricing</span></button>
+      <button class="tab-btn" data-tab="tab-masteredge"><span class="lang-id">Pengaturan Masteredge</span><span class="lang-en">Masteredge Settings</span></button>
     </div>
 
     <!-- TAB 1: PANEL & API -->
@@ -308,6 +309,81 @@
               <button type="submit" class="btn-primary">Simpan Harga</button>
             </div>
           </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- TAB 4: MASTEREDGE SETTINGS -->
+    <div id="tab-masteredge" class="tab-content" style="display: none;">
+      <form action="/admin/masteredge" method="POST">
+        <div class="settings-grid">
+          <!-- Telegram Bot Settings -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Telegram Bot Notification</h3>
+            </div>
+            <div class="card-body">
+              <div class="field">
+                <label class="field-label">TELEGRAM BOT TOKEN</label>
+                <input type="text" name="telegram_bot_token" class="field-input" value="<%= cfg.telegram_bot_token %>" placeholder="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11">
+                <p class="field-hint">Dapatkan dari @BotFather di Telegram.</p>
+              </div>
+              <div class="field">
+                <label class="field-label">TELEGRAM CHAT ID</label>
+                <input type="text" name="telegram_chat_id" class="field-input" value="<%= cfg.telegram_chat_id %>" placeholder="Misal: 123456789 atau @channel_kamu">
+                <p class="field-hint">ID chat atau username channel untuk menerima notifikasi panel.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mod/App Settings -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Pengaturan Mod / Cheat App</h3>
+            </div>
+            <div class="card-body">
+              <div class="field">
+                <label class="field-label">STATUS MOD</label>
+                <select name="mod_status" class="field-input">
+                  <option value="online" <%= cfg.mod_status === 'online' ? 'selected' : '' %>>Online</option>
+                  <option value="maintenance" <%= cfg.mod_status === 'maintenance' ? 'selected' : '' %>>Maintenance</option>
+                  <option value="offline" <%= cfg.mod_status === 'offline' ? 'selected' : '' %>>Offline</option>
+                </select>
+              </div>
+              <% let modFeatures = {}; try { modFeatures = JSON.parse(cfg.mod_features || '{}'); } catch(e){} %>
+              <div class="field">
+                <label class="field-label">FITUR MOD (Bisa dikontrol dari server)</label>
+                <div class="game-permission-grid">
+                  <label class="permission-chip">
+                    <input type="checkbox" name="feat_esp" value="1" <%= modFeatures.esp ? 'checked' : '' %>>
+                    <span>ESP (Wallhack)</span>
+                  </label>
+                  <label class="permission-chip">
+                    <input type="checkbox" name="feat_aimbot" value="1" <%= modFeatures.aimbot ? 'checked' : '' %>>
+                    <span>Aimbot</span>
+                  </label>
+                  <label class="permission-chip">
+                    <input type="checkbox" name="feat_silent_aim" value="1" <%= modFeatures.silent_aim ? 'checked' : '' %>>
+                    <span>Silent Aim</span>
+                  </label>
+                  <label class="permission-chip">
+                    <input type="checkbox" name="feat_memory" value="1" <%= modFeatures.memory ? 'checked' : '' %>>
+                    <span>Memory Hacks</span>
+                  </label>
+                </div>
+              </div>
+              <div class="field mt-3">
+                <label class="field-label">API ENDPOINT SETTINGS</label>
+                <div class="api-info-box">
+                  <span class="method-badge">GET</span>
+                  <code>/api/mod_config</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem;display:flex;justify-content:flex-end">
+          <button type="submit" class="btn-primary">Simpan Masteredge Settings</button>
         </div>
       </form>
     </div>

@@ -157,6 +157,7 @@ async function initDB() {
   await ensureColumn(db, 'keys', 'price_paid', 'INTEGER NOT NULL DEFAULT 0');
   await ensureColumn(db, 'users', 'expires_at', 'INTEGER DEFAULT NULL');
   await ensureColumn(db, 'users', 'allowed_games', "TEXT NOT NULL DEFAULT '[]'");
+  await ensureColumn(db, 'store_referrals', 'allowed_products', "TEXT DEFAULT '[]'");
 
   // Seed default config
   const bcrypt = require('bcryptjs');
@@ -166,7 +167,11 @@ async function initDB() {
     admin_password: process.env.ADMIN_PASSWORD_HASH
                     || bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 10),
     salt:           process.env.SALT           || 'Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E',
-    maintenance_mode: '0'
+    maintenance_mode: '0',
+    telegram_bot_token: '',
+    telegram_chat_id: '',
+    mod_status: 'online',
+    mod_features: JSON.stringify({ esp: true, aimbot: true, silent_aim: false, memory: true })
   };
 
   for (const [k, v] of Object.entries(defaults)) {
