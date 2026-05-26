@@ -91,45 +91,42 @@ app.use('/api', storeApiRoutes);
 const crypto = require('crypto');
 
 app.post('/mod/LoginData.php', (req, res) => {
-    console.log(`\n[+] Menerima Request Login dari APK pada: ${new Date().toISOString()}`);
+    // 1. Ambil payload 'c' dari request APK
+    const payloadC_Base64 = req.body.c; 
     
-    // (Opsional) Kamu bisa melihat payload a, b, c yang dikirim APK di req.body
-    // console.log("[*] Payload Request:", req.body);
+    // Ubah ke buffer biner
+    const encryptedRequestBuffer = Buffer.from(payloadC_Base64, 'base64');
+    
+    // KUNCI RAHASIANYA: Ambil 16 byte terakhir dari ciphertext request!
+    // Inilah IV yang ditunggu oleh aplikasi.
+    const mutatedIv = encryptedRequestBuffer.slice(-16); 
+    
+    // Key tetap 0000 (sesuai patch kamu)
+    const key = Buffer.alloc(16, 0);
 
-    // --- 1. SETTING KUNCI (Sesuai Patch 0000 Kamu) ---
-    const key = Buffer.alloc(16, 0); 
-    const iv = Buffer.alloc(16, 0);
-
-    // --- 2. DATA JSON BYPASS ---
-    // Kita tes menggunakan balasan FAILED asli dari tangkapan Frida sebelumnya
-const responseJson = JSON.stringify({
-    "ConnectSt_hk": "Failed",
-    "mensagem": "The key is invalid.",
-    "timestamp": Math.floor(Date.now() / 1000),
-    "nonce": crypto.randomBytes(16).toString('hex')
-});
+    const responseJson = JSON.stringify({
+        "ConnectSt_hk": "Failed",
+        "mensagem": "tes failed",
+        "timestamp": Math.floor(Date.now() / 1000),
+        "nonce": "ef84a889dec86aafa295bf5c6fd92382" // Bebas
+    });
 
     try {
-        // --- 3. PROSES ENKRIPSI ---
-        const cipher = crypto.createCipheriv('aes-128-cbc', key, iv);
+        // Enkripsi menggunakan IV yang sudah bermutasi
+        const cipher = crypto.createCipheriv('aes-128-cbc', key, mutatedIv);
         
         let encryptedBase64 = cipher.update(responseJson, 'utf8', 'base64');
         encryptedBase64 += cipher.final('base64');
 
-        // --- 4. KIRIM RESPONSE KE APK ---
-        const finalResponse = {
+        res.status(200).json({
             "data": encryptedBase64,
-            "signature": "111111" 
-        };
+            "signature": "111111"
+        });
 
-        console.log("[*] Mengirim Response Enkripsi: Success");
-        
-        // Kirimkan balasan HTTP 200 OK beserta JSON terenkripsi
-        res.status(200).json(finalResponse);
+        console.log("[+] Berhasil mengirim response dengan Mutated IV!");
 
     } catch (e) {
-        console.error("[-] Terjadi kesalahan saat enkripsi: ", e.message);
-        res.status(500).json({ error: "Internal Server Error" });
+        console.error("[-] Error:", e);
     }
 });
 
