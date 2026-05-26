@@ -376,7 +376,7 @@ router.post('/settings', auth, requireOwner, async (req, res) => {
   res.redirect('/admin/settings');
 });
 
-router.post('/masteredge', auth, requireOwner, async (req, res) => {
+router.post('/xsrc', auth, requireOwner, async (req, res) => {
   const { telegram_bot_token, telegram_chat_id, mod_status, feat_esp, feat_aimbot, feat_silent_aim, feat_memory } = req.body;
   const updates = {};
   

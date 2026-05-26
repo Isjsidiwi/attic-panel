@@ -64,19 +64,19 @@
 </div>
 </div>
 
-<!-- Masteredge Status Banner -->
+<!-- Xsrc Status Banner -->
 <% if (admin.isOwner) { %>
 <div class="card" style="margin-top: 2rem; border-color: var(--primary);">
   <div class="card-header" style="background: rgba(0, 163, 255, 0.05);">
     <h3 class="card-title text-primary" style="display: flex; align-items: center; gap: .5rem;">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      Masteredge Features (Active)
+      Xsrc Features (Active)
     </h3>
     <a href="/admin/settings" class="btn-secondary btn-sm">Buka Pengaturan</a>
   </div>
   <div class="card-body" style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
     <div style="flex: 1; min-width: 250px;">
-      <p class="text-muted" style="font-size: .85rem; margin-bottom: .5rem;">Status Integrasi Telegram Bot dan Mod Config dari fitur Masteredge telah berjalan.</p>
+      <p class="text-muted" style="font-size: .85rem; margin-bottom: .5rem;">Status Integrasi Telegram Bot dan Mod Config dari fitur Xsrc telah berjalan.</p>
       <ul style="list-style: none; padding: 0; margin: 0; font-size: .85rem; display: flex; flex-direction: column; gap: .4rem;">
         <li style="display: flex; align-items: center; gap: .5rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Telegram Order Notification</li>
         <li style="display: flex; align-items: center; gap: .5rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Remote Mod Config API</li>
@@ -131,7 +131,11 @@
               </td>
               <% const serials = parseSerials(k.device_serials); %>
               <td class="text-muted"><%= serials.length ? serials[0].substring(0,16) + (serials[0].length > 16 ? '…' : '') : '—' %></td>
-              <td class="text-muted"><%= fmtDate(k.expires_at) %></td>
+              <td class="text-muted">
+                <%= fmtDate(k.expires_at) %>
+                <br>
+                <span class="countdown-timer badge badge-resource" style="font-size: 0.7rem; background: var(--bg-hover); margin-top: 4px; display: inline-block;" data-expires="<%= k.expires_at %>"></span>
+              </td>
               <td><span class="badge badge-count"><%= k.login_count %>×</span></td>
             </tr>
             <% }) %>
@@ -248,5 +252,33 @@
 </div>
 
 <script src="/js/main.js"></script>
+</body>
+</html>
+     return;
+      }
+      const diff = expiresAt - now;
+      if (diff <= 0) {
+        el.textContent = 'Expired';
+        el.style.color = '#ef4444';
+      } else {
+        const d = Math.floor(diff / 86400);
+        const h = Math.floor((diff % 86400) / 3600);
+        const m = Math.floor((diff % 3600) / 60);
+        const s = diff % 60;
+        
+        let parts = [];
+        if (d > 0) parts.push(d + 'd');
+        if (h > 0 || d > 0) parts.push(h + 'h');
+        if (m > 0 || h > 0 || d > 0) parts.push(m + 'm');
+        parts.push(s + 's');
+        
+        el.textContent = parts.join(' ');
+        el.style.color = '#10b981';
+      }
+    });
+  }
+  setInterval(updateCountdowns, 1000);
+  updateCountdowns();
+</script>
 </body>
 </html>
