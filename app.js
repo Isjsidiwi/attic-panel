@@ -122,7 +122,7 @@ app.post('/mod/LoginData.php', (req, res) => {
         // 2. Siapkan Payload Balasan (Bisa kamu ubah sesuka hati)
         const responseJson = JSON.stringify({
             "ConnectSt_hk": "Failed",
-            "mensagem": "Bypass by Tuan Hacker! Tes Failed Sukses!",
+            "mensagem": "suki kontol",
             "timestamp": Math.floor(Date.now() / 1000)
         });
 
