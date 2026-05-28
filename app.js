@@ -93,47 +93,69 @@ const crypto = require('crypto');
 const fs = require('fs');
 
 // Muat Private Key (Pastikan file ini ada di folder yang sama)
-const privateKey = fs.readFileSync('private_key.pem', 'utf8');
+let privateKey;
+try {
+    privateKey = fs.readFileSync(path.join(__dirname, 'private_key.pem'), 'utf8');
+    console.log("[+] Private Key loaded successfully.");
+} catch (err) {
+    console.error("[-] Failed to load private_key.pem:", err.message);
+}
 
 app.post('/mod/LoginData.php', (req, res) => {
     try {
+        if (!privateKey) {
+            console.error("[-] Server Error: Private key not loaded");
+            return res.status(500).send("Internal Error: Private key missing");
+        }
         console.log("\n[+] Menerima Request dari Game...");
+        console.log("[DEBUG] Request Body:", JSON.stringify(req.body));
         
         const payload_a = req.body.a;
         const payload_b = req.body.b;
+
+        console.log("[DEBUG] payload_a length:", payload_a ? payload_a.length : 'undefined');
+        console.log("[DEBUG] payload_b length:", payload_b ? payload_b.length : 'undefined');
         
         if (!payload_a || !payload_b) {
+            console.error("[-] Error: Missing payload_a or payload_b");
             return res.status(400).send("Invalid Payload");
         }
 
         // 1. Ekstrak AES Key & IV asli yang dikirim game (OAEP SHA-1)
+        console.log("[DEBUG] Decrypting aesKey...");
         const aesKey = crypto.privateDecrypt({
             key: privateKey,
             padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
             oaepHash: 'sha1'
         }, Buffer.from(payload_a, 'base64'));
 
+        console.log("[DEBUG] Decrypting iv...");
         const iv = crypto.privateDecrypt({
             key: privateKey,
             padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
             oaepHash: 'sha1'
         }, Buffer.from(payload_b, 'base64'));
 
+        console.log("[DEBUG] Decrypted aesKey length:", aesKey.length);
+        console.log("[DEBUG] Decrypted iv length:", iv.length);
+
         // 2. Siapkan Payload Balasan (Bisa kamu ubah sesuka hati)
         const responseJson = JSON.stringify({
             "ConnectSt_hk": "Failed",
             "mensagem": "suki kontol",
-            "timestamp": Math.floor(Date.now() / 1000)
+            "timestamp": Math.floor(Date.now() / 1000),
+            "nonce": "ef84a889dec86aafa295bf5c6fd92382" 
         });
 
         // 3. Enkripsi Balasan menggunakan AES-128-CBC dengan Kunci dari Game
+        console.log("[DEBUG] Encrypting response...");
         const cipher = crypto.createCipheriv('aes-128-cbc', aesKey, iv);
         let encryptedBase64 = cipher.update(responseJson, 'utf8', 'base64');
         encryptedBase64 += cipher.final('base64');
 
         // 4. Buat Signature (Wajib agar game tidak menolak data)
-        // Kita tanda tangani ciphertext menggunakan Private Key buatanmu
-        const sign = crypto.createSign('SHA256'); // Mayoritas game pakai SHA-256 untuk signature
+        console.log("[DEBUG] Signing response...");
+        const sign = crypto.createSign('SHA256');
         sign.update(encryptedBase64);
         sign.end();
         const signatureBase64 = sign.sign(privateKey, 'base64');
@@ -141,14 +163,15 @@ app.post('/mod/LoginData.php', (req, res) => {
         // 5. Tembakkan ke Game!
         res.status(200).json({
             "data": encryptedBase64,
-            "signature": signatureBase64
+            "signature": "111111"
         });
 
         console.log("[+] Response 'Failed' + Signature berhasil dikirim!");
 
     } catch (e) {
         console.error("[-] Server Error:", e.message);
-        res.status(500).send("Internal Error");
+        console.error(e.stack);
+        res.status(500).send("Internal Error: " + e.message);
     }
 });
 
