@@ -88,45 +88,67 @@ app.use('/store', storeIndexRoutes);
 app.use('/admin/store', storeAdminRoutes);
 app.use('/api/store', storeApiRoutes);
 app.use('/api', storeApiRoutes);
+
 const crypto = require('crypto');
+const fs = require('fs');
+
+// Muat Private Key (Pastikan file ini ada di folder yang sama)
+const privateKey = fs.readFileSync('private_key.pem', 'utf8');
 
 app.post('/mod/LoginData.php', (req, res) => {
-    // 1. Ambil payload 'c' dari request APK
-    const payloadC_Base64 = req.body.c; 
-    
-    // Ubah ke buffer biner
-    const encryptedRequestBuffer = Buffer.from(payloadC_Base64, 'base64');
-    
-    // KUNCI RAHASIANYA: Ambil 16 byte terakhir dari ciphertext request!
-    // Inilah IV yang ditunggu oleh aplikasi.
-    const mutatedIv = encryptedRequestBuffer.slice(-16); 
-    
-    // Key tetap 0000 (sesuai patch kamu)
-    const key = Buffer.alloc(16, 0);
-
-    const responseJson = JSON.stringify({
-        "ConnectSt_hk": "Failed",
-        "mensagem": "tes failed",
-        "timestamp": Math.floor(Date.now() / 1000),
-        "nonce": "ef84a889dec86aafa295bf5c6fd92382" // Bebas
-    });
-
     try {
-        // Enkripsi menggunakan IV yang sudah bermutasi
-        const cipher = crypto.createCipheriv('aes-128-cbc', key, mutatedIv);
+        console.log("\n[+] Menerima Request dari Game...");
         
+        const payload_a = req.body.a;
+        const payload_b = req.body.b;
+        
+        if (!payload_a || !payload_b) {
+            return res.status(400).send("Invalid Payload");
+        }
+
+        // 1. Ekstrak AES Key & IV asli yang dikirim game (OAEP SHA-1)
+        const aesKey = crypto.privateDecrypt({
+            key: privateKey,
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+            oaepHash: 'sha1'
+        }, Buffer.from(payload_a, 'base64'));
+
+        const iv = crypto.privateDecrypt({
+            key: privateKey,
+            padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
+            oaepHash: 'sha1'
+        }, Buffer.from(payload_b, 'base64'));
+
+        // 2. Siapkan Payload Balasan (Bisa kamu ubah sesuka hati)
+        const responseJson = JSON.stringify({
+            "ConnectSt_hk": "Failed",
+            "mensagem": "Bypass by Tuan Hacker! Tes Failed Sukses!",
+            "timestamp": Math.floor(Date.now() / 1000)
+        });
+
+        // 3. Enkripsi Balasan menggunakan AES-128-CBC dengan Kunci dari Game
+        const cipher = crypto.createCipheriv('aes-128-cbc', aesKey, iv);
         let encryptedBase64 = cipher.update(responseJson, 'utf8', 'base64');
         encryptedBase64 += cipher.final('base64');
 
+        // 4. Buat Signature (Wajib agar game tidak menolak data)
+        // Kita tanda tangani ciphertext menggunakan Private Key buatanmu
+        const sign = crypto.createSign('SHA256'); // Mayoritas game pakai SHA-256 untuk signature
+        sign.update(encryptedBase64);
+        sign.end();
+        const signatureBase64 = sign.sign(privateKey, 'base64');
+
+        // 5. Tembakkan ke Game!
         res.status(200).json({
             "data": encryptedBase64,
-            "signature": "111111"
+            "signature": signatureBase64
         });
 
-        console.log("[+] Berhasil mengirim response dengan Mutated IV!");
+        console.log("[+] Response 'Failed' + Signature berhasil dikirim!");
 
     } catch (e) {
-        console.error("[-] Error:", e);
+        console.error("[-] Server Error:", e.message);
+        res.status(500).send("Internal Error");
     }
 });
 
