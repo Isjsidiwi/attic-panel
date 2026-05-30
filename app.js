@@ -101,10 +101,11 @@ app.use('/api/store', storeApiRoutes);
 app.use('/api', storeApiRoutes);
 
 app.post('/project/login', (req, res) => {
-  res.status(404).json({
-    message: "suki miaw",
-    error: "Not Found",
-    statusCode: 404
+  res.status(200).json({
+    success: true,
+    data: {
+      akses_game: ["Suki", "Miaw"]
+    }
   });
 });
 
