@@ -265,9 +265,11 @@
       <a href="/store/" class="transition-colors hover:text-white" style="color:var(--muted)">Katalog</a>
       <% if (isAdmin) { %>
         <a href="/admin/store" class="transition-colors hover:text-white" style="color:var(--muted)">Dashboard</a>
-        <a href="/admin/store/logout" class="transition-colors text-red-400 hover:text-red-300">Logout</a>
+        <form action="/logout" method="POST" class="inline">
+          <button type="submit" class="transition-colors text-red-400 hover:text-red-300 bg-transparent border-none cursor-pointer p-0 font-medium text-sm">Logout</button>
+        </form>
       <% } else { %>
-        <a href="/admin/store/login" class="transition-colors text-blue-400 hover:text-blue-300 border border-blue-400/30 px-3 py-1.5 rounded-lg">Admin Login</a>
+        <a href="/login" class="transition-colors text-blue-400 hover:text-blue-300 border border-blue-400/30 px-3 py-1.5 rounded-lg">Admin Login</a>
       <% } %>
       <button type="button" class="store-tool" id="store-theme-btn" aria-label="Toggle theme">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>

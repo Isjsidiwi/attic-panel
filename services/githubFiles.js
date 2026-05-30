@@ -18,7 +18,10 @@ function isConfigured() {
 
 function sanitizeFileName(name) {
   const base = path.basename(String(name || 'file'));
-  const cleaned = base.replace(/[<>:"/\\|?*\x00-\x1F]/g, '_').replace(/\s+/g, ' ').trim();
+  const cleaned = base
+    .replace(/[<>:"/\\|?*\x00-\x1F]/g, '_')
+    .replace(/\s+/g, ' ')
+    .trim();
   return cleaned || `file-${Date.now()}`;
 }
 
@@ -69,14 +72,16 @@ async function getContent(repoPath) {
 
 async function listFiles() {
   const cfg = getConfig();
-  const res = await api().get(`/contents/${cfg.basePath}`, { params: { ref: cfg.branch } }).catch(err => {
-    if (err.response && err.response.status === 404) return { data: [] };
-    throw err;
-  });
+  const res = await api()
+    .get(`/contents/${cfg.basePath}`, { params: { ref: cfg.branch } })
+    .catch((err) => {
+      if (err.response && err.response.status === 404) return { data: [] };
+      throw err;
+    });
 
   return (Array.isArray(res.data) ? res.data : [])
-    .filter(item => item.type === 'file')
-    .map(item => ({
+    .filter((item) => item.type === 'file')
+    .map((item) => ({
       name: item.name,
       path: item.path,
       sha: item.sha,

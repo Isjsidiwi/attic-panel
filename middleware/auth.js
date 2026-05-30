@@ -10,8 +10,13 @@ async function auth(req, res, next) {
   try {
     const payload = jwt.verify(token, SECRET());
     const user = payload.id
-      ? await db.get('SELECT id, username, role, credit, is_active, expires_at, allowed_games FROM users WHERE id=?', [payload.id])
-      : await db.get('SELECT id, username, role, credit, is_active, expires_at, allowed_games FROM users WHERE username=?', [payload.username]);
+      ? await db.get('SELECT id, username, role, credit, is_active, expires_at, allowed_games FROM users WHERE id=?', [
+          payload.id
+        ])
+      : await db.get(
+          'SELECT id, username, role, credit, is_active, expires_at, allowed_games FROM users WHERE username=?',
+          [payload.username]
+        );
 
     const now = Math.floor(Date.now() / 1000);
     const cfg = await loadConfig();
@@ -32,7 +37,11 @@ async function auth(req, res, next) {
       role: user.role,
       credit: Number(user.credit) || 0,
       allowedGames: (() => {
-        try { return JSON.parse(user.allowed_games || '[]'); } catch { return []; }
+        try {
+          return JSON.parse(user.allowed_games || '[]');
+        } catch {
+          return [];
+        }
       })(),
       isOwner: user.role === 'owner'
     };

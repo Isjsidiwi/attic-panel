@@ -85,7 +85,9 @@ async function fulfillPaidOrder(order) {
        WHERE id = ?`,
       [order.id]
     );
-    sendTelegramNotification(`⚠️ *ORDER BERHASIL TAPI STOK HABIS*\n\nOrder ID: \`${order.id}\`\nPembeli: ${order.customer_name} (${order.customer_email})\nJumlah: Rp ${order.amount}\n\nSegera hubungi pembeli dan tambahkan stok!`);
+    sendTelegramNotification(
+      `⚠️ *ORDER BERHASIL TAPI STOK HABIS*\n\nOrder ID: \`${order.id}\`\nPembeli: ${order.customer_name} (${order.customer_email})\nJumlah: Rp ${order.amount}\n\nSegera hubungi pembeli dan tambahkan stok!`
+    );
     return {
       success: true,
       status: 'paid_no_stock',
@@ -99,8 +101,10 @@ async function fulfillPaidOrder(order) {
      WHERE id = ?`,
     [key.id, order.id]
   );
-  
-  sendTelegramNotification(`✅ *ORDER BERHASIL*\n\nOrder ID: \`${order.id}\`\nPembeli: ${order.customer_name}\nJumlah: Rp ${order.amount}\nKey yang diberikan: \`${key.key_value}\``);
+
+  sendTelegramNotification(
+    `✅ *ORDER BERHASIL*\n\nOrder ID: \`${order.id}\`\nPembeli: ${order.customer_name}\nJumlah: Rp ${order.amount}\nKey yang diberikan: \`${key.key_value}\``
+  );
 
   return { success: true, status: 'paid', key: key.key_value };
 }

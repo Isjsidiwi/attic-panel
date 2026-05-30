@@ -6,7 +6,7 @@ let client;
 function getClient() {
   if (!client) {
     client = createClient({
-      url:       process.env.TURSO_DATABASE_URL,
+      url: process.env.TURSO_DATABASE_URL,
       authToken: process.env.TURSO_AUTH_TOKEN
     });
   }
@@ -15,7 +15,7 @@ function getClient() {
 
 async function ensureColumn(db, table, column, definition) {
   const cols = await db.execute(`PRAGMA table_info(${table})`);
-  const colNames = cols.rows.map(r => r.name);
+  const colNames = cols.rows.map((r) => r.name);
   if (!colNames.includes(column)) {
     await db.execute(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
   }
@@ -133,11 +133,11 @@ async function initDB() {
   // Migration: tabel lama mungkin punya device_serial (tanpa s)
   try {
     const cols = await db.execute('PRAGMA table_info(keys)');
-    const colNames = cols.rows.map(r => r.name);
+    const colNames = cols.rows.map((r) => r.name);
 
     if (colNames.includes('device_serial') && !colNames.includes('device_serials')) {
       await db.execute("ALTER TABLE keys ADD COLUMN device_serials TEXT NOT NULL DEFAULT '[]'");
-      await db.execute("ALTER TABLE keys ADD COLUMN max_devices INTEGER NOT NULL DEFAULT 1");
+      await db.execute('ALTER TABLE keys ADD COLUMN max_devices INTEGER NOT NULL DEFAULT 1');
       await db.execute(`
         UPDATE keys SET device_serials =
           CASE WHEN device_serial IS NULL THEN '[]'
@@ -148,9 +148,11 @@ async function initDB() {
       if (!colNames.includes('device_serials'))
         await db.execute("ALTER TABLE keys ADD COLUMN device_serials TEXT NOT NULL DEFAULT '[]'");
       if (!colNames.includes('max_devices'))
-        await db.execute("ALTER TABLE keys ADD COLUMN max_devices INTEGER NOT NULL DEFAULT 1");
+        await db.execute('ALTER TABLE keys ADD COLUMN max_devices INTEGER NOT NULL DEFAULT 1');
     }
-  } catch (_) { /* tabel fresh, kolom sudah ada */ }
+  } catch (_) {
+    /* tabel fresh, kolom sudah ada */
+  }
 
   await ensureColumn(db, 'keys', 'created_by', 'INTEGER DEFAULT NULL');
   await ensureColumn(db, 'keys', 'created_by_username', "TEXT DEFAULT ''");
@@ -159,14 +161,13 @@ async function initDB() {
   await ensureColumn(db, 'users', 'allowed_games', "TEXT NOT NULL DEFAULT '[]'");
   await ensureColumn(db, 'store_referrals', 'allowed_products', "TEXT DEFAULT '[]'");
 
-  // Seed default config
+  // Seed default config (Hanya berjalan jika tabel kosong)
   const bcrypt = require('bcryptjs');
   const defaults = {
-    panel_name:     process.env.PANEL_NAME     || 'ATTIC PANEL',
-    admin_username: process.env.ADMIN_USERNAME || 'admin',
-    admin_password: process.env.ADMIN_PASSWORD_HASH
-                    || bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 10),
-    salt:           process.env.SALT           || 'Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E',
+    panel_name: 'ATTIC PANEL',
+    admin_username: 'admin',
+    admin_password: bcrypt.hashSync('admin123', 10),
+    salt: 'Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E',
     maintenance_mode: '0',
     telegram_bot_token: '',
     telegram_chat_id: '',
@@ -180,13 +181,22 @@ async function initDB() {
 
   const cfgRows = await db.execute('SELECT key, value FROM config');
   const cfg = {};
-  cfgRows.rows.forEach(r => { cfg[r.key] = r.value; });
+  cfgRows.rows.forEach((r) => {
+    cfg[r.key] = r.value;
+  });
 
   const owner = await db.execute("SELECT id FROM users WHERE role = 'owner' LIMIT 1");
   if (owner.rows.length === 0) {
     await db.execute({
       sql: 'INSERT INTO users (username, password_hash, role, credit, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?)',
-      args: [cfg.admin_username || defaults.admin_username, cfg.admin_password || defaults.admin_password, 'owner', 0, 1, now]
+      args: [
+        cfg.admin_username || defaults.admin_username,
+        cfg.admin_password || defaults.admin_password,
+        'owner',
+        0,
+        1,
+        now
+      ]
     });
   }
 
@@ -219,10 +229,10 @@ async function run(sql, args = []) {
   return db.execute({ sql, args });
 }
 
-module.exports = { 
-  initDB, 
-  all, 
-  get, 
+module.exports = {
+  initDB,
+  all,
+  get,
   run,
-  db: { execute: (sql, args) => run(sql, args) } 
+  db: { execute: (sql, args) => run(sql, args) }
 };

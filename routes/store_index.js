@@ -34,9 +34,7 @@ router.get('/', async (req, res) => {
       `;
     const { rows: products } = await db.execute(productQuery, params);
 
-    const { rows: categories } = await db.execute(
-      `SELECT DISTINCT category FROM store_products WHERE is_active = 1`
-    );
+    const { rows: categories } = await db.execute(`SELECT DISTINCT category FROM store_products WHERE is_active = 1`);
 
     res.render('store/index', { products, categories, selectedCategory, q });
   } catch (err) {
@@ -48,10 +46,9 @@ router.get('/', async (req, res) => {
 // ── Detail Produk
 router.get('/produk/:slug', async (req, res) => {
   try {
-    const { rows } = await db.execute(
-      `SELECT p.* FROM store_products p WHERE p.slug = ? AND p.is_active = 1`,
-      [req.params.slug]
-    );
+    const { rows } = await db.execute(`SELECT p.* FROM store_products p WHERE p.slug = ? AND p.is_active = 1`, [
+      req.params.slug
+    ]);
     if (!rows.length) return res.redirect('/store/');
     const product = rows[0];
 
@@ -74,10 +71,9 @@ router.get('/produk/:slug', async (req, res) => {
 // ── Checkout: Form
 router.get('/checkout/:slug/:variantId', async (req, res) => {
   try {
-    const { rows: pRows } = await db.execute(
-      `SELECT p.* FROM store_products p WHERE p.slug = ? AND p.is_active = 1`,
-      [req.params.slug]
-    );
+    const { rows: pRows } = await db.execute(`SELECT p.* FROM store_products p WHERE p.slug = ? AND p.is_active = 1`, [
+      req.params.slug
+    ]);
     if (!pRows.length) return res.redirect('/store/');
     const product = pRows[0];
 
@@ -101,11 +97,10 @@ router.get('/checkout/:slug/:variantId', async (req, res) => {
 router.post('/checkout/:slug/:variantId', async (req, res) => {
   try {
     const { customer_name, customer_email, referral_code } = req.body;
-    
-    const { rows: pRows } = await db.execute(
-      `SELECT p.* FROM store_products p WHERE p.slug = ? AND p.is_active = 1`,
-      [req.params.slug]
-    );
+
+    const { rows: pRows } = await db.execute(`SELECT p.* FROM store_products p WHERE p.slug = ? AND p.is_active = 1`, [
+      req.params.slug
+    ]);
     if (!pRows.length) return res.redirect('/store/');
     const product = pRows[0];
 
@@ -125,32 +120,31 @@ router.post('/checkout/:slug/:variantId', async (req, res) => {
 
     let finalPrice = variant.price;
     let appliedDiscount = 0;
-// Cek referral code jika ada
-if (referral_code) {
-  const { rows: refRows } = await db.execute(
-    `SELECT * FROM store_referrals WHERE code = ? AND is_active = 1`,
-    [referral_code.trim().toUpperCase()]
-  );
-  if (refRows.length > 0) {
-    const ref = refRows[0];
-    let isExpired = false;
-    if (ref.expired_at && new Date(ref.expired_at) < new Date()) {
-      isExpired = true;
-    }
+    // Cek referral code jika ada
+    if (referral_code) {
+      const { rows: refRows } = await db.execute(`SELECT * FROM store_referrals WHERE code = ? AND is_active = 1`, [
+        referral_code.trim().toUpperCase()
+      ]);
+      if (refRows.length > 0) {
+        const ref = refRows[0];
+        let isExpired = false;
+        if (ref.expired_at && new Date(ref.expired_at) < new Date()) {
+          isExpired = true;
+        }
 
-    let isProductAllowed = true;
-    try {
-      const allowed = JSON.parse(ref.allowed_products || '[]');
-      if (allowed.length > 0 && !allowed.includes(product.id)) {
-        isProductAllowed = false;
+        let isProductAllowed = true;
+        try {
+          const allowed = JSON.parse(ref.allowed_products || '[]');
+          if (allowed.length > 0 && !allowed.includes(product.id)) {
+            isProductAllowed = false;
+          }
+        } catch (e) {}
+
+        if (!isExpired && isProductAllowed) {
+          appliedDiscount = ref.discount_amount;
+        }
       }
-    } catch(e) {}
-
-    if (!isExpired && isProductAllowed) {
-      appliedDiscount = ref.discount_amount;
     }
-  }
-}
 
     // Unique amount untuk verifikasi pembayaran
     const suffix = generateUniqueSuffix();
@@ -158,7 +152,8 @@ if (referral_code) {
     const orderId = uuidv4();
 
     // Buat QRIS
-    let qrisId = null, qrisUrl = null;
+    let qrisId = null,
+      qrisUrl = null;
     try {
       const qrisRes = await createQRIS(uniqueAmount);
       if (qrisRes?.qris_ajaib?.success) {
@@ -166,11 +161,19 @@ if (referral_code) {
         qrisUrl = qrisRes.qris_ajaib.results.qrcode_url;
       } else {
         console.error('QRIS API Error:', qrisRes);
-        return res.render('store/checkout', { product, variant, error: 'Gagal membuat QRIS (API Error). Silakan coba lagi.' });
+        return res.render('store/checkout', {
+          product,
+          variant,
+          error: 'Gagal membuat QRIS (API Error). Silakan coba lagi.'
+        });
       }
     } catch (e) {
       console.error('QRIS create exception:', e.message);
-      return res.render('store/checkout', { product, variant, error: 'Sistem pembayaran sedang gangguan. Coba beberapa saat lagi.' });
+      return res.render('store/checkout', {
+        product,
+        variant,
+        error: 'Sistem pembayaran sedang gangguan. Coba beberapa saat lagi.'
+      });
     }
 
     // Waktu bayar dibuat cukup longgar agar mutasi QRIS yang telat tetap sempat terbaca.
@@ -181,7 +184,20 @@ if (referral_code) {
     await db.execute(
       `INSERT INTO store_orders (id, product_id, variant_id, customer_name, customer_email, amount, unique_amount, unique_suffix, qris_id, qris_url, status, created_at, expired_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?)`,
-      [orderId, product.id, variant.id, customer_name, customer_email, finalPrice, uniqueAmount, suffix, qrisId, qrisUrl, nowIso, expiredAt]
+      [
+        orderId,
+        product.id,
+        variant.id,
+        customer_name,
+        customer_email,
+        finalPrice,
+        uniqueAmount,
+        suffix,
+        qrisId,
+        qrisUrl,
+        nowIso,
+        expiredAt
+      ]
     );
 
     res.redirect('/store/order/' + orderId);

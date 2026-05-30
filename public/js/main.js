@@ -15,33 +15,38 @@ function closeModalOutside(e, id) {
 
 /* ── Edit Modal ────────────────────────────────── */
 function openEdit(key) {
-  document.getElementById('edit-key-code').value  = key.key_code;
-  document.getElementById('edit-resource').value  = key.resource;
-  document.getElementById('edit-active').value    = key.is_active ? '1' : '0';
-  document.getElementById('edit-notes').value     = key.notes || '';
+  document.getElementById('edit-key-code').value = key.key_code;
+  document.getElementById('edit-resource').value = key.resource;
+  document.getElementById('edit-active').value = key.is_active ? '1' : '0';
+  document.getElementById('edit-notes').value = key.notes || '';
   document.getElementById('edit-max-devices').value = key.max_devices || 1;
   document.getElementById('edit-reset-devices').checked = false;
 
   // Render daftar serials
   let serials = [];
-  try { serials = JSON.parse(key.device_serials || '[]'); } catch {}
+  try {
+    serials = JSON.parse(key.device_serials || '[]');
+  } catch {}
   const box = document.getElementById('edit-serials-list');
   if (serials.length === 0) {
     box.innerHTML = '<span class="text-muted" style="font-size:.78rem">Belum ada device terdaftar</span>';
   } else {
-    box.innerHTML = serials.map((s, i) =>
-      `<div class="serial-item">
+    box.innerHTML = serials
+      .map(
+        (s, i) =>
+          `<div class="serial-item">
         <span class="serial-dot"></span>
         <code style="font-size:.75rem;color:var(--text)">${s}</code>
-        <span class="serial-idx">#${i+1}</span>
+        <span class="serial-idx">#${i + 1}</span>
       </div>`
-    ).join('');
+      )
+      .join('');
   }
 
   if (key.expires_at) {
     const d = new Date(Number(key.expires_at) * 1000);
-    const pad = n => String(n).padStart(2, '0');
-    const local = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    const pad = (n) => String(n).padStart(2, '0');
+    const local = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
     document.getElementById('edit-expires').value = local;
   }
 
@@ -58,20 +63,23 @@ function openDelete(id, code) {
 
 /* ── Copy key code ─────────────────────────────── */
 function copyText(text, el) {
-  navigator.clipboard.writeText(text).then(() => {
-    el.classList.add('copied');
-    showToast('Copied: ' + text);
-    setTimeout(() => el.classList.remove('copied'), 1500);
-  }).catch(() => {
-    // Fallback
-    const t = document.createElement('textarea');
-    t.value = text;
-    document.body.appendChild(t);
-    t.select();
-    document.execCommand('copy');
-    document.body.removeChild(t);
-    showToast('Copied!');
-  });
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      el.classList.add('copied');
+      showToast('Copied: ' + text);
+      setTimeout(() => el.classList.remove('copied'), 1500);
+    })
+    .catch(() => {
+      // Fallback
+      const t = document.createElement('textarea');
+      t.value = text;
+      document.body.appendChild(t);
+      t.select();
+      document.execCommand('copy');
+      document.body.removeChild(t);
+      showToast('Copied!');
+    });
 }
 
 /* ── Mobile viewport helper (fix 100vh issues on mobile) ───────────────── */
@@ -119,9 +127,13 @@ function setLoaderProgress(pct, sub) {
   if (subEl) subEl.textContent = sub || `Installing assets... ${Math.round(pct)}%`;
 }
 function loadImages(urls, onProgress, onComplete) {
-  if (!urls || !urls.length) { onComplete && onComplete(); return; }
-  let loaded = 0, total = urls.length;
-  urls.forEach(url => {
+  if (!urls || !urls.length) {
+    onComplete && onComplete();
+    return;
+  }
+  let loaded = 0,
+    total = urls.length;
+  urls.forEach((url) => {
     const img = new Image();
     img.onload = img.onerror = () => {
       loaded++;
@@ -143,7 +155,9 @@ function startRegionTimePopup() {
 
   function getZoneInfo() {
     let tz = 'UTC';
-    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC'; } catch (e) {}
+    try {
+      tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+    } catch (e) {}
     const indZones = ['Asia/Jakarta', 'Asia/Pontianak', 'Asia/Makassar', 'Asia/Jayapura'];
     if (/singapore/i.test(tz) || (navigator.language || '').toLowerCase().includes('sg')) {
       return { region: 'Singapore', tz: 'Asia/Singapore', label: 'Singapore Time (SGT)' };
@@ -165,7 +179,7 @@ function startRegionTimePopup() {
       let tzAbbrev = '';
       try {
         const parts = new Intl.DateTimeFormat('en-US', { timeZone: info.tz, timeZoneName: 'short' }).formatToParts(now);
-        const tzn = parts.find(p => p.type === 'timeZoneName');
+        const tzn = parts.find((p) => p.type === 'timeZoneName');
         if (tzn) tzAbbrev = ' ' + tzn.value;
       } catch (err) {}
       regionEl.textContent = info.label;
@@ -176,7 +190,11 @@ function startRegionTimePopup() {
   updateTime();
   const iv = setInterval(updateTime, 1000);
 
-  if (closeBtn) closeBtn.addEventListener('click', () => { popup.style.display = 'none'; clearInterval(iv); });
+  if (closeBtn)
+    closeBtn.addEventListener('click', () => {
+      popup.style.display = 'none';
+      clearInterval(iv);
+    });
 }
 
 /* ── Toast ─────────────────────────────────────── */
@@ -191,7 +209,7 @@ function showToast(msg) {
 
 /* ── Bulk selection ────────────────────────────── */
 function toggleAll(master) {
-  document.querySelectorAll('.row-check').forEach(cb => cb.checked = master.checked);
+  document.querySelectorAll('.row-check').forEach((cb) => (cb.checked = master.checked));
   updateBulk();
 }
 
@@ -209,7 +227,7 @@ function updateBulk() {
 }
 
 function clearSelection() {
-  document.querySelectorAll('.row-check, #select-all').forEach(cb => cb.checked = false);
+  document.querySelectorAll('.row-check, #select-all').forEach((cb) => (cb.checked = false));
   document.getElementById('bulk-bar').style.display = 'none';
 }
 
@@ -222,12 +240,12 @@ function submitBulkAction(url, confirmMsg) {
   const form = document.getElementById('bulk-form');
   form.action = url;
 
-  form.querySelectorAll('input[name="ids"]').forEach(el => el.remove());
+  form.querySelectorAll('input[name="ids"]').forEach((el) => el.remove());
 
-  checked.forEach(cb => {
+  checked.forEach((cb) => {
     const inp = document.createElement('input');
-    inp.type  = 'hidden';
-    inp.name  = 'ids';
+    inp.type = 'hidden';
+    inp.name = 'ids';
     inp.value = cb.value;
     form.appendChild(inp);
   });
@@ -262,7 +280,7 @@ function setupCreditPreview() {
     `;
   };
 
-  [gameInput, durationInput, bulkInput].forEach(input => {
+  [gameInput, durationInput, bulkInput].forEach((input) => {
     if (input) input.addEventListener('input', render);
     if (input) input.addEventListener('change', render);
   });
@@ -273,9 +291,12 @@ function setupCreditPreview() {
 document.addEventListener('DOMContentLoaded', () => {
   setupCreditPreview();
 
-  document.querySelectorAll('[data-count]').forEach(el => {
+  document.querySelectorAll('[data-count]').forEach((el) => {
     const target = parseInt(el.dataset.count, 10);
-    if (isNaN(target) || target === 0) { el.textContent = '0'; return; }
+    if (isNaN(target) || target === 0) {
+      el.textContent = '0';
+      return;
+    }
     const duration = 800;
     const step = Math.ceil(duration / target);
     let current = 0;
@@ -287,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Auto-dismiss alerts
-  document.querySelectorAll('.alert').forEach(a => {
+  document.querySelectorAll('.alert').forEach((a) => {
     setTimeout(() => {
       a.style.transition = 'opacity .5s';
       a.style.opacity = '0';
@@ -296,9 +317,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ESC closes modals
-  document.addEventListener('keydown', e => {
+  document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      document.querySelectorAll('.modal-overlay.show').forEach(m => {
+      document.querySelectorAll('.modal-overlay.show').forEach((m) => {
         m.classList.remove('show');
         document.body.style.overflow = '';
       });
@@ -311,31 +332,40 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const ua = (navigator.userAgent || '').toLowerCase();
         if (/android|iphone|ipod|ipad|windows phone|mobile/.test(ua)) return true;
-        return (window.innerWidth <= 900 && window.innerHeight > window.innerWidth);
-      } catch (e) { return false; }
+        return window.innerWidth <= 900 && window.innerHeight > window.innerWidth;
+      } catch (e) {
+        return false;
+      }
     })();
 
     const loginBg = isMobile ? '/img/mobile-bg.png' : '/img/login-bg.png';
     const bgEl = document.querySelector('.imgui-skin .login-bg');
     if (bgEl) {
       bgEl.style.backgroundImage = `url('${loginBg}')`;
-      if (isMobile) bgEl.classList.add('bg-contain'); else bgEl.classList.remove('bg-contain');
+      if (isMobile) bgEl.classList.add('bg-contain');
+      else bgEl.classList.remove('bg-contain');
     }
 
     // start region time popup (Singapore / Indonesia) while assets install
-    try { startRegionTimePopup(); } catch (e) {}
+    try {
+      startRegionTimePopup();
+    } catch (e) {}
 
     const assets = [loginBg, '/img/kurumi.png'];
     showAssetLoader();
     setLoaderProgress(6, 'Preparing download...');
-    loadImages(assets, (pct, url) => {
-      setLoaderProgress(pct, `Loading ${url.split('/').pop()}`);
-    }, () => {
-      setLoaderProgress(100, 'Assets installed');
-      setTimeout(() => {
-        hideAssetLoader();
-      }, 350);
-    });
+    loadImages(
+      assets,
+      (pct, url) => {
+        setLoaderProgress(pct, `Loading ${url.split('/').pop()}`);
+      },
+      () => {
+        setLoaderProgress(100, 'Assets installed');
+        setTimeout(() => {
+          hideAssetLoader();
+        }, 350);
+      }
+    );
   }
 });
 
@@ -373,7 +403,7 @@ function toggleTheme() {
 }
 function updateThemeBtn() {
   const btn = document.getElementById('theme-btn');
-  if(!btn) return;
+  if (!btn) return;
   const isLight = document.documentElement.classList.contains('light-theme');
   // Icon-only toggle for theme
   btn.innerHTML = isLight ? _svgMoon : _svgSun;
@@ -387,10 +417,10 @@ function toggleLang() {
 }
 
 const I18N_TEXT = {
-  'Dashboard': 'Dashboard',
+  Dashboard: 'Dashboard',
   'Kelola Key': 'Manage Keys',
   'Kelola File': 'Manage Files',
-  'Pengaturan': 'Settings',
+  Pengaturan: 'Settings',
   'Profil Saya': 'My Profile',
   'Kelola Store (Toko)': 'Manage Store',
   'Manage Keys': 'Manage Keys',
@@ -398,33 +428,33 @@ const I18N_TEXT = {
   'Upload dan kelola file - Storage:': 'Upload and manage files - Storage:',
   'Generate Key': 'Generate Key',
   '+ Generate Key': '+ Generate Key',
-  'Export': 'Export',
-  'Cari': 'Search',
-  'Semua': 'All',
-  'Aktif': 'Active',
-  'Expired': 'Expired',
-  'Terkunci': 'Locked',
-  'Nonaktif': 'Inactive',
-  'Hapus': 'Delete',
-  'Edit': 'Edit',
-  'Batal': 'Cancel',
-  'Simpan': 'Save',
+  Export: 'Export',
+  Cari: 'Search',
+  Semua: 'All',
+  Aktif: 'Active',
+  Expired: 'Expired',
+  Terkunci: 'Locked',
+  Nonaktif: 'Inactive',
+  Hapus: 'Delete',
+  Edit: 'Edit',
+  Batal: 'Cancel',
+  Simpan: 'Save',
   'Simpan Perubahan': 'Save Changes',
-  'Upload': 'Upload',
+  Upload: 'Upload',
   '+ Upload File': '+ Upload File',
   'Upload File Baru': 'Upload New File',
   'PILIH FILE': 'CHOOSE FILE',
   'NAMA FILE': 'FILE NAME',
-  'UKURAN': 'SIZE',
+  UKURAN: 'SIZE',
   'TANGGAL UPLOAD': 'UPLOAD DATE',
-  'AKSI': 'ACTION',
-  'RENAME': 'RENAME',
+  AKSI: 'ACTION',
+  RENAME: 'RENAME',
   'Buka/Download': 'Open/Download',
   'Belum ada file yang diupload.': 'No uploaded files yet.',
-  'GAME': 'GAME',
-  'RESOURCE': 'RESOURCE',
-  'DURASI': 'DURATION',
-  'UNIT': 'UNIT',
+  GAME: 'GAME',
+  RESOURCE: 'RESOURCE',
+  DURASI: 'DURATION',
+  UNIT: 'UNIT',
   'JUMLAH KEY (bulk)': 'KEY COUNT (bulk)',
   'MAX DEVICE / KEY': 'MAX DEVICE / KEY',
   'NOTES (opsional)': 'NOTES (optional)',
@@ -432,7 +462,7 @@ const I18N_TEXT = {
   'Edit Key': 'Edit Key',
   'Hapus Key': 'Delete Key',
   'Tidak ada key ditemukan': 'No keys found',
-  'Settings': 'Settings',
+  Settings: 'Settings',
   'Panel & API Configuration': 'Panel & API Configuration',
   'Sistem & API': 'System & API',
   'Kelola Reseller': 'Manage Resellers',
@@ -440,8 +470,8 @@ const I18N_TEXT = {
   'Panel Settings': 'Panel Settings',
   'Admin Credentials': 'Admin Credentials',
   'MAINTENANCE MODE': 'MAINTENANCE MODE',
-  'USERNAME': 'USERNAME',
-  'PASSWORD': 'PASSWORD',
+  USERNAME: 'USERNAME',
+  PASSWORD: 'PASSWORD',
   'PASSWORD BARU': 'NEW PASSWORD',
   'KONFIRMASI PASSWORD': 'CONFIRM PASSWORD',
   'Buat Reseller': 'Create Reseller',
@@ -450,10 +480,10 @@ const I18N_TEXT = {
   'GAME YANG DIIZINKAN': 'ALLOWED GAMES',
   'Harga Key Reseller': 'Reseller Key Pricing',
   'Belum ada akun reseller.': 'No reseller accounts yet.',
-  'Harga': 'Price',
-  'Total': 'Total',
-  'Sisa': 'Remaining',
-  'Logout': 'Logout',
+  Harga: 'Price',
+  Total: 'Total',
+  Sisa: 'Remaining',
+  Logout: 'Logout',
   'Selamat datang': 'Welcome',
   'Key Terbaru': 'Latest Keys',
   'Lihat semua': 'View all'
@@ -461,7 +491,7 @@ const I18N_TEXT = {
 
 const I18N_ATTRS = {
   'Cari key, serial, notes...': 'Search key, serial, notes...',
-  'reseller01': 'reseller01',
+  reseller01: 'reseller01',
   'Min 6 karakter': 'Minimum 6 characters',
   'Kosongkan jika tetap': 'Leave blank to keep current',
   'e.g. untuk user A': 'e.g. for user A'
@@ -483,7 +513,7 @@ function applyUniversalTranslations(lang) {
   const nodes = [];
   while (walker.nextNode()) nodes.push(walker.currentNode);
 
-  nodes.forEach(node => {
+  nodes.forEach((node) => {
     if (!node.__i18nOriginal) node.__i18nOriginal = node.nodeValue;
     const original = node.__i18nOriginal;
     const compact = original.replace(/\s+/g, ' ').trim();
@@ -494,8 +524,8 @@ function applyUniversalTranslations(lang) {
     }
   });
 
-  document.querySelectorAll('[placeholder], [title], [aria-label]').forEach(el => {
-    ['placeholder', 'title', 'aria-label'].forEach(attr => {
+  document.querySelectorAll('[placeholder], [title], [aria-label]').forEach((el) => {
+    ['placeholder', 'title', 'aria-label'].forEach((attr) => {
       if (!el.hasAttribute(attr)) return;
       const key = `i18nOriginal${attr.replace(/[^a-z]/gi, '')}`;
       if (!el.dataset[key]) el.dataset[key] = el.getAttribute(attr);
@@ -508,10 +538,12 @@ function applyUniversalTranslations(lang) {
 function updateLangUI() {
   const lang = document.documentElement.getAttribute('data-lang') || 'id';
   const btn = document.getElementById('lang-btn');
-  if(btn) btn.innerHTML = _svgGlobe + '<span class="btn-text" style="margin-left:.45rem">' + (lang === 'id' ? 'EN' : 'ID') + '</span>';
+  if (btn)
+    btn.innerHTML =
+      _svgGlobe + '<span class="btn-text" style="margin-left:.45rem">' + (lang === 'id' ? 'EN' : 'ID') + '</span>';
 
-  document.querySelectorAll('.lang-id').forEach(el => el.style.display = lang === 'id' ? '' : 'none');
-  document.querySelectorAll('.lang-en').forEach(el => el.style.display = lang === 'en' ? '' : 'none');
+  document.querySelectorAll('.lang-id').forEach((el) => (el.style.display = lang === 'id' ? '' : 'none'));
+  document.querySelectorAll('.lang-en').forEach((el) => (el.style.display = lang === 'en' ? '' : 'none'));
   applyUniversalTranslations(lang);
 }
 
@@ -524,7 +556,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Attach event listeners for pages that rely on data-attributes (CSP-safe)
 document.addEventListener('DOMContentLoaded', () => {
   // open modal buttons
-  document.querySelectorAll('[data-open-modal]').forEach(btn => {
+  document.querySelectorAll('[data-open-modal]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const id = btn.dataset.openModal;
       if (id) openModal(id);
@@ -532,7 +564,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // modal overlay: click outside to close
-  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  document.querySelectorAll('.modal-overlay').forEach((overlay) => {
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) {
         if (overlay.id) closeModal(overlay.id);
@@ -541,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // modal close buttons and cancel buttons
-  document.querySelectorAll('.modal-close, .modal-cancel').forEach(btn => {
+  document.querySelectorAll('.modal-close, .modal-cancel').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const overlay = btn.closest('.modal-overlay');
       if (overlay && overlay.id) closeModal(overlay.id);
@@ -553,10 +585,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (selectAll) selectAll.addEventListener('change', () => toggleAll(selectAll));
 
   // row checkboxes
-  document.querySelectorAll('.row-check').forEach(cb => cb.addEventListener('change', updateBulk));
+  document.querySelectorAll('.row-check').forEach((cb) => cb.addEventListener('change', updateBulk));
 
   // bulk action buttons
-  document.querySelectorAll('[data-bulk-action-url]').forEach(btn => {
+  document.querySelectorAll('[data-bulk-action-url]').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       const url = btn.dataset.bulkActionUrl;
       const confirmMsg = btn.dataset.bulkActionConfirm || '';
@@ -565,15 +597,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // clear selection
-  document.querySelectorAll('[data-clear-selection]').forEach(btn => btn.addEventListener('click', clearSelection));
+  document.querySelectorAll('[data-clear-selection]').forEach((btn) => btn.addEventListener('click', clearSelection));
 
   // copy key behavior (from table only)
-  document.querySelectorAll('.key-copy').forEach(el => {
+  document.querySelectorAll('.key-copy').forEach((el) => {
     el.addEventListener('click', () => copyText(el.textContent.trim(), el));
   });
 
   // edit / delete buttons for keys
-  document.querySelectorAll('.btn-edit[data-key-id]').forEach(btn => {
+  document.querySelectorAll('.btn-edit[data-key-id]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.keyId;
       if (!id) return;
@@ -584,7 +616,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.querySelectorAll('.btn-del[data-delete-id]').forEach(btn => {
+  document.querySelectorAll('.btn-del[data-delete-id]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.deleteId;
       if (!id) return;
@@ -596,14 +628,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Theme / Lang buttons (sidebar)
   const themeBtn = document.getElementById('theme-btn');
-  if (themeBtn) themeBtn.addEventListener('click', () => { toggleTheme(); });
+  if (themeBtn)
+    themeBtn.addEventListener('click', () => {
+      toggleTheme();
+    });
   const langBtn = document.getElementById('lang-btn');
-  if (langBtn) langBtn.addEventListener('click', () => { toggleLang(); });
+  if (langBtn)
+    langBtn.addEventListener('click', () => {
+      toggleLang();
+    });
 
   // Sidebar toggle (mobile)
   const sidebarToggle = document.getElementById('sidebarToggle');
-  if (sidebarToggle) sidebarToggle.addEventListener('click', () => {
-    const sb = document.getElementById('sidebar');
-    if (sb) sb.classList.toggle('open');
-  });
+  if (sidebarToggle)
+    sidebarToggle.addEventListener('click', () => {
+      const sb = document.getElementById('sidebar');
+      if (sb) sb.classList.toggle('open');
+    });
 });

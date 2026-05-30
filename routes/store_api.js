@@ -19,10 +19,9 @@ router.post('/referral/check', async (req, res) => {
     const { code, productId } = req.body;
     if (!code) return res.json({ valid: false, reason: 'Kode kosong.' });
 
-    const { rows } = await db.execute(
-      `SELECT * FROM store_referrals WHERE code = ? AND is_active = 1`,
-      [code.trim().toUpperCase()]
-    );
+    const { rows } = await db.execute(`SELECT * FROM store_referrals WHERE code = ? AND is_active = 1`, [
+      code.trim().toUpperCase()
+    ]);
     if (!rows.length) return res.json({ valid: false, reason: 'Kode tidak ditemukan atau sudah tidak aktif.' });
 
     const ref = rows[0];

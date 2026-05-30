@@ -1,12 +1,12 @@
-const express    = require('express');
-const router     = express.Router();
-const bcrypt     = require('bcryptjs');
-const jwt        = require('jsonwebtoken');
-const rateLimit  = require('express-rate-limit');
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 // In-memory tracker for failed login attempts per username (simple lockout)
 const failedLogins = new Map();
 const { loadConfig } = require('../config');
-const db         = require('../database');
+const db = require('../database');
 
 const SECRET = () => process.env.JWT_SECRET || 'attic-jwt-fallback-secret';
 
@@ -72,18 +72,17 @@ router.post('/login', loginLimiter, async (req, res) => {
     if (user.role === 'reseller' && cfg.maintenance_mode === '1') {
       return res.redirect('/login?error=Website+sedang+maintenance.+Hanya+admin+yang+bisa+login.');
     }
-    
+
     if (user.expires_at && user.expires_at < now) {
       return res.redirect('/login?error=Akun+kamu+sudah+expired.');
     }
 
-    const token = jwt.sign(
-      { id: user.id, username: user.username, role: user.role },
-      SECRET(),
-      { expiresIn: '24h' }
-    );
+    const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, SECRET(), { expiresIn: '24h' });
     res.cookie('_token', token, {
-      httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'lax', secure: process.env.NODE_ENV === 'production'
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production'
     });
     // clear failed attempts on successful login
     if (username) failedLogins.delete(username);
@@ -92,13 +91,14 @@ router.post('/login', loginLimiter, async (req, res) => {
 
   if (username === cfg.admin_username && bcrypt.compareSync(password, cfg.admin_password)) {
     const owner = await db.get("SELECT * FROM users WHERE role='owner' LIMIT 1");
-    const token = jwt.sign(
-      { id: owner && owner.id, username: cfg.admin_username, role: 'owner' },
-      SECRET(),
-      { expiresIn: '24h' }
-    );
+    const token = jwt.sign({ id: owner && owner.id, username: cfg.admin_username, role: 'owner' }, SECRET(), {
+      expiresIn: '24h'
+    });
     res.cookie('_token', token, {
-      httpOnly: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'lax', secure: process.env.NODE_ENV === 'production'
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production'
     });
     if (username) failedLogins.delete(username);
     return res.redirect('/admin/dashboard');
@@ -109,7 +109,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     const info = failedLogins.get(username) || { count: 0, lockedUntil: null };
     info.count = (info.count || 0) + 1;
     if (info.count >= 5) {
-      info.lockedUntil = Date.now() + (15 * 60 * 1000); // lock 15 minutes
+      info.lockedUntil = Date.now() + 15 * 60 * 1000; // lock 15 minutes
       info.count = 0;
     }
     failedLogins.set(username, info);

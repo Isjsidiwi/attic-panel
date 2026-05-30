@@ -3,6 +3,7 @@
 This file contains repository-specific instructions for Copilot sessions to work efficiently.
 
 ## Quick commands
+
 - Install dependencies: `npm install`
 - Start in dev (watch): `npm run dev` (nodemon)
 - Start production: `npm start`
@@ -10,6 +11,7 @@ This file contains repository-specific instructions for Copilot sessions to work
 - Lint: no linter configured.
 
 ## High-level architecture
+
 - Entry: `app.js` — Express server, EJS views (`views/`), static files served from `public/`.
 - Routing: `routes/` contains `auth.js`, `admin.js`, `api.js`. `auth` handles JWT login/logout; `admin` is the UI for owners/resellers; `api` provides programmatic POST endpoints under `/api/*`.
 - Data layer: `database.js` — connects to Turso via `@libsql/client`, exposes `initDB`, `all`, `get`, `run`. `initDB()` creates tables and runs simple migrations and seeds (config, owner user, key_prices).
@@ -17,6 +19,7 @@ This file contains repository-specific instructions for Copilot sessions to work
 - Uploads: `public/uploads` — handled in `routes/admin.js` via multer; filenames are preserved.
 
 ## Key conventions and patterns
+
 - Auth
   - JWT stored in cookie named `_token` (httpOnly). JWT_SECRET env var (fallback present in code).
   - `owner` vs `reseller` roles: Owners have full access; resellers have limited actions (e.g., generation constraints, no bulk editing). `middleware/auth` is used for route protection.
@@ -35,6 +38,7 @@ This file contains repository-specific instructions for Copilot sessions to work
   - Uploads are saved to `public/uploads` with original filename; be careful about collisions and size limits.
 
 ## Environment variables (commonly used)
+
 - TURSO_DATABASE_URL, TURSO_AUTH_TOKEN — Turso DB client
 - JWT_SECRET — JWT signing secret
 - ADMIN_USERNAME, ADMIN_PASSWORD — initial owner account credentials (password used to seed DB; admin password is stored hashed in config)
@@ -42,6 +46,7 @@ This file contains repository-specific instructions for Copilot sessions to work
 - SHOW_API_INFO — set to `1` to surface API hints in UI
 
 ## When making code changes (Copilot guidance)
+
 - When adding or modifying schema: update `database.js:initDB()` and prefer `ensureColumn()` pattern to avoid destructive migrations.
 - Use `database.{get,all,run}` helpers to interact with DB; avoid opening new DB clients.
 - Preserve cookie names `_token` and `_flash` unless updating all code that reads/writes them.
@@ -49,6 +54,7 @@ This file contains repository-specific instructions for Copilot sessions to work
 - For API changes: follow existing parameter names and response shapes so external integrators remain compatible.
 
 ## Files to check before major changes
+
 - app.js, database.js, config.js
 - routes/{auth,admin,api}.js
 - middleware/auth.js

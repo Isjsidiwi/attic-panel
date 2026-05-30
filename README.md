@@ -3,24 +3,22 @@
 ## Deploy ke Vercel
 
 ### 1. Siapkan Turso
+
 Di Vercel Dashboard → Storage → pilih database Turso kamu → **Connect Project** → pilih project ini.
 Ini otomatis inject `TURSO_DATABASE_URL` dan `TURSO_AUTH_TOKEN` ke environment.
 
 ### 2. Tambah Environment Variables
+
 Di Vercel → Settings → Environment Variables, tambahkan:
 
-| Key | Value |
-|-----|-------|
-| `JWT_SECRET` | random string panjang, misal `openssl rand -hex 32` |
-| `ADMIN_USERNAME` | `admin` |
-| `ADMIN_PASSWORD` | `admin123` |
-| `PANEL_NAME` | `ATTIC PANEL` |
-| `SALT` | `Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E` |
-| `GITHUB_TOKEN` | fine-grained token dengan akses Contents: read/write |
-| `GITHUB_OWNER` | username/organisasi GitHub, default dari Vercel atau `Isjsidiwi` |
-| `GITHUB_REPO` | nama repository tujuan upload file, default dari Vercel atau `attic-panel` |
-| `GITHUB_BRANCH` | branch tujuan, default `main` |
-| `GITHUB_UPLOAD_PATH` | folder repo tujuan, default `public/uploads` |
+| Key                  | Value                                                                      |
+| -------------------- | -------------------------------------------------------------------------- |
+| `JWT_SECRET`         | random string panjang, misal `openssl rand -hex 32`                        |
+| `GITHUB_TOKEN`       | fine-grained token dengan akses Contents: read/write                       |
+| `GITHUB_OWNER`       | username/organisasi GitHub, default dari Vercel atau `Isjsidiwi`           |
+| `GITHUB_REPO`        | nama repository tujuan upload file, default dari Vercel atau `attic-panel` |
+| `GITHUB_BRANCH`      | branch tujuan, default `main`                                              |
+| `GITHUB_UPLOAD_PATH` | folder repo tujuan, default `public/uploads`                               |
 
 > Setelah deploy pertama, langsung ganti password via halaman Settings.
 

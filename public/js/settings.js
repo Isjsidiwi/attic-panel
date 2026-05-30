@@ -3,15 +3,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabButtons = document.querySelectorAll('.tabs .tab-btn');
 
   function switchTab(tabId, btn) {
-    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach((el) => (el.style.display = 'none'));
+    document.querySelectorAll('.tab-btn').forEach((el) => el.classList.remove('active'));
     const target = document.getElementById(tabId);
     if (target) target.style.display = 'block';
     if (btn) btn.classList.add('active');
-    try { localStorage.setItem('settingsTab', tabId); } catch (e) {}
+    try {
+      localStorage.setItem('settingsTab', tabId);
+    } catch (e) {}
   }
 
-  tabButtons.forEach(btn => {
+  tabButtons.forEach((btn) => {
     const tabId = btn.dataset.tab;
     if (!tabId) return;
     btn.addEventListener('click', (e) => {
@@ -35,7 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   if (saltToggle) {
-    saltToggle.addEventListener('click', (e) => { e.preventDefault(); toggleSalt(); });
+    saltToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleSalt();
+    });
     saltToggle.textContent = 'SHOW';
   }
 
@@ -49,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch (e) {}
 
   // Reseller card expand/collapse and delete confirmation
-  document.querySelectorAll('.reseller-card-toggle').forEach(btn => {
+  document.querySelectorAll('.reseller-card-toggle').forEach((btn) => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const card = btn.closest('.reseller-card');
@@ -61,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.querySelectorAll('.reseller-delete-form').forEach(form => {
+  document.querySelectorAll('.reseller-delete-form').forEach((form) => {
     form.addEventListener('submit', function (e) {
       const username = this.dataset.username || '';
       if (!confirm(`Yakin ingin menghapus reseller ${username}?`)) {
