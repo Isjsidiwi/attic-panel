@@ -11,6 +11,7 @@ const GAME_OPTIONS = [
   { value: 'CODM', label: 'Call Of Duty (CODM)' },
   { value: '8BP', label: '8 Ball Pool (8BP)' },
   { value: 'FF', label: 'Free Fire (FF)' },
+  { value: 'FFHG', label: 'Free Fire (HG Mods)' },
   { value: 'CFL', label: 'Crossfire (CFL)' }
 ];
 
