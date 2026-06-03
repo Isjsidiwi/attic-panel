@@ -1,110 +1,150 @@
 <%- include('partials/head') %>
 
-<div class="login-page imgui-skin">
-  <div class="login-bg">
-    <div class="scan-line"></div>
-  </div>
+<!-- Inject Tailwind CSS specifically for the redesigned login page -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          primary: '#00e5ff',
+          secondary: '#a855f7',
+          dark: '#070b10',
+          darker: '#0c1118',
+        },
+        fontFamily: {
+          sans: ['Poppins', 'sans-serif'],
+          mono: ['IBM Plex Mono', 'monospace'],
+        }
+      }
+    }
+  }
+</script>
 
-  <!-- Asset installer / loader overlay -->
-  <div id="asset-loader" class="asset-loader" style="display:none">
-    <div class="loader-card">
-      <div class="spinner" aria-hidden="true"></div>
-      <div class="loader-title">Installing assets...</div>
-      <div class="loader-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-        <div id="loader-fill" class="loader-bar-fill" style="width:0%"></div>
+<style>
+  body {
+    background-image: 
+      radial-gradient(circle at top right, rgba(168, 85, 247, 0.15), transparent 40%),
+      radial-gradient(circle at bottom left, rgba(0, 229, 255, 0.15), transparent 40%),
+      url('/img/mobile-bg.png'); /* Base background */
+    background-color: #070b10;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #e2e8f0;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .glass-card {
+    background: rgba(12, 17, 24, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+  
+  .input-glow:focus {
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+    border-color: #00e5ff;
+  }
+
+  /* Basic Light Theme Overrides */
+  :root.light-theme body {
+    background: #f4f7f6;
+    color: #1a202c;
+  }
+  :root.light-theme .glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+  }
+  :root.light-theme .dark-text-white {
+    color: #1a202c !important;
+  }
+  :root.light-theme .dark-text-gray {
+    color: #4a5568 !important;
+  }
+  :root.light-theme .dark-input {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    color: #1a202c !important;
+  }
+</style>
+
+<div class="min-h-screen flex items-center justify-center p-4">
+  <div class="glass-card w-full max-w-md rounded-2xl p-8 relative overflow-hidden transition-all duration-300">
+    <!-- Decorative top accent -->
+    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-primary"></div>
+    
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4 shadow-[0_0_20px_rgba(0,229,255,0.2)]">
+        <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
       </div>
-      <div id="loader-sub" class="loader-sub">Preparing...</div>
+      <h1 class="text-3xl font-bold dark-text-white mb-2 tracking-wide">
+        <%= panel_name %>
+      </h1>
+      <p class="text-sm text-gray-400 dark-text-gray">Authenticate to access the panel</p>
     </div>
-  </div>
 
-  <!-- Region/time popup (top-right) -->
-  <div id="time-popup" class="time-popup" style="display:none" aria-live="polite">
-    <div class="time-card">
-      <div class="time-meta">
-        <div id="time-region" class="time-region">Region</div>
+    <% if (error_msg && error_msg.length > 0) { %>
+      <div class="bg-red-500/10 border border-red-500/50 text-red-400 text-sm p-3 rounded-lg mb-6 flex flex-col gap-2">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <span><%= error_msg[0] %></span>
+        </div>
+        <% if (show_reseller) { %>
+          <a href="https://t.me/Joyzzter88888" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-white transition-colors text-xs font-medium self-end">Daftar Reseller &rarr;</a>
+        <% } %>
       </div>
-      <div id="time-value" class="time-value">00:00:00</div>
-      <button id="time-close" class="time-close" aria-label="Close">✕</button>
-    </div>
-  </div>
+    <% } %>
 
-  <div class="imgui-container">
-    <div class="imgui-left">
-        <div class="imgui-artwrap">
-          <div class="imgui-artbox">
-            <img src="/img/kurumi.png" alt="Kurumi" class="imgui-art"
-              onerror="this.style.display='none'; this.parentNode.querySelector('.imgui-art-fallback').style.display='flex'">
-            <div class="imgui-art-fallback" style="display:none;flex-direction:column;align-items:center;gap:.75rem;padding:1rem;">
-              <!-- Generic placeholder SVG (non-copyright) -->
-              <svg width="220" height="220" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="placeholder">
-                <defs>
-                  <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-                    <stop offset="0%" stop-color="#00e5ff" stop-opacity="0.12"/>
-                    <stop offset="100%" stop-color="#a855f7" stop-opacity="0.12"/>
-                  </linearGradient>
-                </defs>
-                <rect width="100%" height="100%" rx="10" fill="url(#g)"/>
-                <g transform="translate(20,20)" fill="none" stroke="#d4e2f4" stroke-opacity="0.6">
-                  <circle cx="90" cy="60" r="36" stroke-width="2.4" fill="#0c1118" />
-                  <path d="M10 170 C 30 130, 150 130, 170 170" stroke-width="3" stroke-linecap="round"/>
-                  <circle cx="68" cy="54" r="4" fill="#d4e2f4" stroke="none"/>
-                  <circle cx="112" cy="54" r="4" fill="#d4e2f4" stroke="none"/>
-                </g>
-              </svg>
-              <div class="imgui-art-note">Gambar tidak ditemukan. Letakkan gambar Kurumi di <code>/public/img/kurumi.png</code></div>
-            </div>
+    <form action="/login" method="POST" class="space-y-5" autocomplete="off">
+      <div>
+        <label class="block text-xs font-semibold text-gray-400 dark-text-gray mb-1.5 tracking-wider">USERNAME</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
           </div>
-        </div>
-    </div>
-
-    <div class="imgui-right">
-      <div class="imgui-panel">
-        <div class="imgui-titlebar">
-          <div class="imgui-dots">
-            <span class="dot red"></span>
-            <span class="dot yellow"></span>
-            <span class="dot green"></span>
-          </div>
-          <div class="imgui-title"><%= panel_name %> — Login</div>
-        </div>
-
-        <div class="imgui-body">
-          <% if (error_msg.length > 0) { %>
-            <div class="alert alert-error"><%= error_msg[0] %></div>
-            <% if (show_reseller) { %>
-              <div style="margin-top:.6rem">
-                <a href="https://t.me/Joyzzter88888" target="_blank" rel="noopener noreferrer" class="btn-secondary">Daftar Reseller</a>
-              </div>
-            <% } %>
-          <% } %>
-
-          <form action="/login" method="POST" class="imgui-form" autocomplete="off">
-            <div class="imgui-row">
-              <label class="imgui-label">USER</label>
-              <input type="text" name="username" class="imgui-input" placeholder="admin" required autofocus spellcheck="false">
-            </div>
-
-            <div class="imgui-row">
-              <label class="imgui-label">PASS</label>
-              <input type="password" name="password" class="imgui-input" placeholder="••••••••" required>
-            </div>
-
-            <div class="imgui-actions" style="margin-top: 1rem; flex-wrap: wrap; gap: 0.5rem;">
-              <button type="submit" class="imgui-btn imgui-btn-primary" style="flex: 1 1 100%">AUTHENTICATE</button>
-              <a href="/store" class="imgui-btn" style="flex: 1; text-align: center; text-decoration: none; background: #a855f7; color: white;">Buy Cheat</a>
-              <button type="button" class="imgui-btn imgui-btn-ghost" onclick="toggleTheme()" style="flex: 1">Theme</button>
-            </div>
-          </form>
-
-          <% if (show_api_info) { %>
-            <div class="login-footer">
-              <span class="dot-green"></span>
-              API: <code>/api/game/MLBB</code> — ONLINE
-            </div>
-          <% } %>
+          <input type="text" name="username" class="dark-input w-full bg-darker/50 border border-gray-700/50 rounded-xl pl-11 pr-4 py-3 dark-text-white placeholder-gray-600 focus:outline-none input-glow transition-all" placeholder="Enter username" required autofocus spellcheck="false">
         </div>
       </div>
-    </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-gray-400 dark-text-gray mb-1.5 tracking-wider">PASSWORD</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+          </div>
+          <input type="password" name="password" class="dark-input w-full bg-darker/50 border border-gray-700/50 rounded-xl pl-11 pr-4 py-3 dark-text-white placeholder-gray-600 focus:outline-none input-glow transition-all" placeholder="••••••••" required>
+        </div>
+      </div>
+
+      <div class="pt-4 flex flex-col gap-3">
+        <button type="submit" class="w-full bg-gradient-to-r from-primary to-blue-500 hover:from-blue-400 hover:to-primary text-darker font-bold py-3 rounded-xl shadow-[0_0_15px_rgba(0,229,255,0.4)] hover:shadow-[0_0_25px_rgba(0,229,255,0.6)] transition-all duration-300 tracking-wide text-sm">
+          AUTHENTICATE
+        </button>
+        <div class="grid grid-cols-2 gap-3 mt-1">
+          <a href="/store" class="flex items-center justify-center bg-secondary/20 hover:bg-secondary/30 border border-secondary/30 text-secondary hover:text-white py-2.5 rounded-xl transition-all text-sm font-medium">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            Store
+          </a>
+          <button type="button" onclick="toggleTheme && toggleTheme()" class="flex items-center justify-center bg-gray-800/40 hover:bg-gray-700/60 border border-gray-700/50 text-gray-300 hover:text-white py-2.5 rounded-xl transition-all text-sm font-medium dark-input">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+            Theme
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <% if (show_api_info) { %>
+      <div class="mt-8 pt-6 border-t border-gray-700/50 flex justify-center items-center gap-2 text-xs font-mono text-gray-400 dark-text-gray">
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+        </span>
+        API: <code class="text-primary bg-primary/10 px-1.5 py-0.5 rounded ml-1">/api/game/MLBB</code> — ONLINE
+      </div>
+    <% } %>
   </div>
 </div>
 
