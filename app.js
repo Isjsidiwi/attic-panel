@@ -168,7 +168,7 @@ app.post('/mod/LoginData.php', (req, res) => {
     // 2. Siapkan Payload Balasan (Bisa kamu ubah sesuka hati)
     const responseJson = JSON.stringify({
       ConnectSt_hk: 'Failed',
-      mensagem: 'XSRC MIAW',
+      mensagem: 'Seu login foi ativado!',
       timestamp: Math.floor(Date.now() / 1000),
       nonce: 'ef84a889dec86aafa295bf5c6fd92382'
     });
