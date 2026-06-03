@@ -64,39 +64,6 @@
 </div>
 </div>
 
-<!-- Xsrc Status Banner -->
-<% if (admin.isOwner) { %>
-<div class="card" style="margin-top: 2rem; border-color: var(--primary);">
-  <div class="card-header" style="background: rgba(0, 163, 255, 0.05);">
-    <h3 class="card-title text-primary" style="display: flex; align-items: center; gap: .5rem;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      Xsrc Features (Active)
-    </h3>
-    <a href="/admin/settings" class="btn-secondary btn-sm">Buka Pengaturan</a>
-  </div>
-  <div class="card-body" style="display: flex; gap: 2rem; flex-wrap: wrap; align-items: center;">
-    <div style="flex: 1; min-width: 250px;">
-      <p class="text-muted" style="font-size: .85rem; margin-bottom: .5rem;">Status Integrasi Telegram Bot dan Mod Config dari fitur Xsrc telah berjalan.</p>
-      <ul style="list-style: none; padding: 0; margin: 0; font-size: .85rem; display: flex; flex-direction: column; gap: .4rem;">
-        <li style="display: flex; align-items: center; gap: .5rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Telegram Order Notification</li>
-        <li style="display: flex; align-items: center; gap: .5rem;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Remote Mod Config API</li>
-      </ul>
-    </div>
-  </div>
-</div>
-<% } %>
-
-<div class="card" style="margin-top:2rem">
-        <div class="stat-icon stat-icon--purple">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-        </div>
-        <div class="stat-body">
-          <div class="stat-num" data-count="<%= stats.locked %>">0</div>
-          <div class="stat-label">Device Terkunci</div>
-        </div>
-      </div>
-    </div>
-
     <!-- Recent Keys -->
     <div class="card">
       <div class="card-header">

@@ -640,9 +640,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Sidebar toggle (mobile)
   const sidebarToggle = document.getElementById('sidebarToggle');
-  if (sidebarToggle)
-    sidebarToggle.addEventListener('click', () => {
-      const sb = document.getElementById('sidebar');
-      if (sb) sb.classList.toggle('open');
-    });
+  const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+  const sb = document.getElementById('sidebar');
+
+  function openSidebar() {
+    if (sb) sb.classList.add('open');
+    if (sidebarBackdrop) sidebarBackdrop.classList.add('show');
+    document.body.style.overflow = 'hidden'; // prevent bg scroll
+  }
+
+  function closeSidebar() {
+    if (sb) sb.classList.remove('open');
+    if (sidebarBackdrop) sidebarBackdrop.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', openSidebar);
+  }
+
+  if (sidebarCloseBtn) {
+    sidebarCloseBtn.addEventListener('click', closeSidebar);
+  }
+
+  if (sidebarBackdrop) {
+    sidebarBackdrop.addEventListener('click', closeSidebar);
+  }
 });

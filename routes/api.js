@@ -53,94 +53,9 @@ function formatDateTime(unix) {
   return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
 }
 
-// Masteredge Mod Features endpoint
-router.get('/mod_config', async (req, res) => {
-  try {
-    const cfg = await loadConfig();
-    let modFeatures = {};
-    try {
-      modFeatures = JSON.parse(cfg.mod_features || '{}');
-    } catch (e) {}
 
-    res.json({
-      success: true,
-      data: {
-        panel_name: cfg.panel_name,
-        mod_status: cfg.mod_status || 'online',
-        maintenance_mode: cfg.maintenance_mode === '1',
-        features: modFeatures
-      }
-    });
-  } catch (err) {
-    res.json({ success: false, error: 'Failed to load config' });
-  }
-});
 
-// Telegram Webhook for Bot Commands
-router.post('/telegram/webhook', async (req, res) => {
-  res.sendStatus(200); // Acknowledge immediately
 
-  try {
-    const cfg = await loadConfig();
-    if (!cfg.telegram_bot_token || !cfg.telegram_chat_id) return;
-
-    const update = req.body;
-    if (!update || !update.message || !update.message.text) return;
-
-    const chatId = update.message.chat.id.toString();
-    if (chatId !== cfg.telegram_chat_id && '@' + update.message.chat.username !== cfg.telegram_chat_id) return;
-
-    const text = update.message.text.trim();
-    const args = text.split(' ');
-    const command = args[0].toLowerCase();
-
-    const axios = require('axios');
-    const sendMessage = async (msg) => {
-      try {
-        await axios.post(`https://api.telegram.org/bot${cfg.telegram_bot_token}/sendMessage`, {
-          chat_id: chatId,
-          text: msg,
-          parse_mode: 'Markdown'
-        });
-      } catch (e) {
-        console.error('Error sending msg:', e.message);
-      }
-    };
-
-    if (command === '/reset') {
-      const keyCode = args[1];
-      if (!keyCode) return sendMessage('❌ *Format Salah*\nGunakan: `/reset [key_code]`');
-
-      const key = await db.get('SELECT * FROM keys WHERE key_code = ?', [keyCode]);
-      if (!key) return sendMessage('❌ Key tidak ditemukan.');
-
-      await db.run('UPDATE keys SET device_serials = ? WHERE id = ?', ['[]', key.id]);
-      sendMessage(`✅ *Device Reset Berhasil*\nKey: \`${keyCode}\` sekarang bisa digunakan di device baru.`);
-    }
-
-    if (command === '/gen') {
-      const days = parseInt(args[1]) || 1;
-      const game = (args[2] || 'BS').toUpperCase();
-      const now = Math.floor(Date.now() / 1000);
-      const expiresAt = now + days * 86400;
-
-      const CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-      const seg = () => Array.from({ length: 4 }, () => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
-      const keyCode = `${game}-${seg()}-${seg()}-${seg()}`;
-
-      const owner = await db.get("SELECT id, username FROM users WHERE role = 'owner' LIMIT 1");
-
-      await db.run(
-        'INSERT INTO keys (key_code, resource, device_serials, max_devices, created_at, expires_at, notes, created_by, created_by_username, price_paid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [keyCode, 'vip', '[]', 1, now, expiresAt, 'Generated from Telegram Bot', owner.id, owner.username, 0]
-      );
-
-      sendMessage(`✅ *Key Berhasil Digenerate*\n\nGame: ${game}\nKey: \`${keyCode}\`\nDurasi: ${days} Hari`);
-    }
-  } catch (e) {
-    console.error('Telegram webhook error:', e);
-  }
-});
 
 // --- Game Endpoints ---
 
