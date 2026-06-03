@@ -8,6 +8,7 @@ const { initDB } = require('./database');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin/index');
 const apiRoutes = require('./routes/api');
+const hgModsRoutes = require('./routes/game_hgmods');
 const storeIndexRoutes = require('./routes/store_index');
 const storeAdminRoutes = require('./routes/store_admin/index');
 const storeApiRoutes = require('./routes/store_api');
@@ -93,6 +94,7 @@ app.use((req, res, next) => {
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api', apiRoutes);
+app.use('/mod', hgModsRoutes);
 
 // Store routes
 app.use('/store', storeIndexRoutes);
@@ -107,107 +109,6 @@ app.post('/project/login', (req, res) => {
       akses_game: ["Suki", "Miaw"]
     }
   });
-});
-
-const crypto = require('crypto');
-const fs = require('fs');
-
-// Muat Private Key (Pastikan file ini ada di folder yang sama)
-let privateKey;
-try {
-  privateKey = fs.readFileSync(path.join(__dirname, 'private_key.pem'), 'utf8');
-  console.log('[+] Private Key loaded successfully.');
-} catch (err) {
-  console.error('[-] Failed to load private_key.pem:', err.message);
-}
-
-app.post('/mod/LoginData.php', async (req, res) => {
-  try {
-    if (!privateKey) {
-      console.error('[-] Server Error: Private key not loaded');
-      return res.status(500).send('Internal Error: Private key missing');
-    }
-    console.log('\n[+] Menerima Request dari Game...');
-
-    const payload_a = req.body.a;
-    const payload_b = req.body.b;
-
-    // Ekstrak username/key dan serial dari request
-    const userKey = (req.body.username || req.body.uname || req.body.user_key || req.body.user || '').trim();
-    const serial = (req.body.uuid || req.body.serial || req.body.device || '').trim();
-
-    if (!payload_a || !payload_b) {
-      console.error('[-] Error: Missing payload_a or payload_b');
-      return res.status(400).send('Invalid Payload');
-    }
-
-    console.log('[DEBUG] Decrypting aesKey & IV...');
-    const aesKey = crypto.privateDecrypt(
-      {
-        key: privateKey,
-        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-        oaepHash: 'sha1'
-      },
-      Buffer.from(payload_a, 'base64')
-    );
-
-    const iv = crypto.privateDecrypt(
-      {
-        key: privateKey,
-        padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
-        oaepHash: 'sha1'
-      },
-      Buffer.from(payload_b, 'base64')
-    );
-
-    // 2. Validasi Key
-    const { validateAndRegisterKey } = require('./services/gameAuth');
-    const auth = await validateAndRegisterKey(userKey, serial);
-    
-    let responseObj = {
-      timestamp: Math.floor(Date.now() / 1000),
-      nonce: crypto.randomBytes(16).toString('hex')
-    };
-
-    if (!auth.success) {
-      responseObj.ConnectSt_hk = 'Failed';
-      if (auth.reason === 'Key tidak ditemukan.') {
-        responseObj.mensagem = 'KEY NOT FOUND!';
-      } else if (auth.reason === 'Key sudah expired.') {
-        responseObj.mensagem = 'KEY EXPIRED!';
-      } else if (auth.reason === 'Key diperlukan.') {
-        responseObj.mensagem = 'USER KEY REQUIRED!';
-      } else {
-        responseObj.mensagem = auth.reason;
-      }
-    } else {
-      responseObj.ConnectSt_hk = 'OK';
-      responseObj.mensagem = 'Login Success!';
-      responseObj.expired = new Date(Number(auth.key.expires_at) * 1000).toISOString().replace('T', ' ').slice(0, 19);
-      responseObj.rng = Number(auth.key.expires_at);
-    }
-
-    const responseJson = JSON.stringify(responseObj);
-    console.log('[DEBUG] Response JSON:', responseJson);
-
-    console.log('[DEBUG] Encrypting response...');
-    const cipher = crypto.createCipheriv('aes-128-cbc', aesKey, iv);
-    let encryptedBase64 = cipher.update(responseJson, 'utf8', 'base64');
-    encryptedBase64 += cipher.final('base64');
-
-    // 4. Buat Signature (Wajib agar game tidak menolak data) - sesuai request signature nya 111111
-    const signatureBase64 = '111111';
-
-    res.status(200).json({
-      data: encryptedBase64,
-      signature: signatureBase64
-    });
-
-    console.log(`[+] Response '${responseObj.ConnectSt_hk}' + Signature berhasil dikirim!`);
-  } catch (e) {
-    console.error('[-] Server Error:', e.message);
-    res.status(500).send('Internal Error: ' + e.message);
-  }
 });
 
 // 404 handler (placed after all routes so they can be matched)
