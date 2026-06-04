@@ -1687,4 +1687,47 @@ button:disabled,
   .sidebar-close-btn {
     display: inline-flex !important;
   }
+  .sidebar-toggle {
+    display: none !important; /* Hide old floating button if any exist */
+  }
+  .mobile-navbar {
+    display: flex;
+  }
+  .main {
+    margin-left: 0;
+    padding: 1rem;
+    padding-top: 80px; /* space for navbar */
+  }
+}
+
+.mobile-navbar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  z-index: 100;
+  align-items: center;
+  padding: 0 1rem;
+  gap: 1rem;
+}
+.mobile-navbar-title {
+  font-family: var(--font-h);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text);
+  letter-spacing: 0.05em;
+}
+.sidebar-toggle-nav {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  padding: 0.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
