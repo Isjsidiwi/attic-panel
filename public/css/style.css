@@ -353,6 +353,7 @@ body::before {
   margin-left: var(--sidebar-w);
   flex: 1;
   padding: 2rem;
+  padding-top: calc(2rem + 60px);
   min-width: 0;
 }
 
@@ -1684,7 +1685,7 @@ button:disabled,
 }
 
 .mobile-navbar {
-  display: none;
+  display: flex;
   position: fixed;
   top: 0;
   left: 0;
@@ -1713,6 +1714,16 @@ button:disabled,
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (min-width: 901px) {
+  .mobile-navbar {
+    left: var(--sidebar-w);
+  }
+  .mobile-navbar-title,
+  .sidebar-toggle-nav {
+    display: none !important;
+  }
 }
 
 @media (max-width: 900px) {
