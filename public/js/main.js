@@ -640,7 +640,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Sidebar toggle (mobile)
   const sidebarToggle = document.getElementById('sidebarToggle');
-  const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
   const sidebarBackdrop = document.getElementById('sidebarBackdrop');
   const sb = document.getElementById('sidebar');
 
@@ -658,10 +657,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (sidebarToggle) {
     sidebarToggle.addEventListener('click', openSidebar);
-  }
-
-  if (sidebarCloseBtn) {
-    sidebarCloseBtn.addEventListener('click', closeSidebar);
   }
 
   if (sidebarBackdrop) {

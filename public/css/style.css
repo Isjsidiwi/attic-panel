@@ -1694,8 +1694,8 @@ button:disabled,
   border-bottom: 1px solid var(--border);
   z-index: 100;
   align-items: center;
+  justify-content: space-between;
   padding: 0 1rem;
-  gap: 1rem;
 }
 .mobile-navbar-title {
   font-family: var(--font-h);
@@ -1716,9 +1716,6 @@ button:disabled,
 }
 
 @media (max-width: 900px) {
-  .sidebar-close-btn {
-    display: inline-flex !important;
-  }
   .sidebar-toggle {
     display: none !important; /* Hide old floating button if any exist */
   }
