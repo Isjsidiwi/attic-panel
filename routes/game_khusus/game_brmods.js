@@ -8,7 +8,7 @@ const { validateAndRegisterKey } = require('../services/gameAuth');
 // Muat Private Key BR Mods dari folder certs/
 let privateKeyPEM = '';
 try {
-  const keyPath = path.join(__dirname, '../certs/private_brmods.pem');
+  const keyPath = path.join(__dirname, '../../certs/private_brmods.pem');
   if (fs.existsSync(keyPath)) {
     privateKeyPEM = fs.readFileSync(keyPath, 'utf8');
     if (privateKeyPEM.trim().length > 0) {
@@ -45,12 +45,13 @@ function createEncryptedResponse(plaintext) {
   sign.update(encryptedBase64);
   const signatureBase64 = sign.sign(privateKeyPEM, 'base64');
 
-  // E. Kembalikan JSON final
-  return {
+  // E. Kembalikan string base64 dari JSON hasil (sebagai plaintext tunggal yang diminta)
+  const finalJson = JSON.stringify({
     Data: encryptedBase64,
     Sign: signatureBase64,
     Hash: hashHex
-  };
+  });
+  return Buffer.from(finalJson).toString('base64');
 }
 
 // --- ENDPOINT UTAMA BR MODS ---
@@ -131,8 +132,8 @@ router.post('/b.php', async (req, res) => {
       finalResponseObject = createEncryptedResponse(payloadError);
     }
 
-    // 7. Kirim balasan ke Aplikasi Mod
-    res.json(finalResponseObject);
+    // 7. Kirim balasan ke Aplikasi Mod sebagai plaintext Base64
+    res.send(finalResponseObject);
 
   } catch (error) {
     console.error('[-] BR Mods Error:', error.message);
