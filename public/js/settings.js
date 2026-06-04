@@ -22,27 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Toggle salt visibility
-  const saltInput = document.getElementById('salt-input');
-  const saltToggle = document.getElementById('salt-toggle');
-  if (saltInput) saltInput.type = 'password';
-  function toggleSalt() {
-    if (!saltInput || !saltToggle) return;
-    if (saltInput.type === 'password') {
-      saltInput.type = 'text';
-      saltToggle.textContent = 'HIDE';
-    } else {
-      saltInput.type = 'password';
-      saltToggle.textContent = 'SHOW';
-    }
-  }
-  if (saltToggle) {
-    saltToggle.addEventListener('click', (e) => {
-      e.preventDefault();
-      toggleSalt();
-    });
-    saltToggle.textContent = 'SHOW';
-  }
+  // Highlight active tab logic remains...
 
   // Restore saved tab state
   try {

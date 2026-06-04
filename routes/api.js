@@ -68,8 +68,7 @@ router.post('/game/MLBB', async (req, res) => {
   if (!auth.success) return res.json({ status: false, reason: auth.reason, data: null });
 
   const { key } = auth;
-  const cfg = await loadConfig();
-  const raw = `MLBB-${userKey}-${serial}-${resource}-${cfg.salt}`;
+  const raw = `MLBB-${userKey}-${serial}-${resource}-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`;
   const token = crypto.createHash('md5').update(raw).digest('hex');
   const expiredStr = new Date(Number(key.expires_at) * 1000).toISOString().replace('T', ' ').slice(0, 19);
 
@@ -91,8 +90,7 @@ router.post('/game/8bp', async (req, res) => {
   if (!auth.success) return res.json({ status: false, reason: auth.reason, data: null });
 
   const { key } = auth;
-  const cfg = await loadConfig();
-  const raw = `8BP-${userKey}-${serial}-${cfg.salt}`;
+  const raw = `8BP-${userKey}-${serial}-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`;
   const token = crypto.createHash('md5').update(raw).digest('hex');
   const formattedDate = formatDateId(new Date());
   const formattedExpired = formatDateId(new Date(Number(key.expires_at) * 1000));
@@ -255,8 +253,7 @@ router.post('/codm', async (req, res) => {
   if (!auth.success) return res.json({ status: false, reason: auth.reason, data: null });
 
   const { key } = auth;
-  const cfg = await loadConfig();
-  const real = `${game}-${userKey}-${serial}-${cfg.salt}`;
+  const real = `${game}-${userKey}-${serial}-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`;
   const token = crypto.createHash('md5').update(real).digest('hex');
   const expired = formatDateTime(key.expires_at);
 

@@ -30,7 +30,7 @@ router.get('/', auth, requireOwner, async (req, res) => {
 });
 
 router.post('/', auth, requireOwner, async (req, res) => {
-  const { panel_name, admin_username, new_password, confirm_password, salt, maintenance_mode } = req.body;
+  const { panel_name, admin_username, new_password, confirm_password, maintenance_mode } = req.body;
   const updates = {};
   const userUpdates = {};
 
@@ -40,7 +40,6 @@ router.post('/', auth, requireOwner, async (req, res) => {
     updates.admin_username = admin_username.trim();
     userUpdates.username = admin_username.trim();
   }
-  if (salt) updates.salt = salt;
 
   if (new_password) {
     if (new_password !== confirm_password) {
@@ -73,28 +72,6 @@ router.post('/', auth, requireOwner, async (req, res) => {
 
   await saveConfig(updates);
   res.flash('success', 'Settings berhasil disimpan.');
-  res.redirect('/admin/settings');
-});
-
-router.post('/xsrc', auth, requireOwner, async (req, res) => {
-  const { telegram_bot_token, telegram_chat_id, mod_status, feat_esp, feat_aimbot, feat_silent_aim, feat_memory } =
-    req.body;
-  const updates = {};
-
-  if (telegram_bot_token !== undefined) updates.telegram_bot_token = telegram_bot_token.trim();
-  if (telegram_chat_id !== undefined) updates.telegram_chat_id = telegram_chat_id.trim();
-  if (mod_status !== undefined) updates.mod_status = mod_status;
-
-  const modFeatures = {
-    esp: feat_esp === '1',
-    aimbot: feat_aimbot === '1',
-    silent_aim: feat_silent_aim === '1',
-    memory: feat_memory === '1'
-  };
-  updates.mod_features = JSON.stringify(modFeatures);
-
-  await saveConfig(updates);
-  res.flash('success', 'Masteredge Settings berhasil disimpan.');
   res.redirect('/admin/settings');
 });
 

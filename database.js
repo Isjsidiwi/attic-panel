@@ -167,12 +167,7 @@ async function initDB() {
     panel_name: 'ATTIC PANEL',
     admin_username: 'admin',
     admin_password: bcrypt.hashSync('admin123', 10),
-    salt: 'Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E',
-    maintenance_mode: '0',
-    telegram_bot_token: '',
-    telegram_chat_id: '',
-    mod_status: 'online',
-    mod_features: JSON.stringify({ esp: true, aimbot: true, silent_aim: false, memory: true })
+    maintenance_mode: '0'
   };
 
   for (const [k, v] of Object.entries(defaults)) {
