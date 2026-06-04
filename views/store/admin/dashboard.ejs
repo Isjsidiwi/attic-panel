@@ -83,38 +83,6 @@
     </div>
   </div>
 
-  <!-- Game Endpoint Section -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-    <div class="lg:col-span-1">
-      <div class="card p-8 border-blue-500/20 bg-blue-500/5 h-full">
-        <div class="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-6">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-        </div>
-        <h2 class="text-2xl font-bold text-white mb-2">8BallPool</h2>
-        <p class="text-sm text-zinc-400 mb-8 leading-relaxed">Kelola dan eksekusi request endpoint game langsung dari sini dengan aman.</p>
-        <button id="admin8bpBtn" class="btn w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-xl transition-all" onclick="send8bp()">
-          Jalankan Endpoint
-        </button>
-      </div>
-    </div>
-    
-    <div class="lg:col-span-2">
-      <div class="card bg-black/40 border-zinc-800 p-1 h-full overflow-hidden">
-        <div class="px-5 py-3 border-b border-zinc-800 flex items-center justify-between">
-          <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-500">API Console Response</span>
-          <div class="flex gap-1.5">
-            <div class="w-2.5 h-2.5 rounded-full bg-zinc-700"></div>
-            <div class="w-2.5 h-2.5 rounded-full bg-zinc-700"></div>
-            <div class="w-2.5 h-2.5 rounded-full bg-zinc-700"></div>
-          </div>
-        </div>
-        <div class="p-6">
-          <pre id="admin8bpResult" class="mono text-xs text-blue-300 leading-relaxed overflow-auto max-h-[200px]" style="white-space:pre-wrap;">Ready to capture response...</pre>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Recent Orders Table -->
   <div class="mb-12">
     <div class="flex items-center justify-between mb-6">
@@ -178,31 +146,5 @@
 </div>
 
 <script src="/js/main.js"></script>
-<script>
-  async function send8bp() {
-    const button = document.getElementById('admin8bpBtn');
-    const output = document.getElementById('admin8bpResult');
-    button.disabled = true;
-    button.classList.add('opacity-50', 'cursor-not-allowed');
-    button.textContent = 'Mengeksekusi...';
-    output.textContent = '[SYSTEM] Menghubungi /api/8bp...\n[SYSTEM] Menunggu response server...';
-
-    try {
-      const response = await fetch('/api/8bp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
-      });
-      const data = await response.json();
-      output.textContent = '[SUCCESS] Response received:\n\n' + JSON.stringify(data, null, 2);
-    } catch (err) {
-      output.textContent = '[ERROR] Request failed:\n' + err.message;
-    } finally {
-      button.disabled = false;
-      button.classList.remove('opacity-50', 'cursor-not-allowed');
-      button.textContent = 'Jalankan Endpoint';
-    }
-  }
-</script>
 </body>
 </html>
