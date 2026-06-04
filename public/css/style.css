@@ -1683,23 +1683,6 @@ button:disabled,
   opacity: 1;
 }
 
-@media (max-width: 900px) {
-  .sidebar-close-btn {
-    display: inline-flex !important;
-  }
-  .sidebar-toggle {
-    display: none !important; /* Hide old floating button if any exist */
-  }
-  .mobile-navbar {
-    display: flex;
-  }
-  .main {
-    margin-left: 0;
-    padding: 1rem;
-    padding-top: 80px; /* space for navbar */
-  }
-}
-
 .mobile-navbar {
   display: none;
   position: fixed;
@@ -1730,4 +1713,21 @@ button:disabled,
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .sidebar-close-btn {
+    display: inline-flex !important;
+  }
+  .sidebar-toggle {
+    display: none !important; /* Hide old floating button if any exist */
+  }
+  .mobile-navbar {
+    display: flex !important;
+  }
+  .main {
+    margin-left: 0;
+    padding: 1rem;
+    padding-top: 80px; /* space for navbar */
+  }
 }
