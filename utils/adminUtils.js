@@ -12,6 +12,7 @@ const GAME_OPTIONS = [
   { value: '8BP', label: '8 Ball Pool (8BP)' },
   { value: 'FF', label: 'Free Fire (FF)' },
   { value: 'FFHG', label: 'Free Fire (HG Mods)' },
+  { value: 'FFBR', label: 'Free Fire (BR Mods)' },
   { value: 'CFL', label: 'Crossfire (CFL)' }
 ];
 

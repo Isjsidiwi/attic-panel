@@ -14,13 +14,27 @@ try {
     if (privateKeyPEM.trim().length > 0) {
       console.log('[+] BR Mods: Private Key loaded successfully.');
     } else {
-      console.error('[-] BR Mods: privat_brmods.pem is empty.');
+      console.error('[-] BR Mods: private_brmods.pem is empty.');
     }
   } else {
-    console.error('[-] BR Mods: privat_brmods.pem not found.');
+    console.error('[-] BR Mods: private_brmods.pem not found.');
   }
 } catch (err) {
-  console.error('[-] BR Mods: Failed to load privat_brmods.pem:', err.message);
+  console.error('[-] BR Mods: Failed to load private_brmods.pem:', err.message);
+}
+
+// Muat Payload Loader (3.8MB+) ke Memory
+let loaderPayload = '';
+try {
+  const loaderPath = path.join(__dirname, '../../certs/loader.txt');
+  if (fs.existsSync(loaderPath)) {
+    loaderPayload = fs.readFileSync(loaderPath, 'utf8').trim();
+    console.log(`[+] BR Mods: Loader payload loaded successfully (${(loaderPayload.length / 1024 / 1024).toFixed(2)} MB).`);
+  } else {
+    console.error('[-] BR Mods: loader.txt not found.');
+  }
+} catch (err) {
+  console.error('[-] BR Mods: Failed to load loader.txt:', err.message);
 }
 
 // --- FUNGSI HELPER: ENKRIPSI RESPONSE (XOR + RSA Sign) ---
@@ -110,7 +124,7 @@ router.post('/b.php', async (req, res) => {
 
       const payloadSukses = JSON.stringify({
         Status: 'Success',
-        Loader: 'ISI_SENDIRI_NANTI_ATAU_BIARKAN', // Sesuai permintaan
+        Loader: loaderPayload, // Diambil dari certs/loader.txt
         MessageString: {
           Cliente: userKey,
           Dias: sisaHari.toString()
