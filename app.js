@@ -9,6 +9,7 @@ const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin/index');
 const apiRoutes = require('./routes/api');
 const hgModsRoutes = require('./routes/game_hgmods');
+const brModsRoutes = require('./routes/game_brmods');
 const storeIndexRoutes = require('./routes/store_index');
 const storeAdminRoutes = require('./routes/store_admin/index');
 const storeApiRoutes = require('./routes/store_api');
@@ -96,6 +97,7 @@ app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api', apiRoutes);
 app.use('/mod', hgModsRoutes);
+app.use('/mod', brModsRoutes);
 
 // Store routes
 app.use('/store', storeIndexRoutes);

@@ -7,7 +7,7 @@ const { validateAndRegisterKey } = require('../services/gameAuth');
 
 let privateKey;
 try {
-  privateKey = fs.readFileSync(path.join(__dirname, '../private_key.pem'), 'utf8');
+  privateKey = fs.readFileSync(path.join(__dirname, '../certs/private_key.pem'), 'utf8');
   console.log('[+] HG Mods: Private Key loaded successfully.');
 } catch (err) {
   console.error('[-] HG Mods: Failed to load private_key.pem:', err.message);
