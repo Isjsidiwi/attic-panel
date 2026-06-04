@@ -8,7 +8,7 @@ const { validateAndRegisterKey } = require('../services/gameAuth');
 // Muat Private Key BR Mods dari folder certs/
 let privateKeyPEM = '';
 try {
-  const keyPath = path.join(__dirname, '../certs/privat_brmods.pem');
+  const keyPath = path.join(__dirname, '../certs/private_brmods.pem');
   if (fs.existsSync(keyPath)) {
     privateKeyPEM = fs.readFileSync(keyPath, 'utf8');
     if (privateKeyPEM.trim().length > 0) {
