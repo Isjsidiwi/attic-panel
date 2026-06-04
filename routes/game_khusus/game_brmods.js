@@ -3,7 +3,7 @@ const router = express.Router();
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
-const { validateAndRegisterKey } = require('../services/gameAuth');
+const { validateAndRegisterKey } = require('../../services/gameAuth');
 
 // Muat Private Key BR Mods dari folder certs/
 let privateKeyPEM = '';
