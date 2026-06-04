@@ -1,7 +1,13 @@
-<% pageTitle = 'Produk — Admin' %>
-<%- include('../partials/header') %>
-
-<main class="max-w-6xl mx-auto px-6 py-12">
+<%- include('../../partials/head') %>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .store-wrapper { font-family: 'Inter', sans-serif; color: #f8fafc; }
+  .store-wrapper .card { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2); }
+</style>
+<div class="layout">
+  <%- include('../../partials/sidebar') %>
+  <main class="main store-wrapper">
+  <div class="max-w-6xl mx-auto px-6 py-8">
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
     <div>
       <h1 class="text-3xl font-extrabold tracking-tight text-white">Katalog Produk</h1>
@@ -111,6 +117,9 @@
       <% }) %>
     <% } %>
   </div>
-</main>
-
-<%- include('../partials/footer') %>
+  </div>
+  </main>
+</div>
+<script src="/js/main.js"></script>
+</body>
+</html>

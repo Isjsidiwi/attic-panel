@@ -18,7 +18,7 @@ router.get('/:id', requireStoreAdmin, async (req, res) => {
        WHERE k.product_id = ? ORDER BY k.created_at DESC`,
       [req.params.id]
     );
-    res.render('store/admin/keys', { product: product[0], variants, keys, success: req.query.success });
+    res.render('store/admin/keys', { title: 'Manage Store', product: product[0], variants, keys, success: req.query.success });
   } catch (err) {
     console.error('Get keys error:', err.message);
     res.redirect('/admin/store/products');

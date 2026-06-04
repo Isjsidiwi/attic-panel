@@ -1,7 +1,13 @@
-<% pageTitle = 'Keys — ' + product.name %>
-<%- include('../partials/header') %>
-
-<main class="max-w-4xl mx-auto px-6 py-10">
+<%- include('../../partials/head') %>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .store-wrapper { font-family: 'Inter', sans-serif; color: #f8fafc; }
+  .store-wrapper .card { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2); }
+</style>
+<div class="layout">
+  <%- include('../../partials/sidebar') %>
+  <main class="main store-wrapper">
+  <div class="max-w-4xl mx-auto px-6 py-8">
   <div class="flex items-center justify-between mb-8">
     <div>
       <a href="/admin/store/products" class="mono text-xs mb-2 inline-block" style="color:var(--muted)">← Kembali ke Produk</a>
@@ -101,7 +107,10 @@
     <% } %>
     </form>
   </div>
-</main>
+  </div>
+  </main>
+</div>
+<script src="/js/main.js"></script>
 <script>
   const selectAll = document.getElementById('selectAllKeys');
   if(selectAll) {
@@ -110,5 +119,5 @@
     });
   }
 </script>
-
-<%- include('../partials/footer') %>
+</body>
+</html>

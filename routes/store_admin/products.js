@@ -11,10 +11,10 @@ router.get('/', requireStoreAdmin, async (req, res) => {
       SELECT p.*, (SELECT COUNT(*) FROM store_keys k WHERE k.product_id = p.id AND k.is_used = 0) as stock
       FROM store_products p WHERE p.is_active = 1 ORDER BY p.created_at DESC
     `);
-    res.render('store/admin/products', { products, success: req.query.success, error: req.query.error });
+    res.render('store/admin/products', { title: 'Manage Store', products, success: req.query.success, error: req.query.error });
   } catch (err) {
     console.error('Get products error:', err.message);
-    res.render('store/admin/products', { products: [], success: null, error: 'Gagal mengambil data produk' });
+    res.render('store/admin/products', { title: 'Manage Store', products: [], success: null, error: 'Gagal mengambil data produk' });
   }
 });
 
@@ -47,7 +47,7 @@ router.get('/:id/edit', requireStoreAdmin, async (req, res) => {
       [req.params.id]
     );
 
-    res.render('store/admin/product-edit', { product: rows[0], variants, success: req.query.success, error: null });
+    res.render('store/admin/product-edit', { title: 'Manage Store', product: rows[0], variants, success: req.query.success, error: null });
   } catch (err) {
     console.error('Get edit form error:', err.message);
     res.redirect('/admin/store/products');

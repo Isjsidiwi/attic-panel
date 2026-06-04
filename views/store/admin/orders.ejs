@@ -1,7 +1,13 @@
-<% pageTitle = 'Pesanan' %>
-<%- include('../partials/header') %>
-
-<main class="max-w-6xl mx-auto px-6 py-10">
+<%- include('../../partials/head') %>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .store-wrapper { font-family: 'Inter', sans-serif; color: #f8fafc; }
+  .store-wrapper .card { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2); }
+</style>
+<div class="layout">
+  <%- include('../../partials/sidebar') %>
+  <main class="main store-wrapper">
+  <div class="max-w-6xl mx-auto px-6 py-8">
   <div class="flex items-center justify-between mb-8">
     <div>
       <h1 class="text-3xl font-black">Pesanan</h1>
@@ -87,7 +93,10 @@
     <% } %>
     </form>
   </div>
-</main>
+  </div>
+  </main>
+</div>
+<script src="/js/main.js"></script>
 <script>
   const selectAllOrd = document.getElementById('selectAllOrders');
   if(selectAllOrd) {
@@ -96,5 +105,5 @@
     });
   }
 </script>
-
-<%- include('../partials/footer') %>
+</body>
+</html>

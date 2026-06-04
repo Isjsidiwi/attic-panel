@@ -15,7 +15,7 @@ router.get('/', requireStoreAdmin, async (req, res) => {
     }
     query += ` ORDER BY o.created_at DESC LIMIT 100`;
     const { rows: orders } = await db.execute(query, params);
-    res.render('store/admin/orders', { orders, status, success: req.query.success });
+    res.render('store/admin/orders', { title: 'Manage Store', orders, status, success: req.query.success });
   } catch (err) {
     console.error('Get orders error:', err.message);
     res.redirect('/admin/store');

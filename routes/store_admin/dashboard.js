@@ -16,7 +16,7 @@ router.get('/', requireStoreAdmin, async (req, res) => {
     JOIN store_products p ON p.id = o.product_id
     ORDER BY o.created_at DESC LIMIT 10
   `);
-  res.render('store/admin/dashboard', { stats: stats[0], recentOrders });
+  res.render('store/admin/dashboard', { title: 'Manage Store', stats: stats[0], recentOrders });
 });
 
 module.exports = router;
