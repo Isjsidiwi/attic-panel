@@ -56,7 +56,7 @@ function createEncryptedResponse(plaintext) {
 
   // D. Buat Digital Signature dari "Data" menggunakan Private Key
   const sign = crypto.createSign('SHA256');
-  sign.update(encryptedBase64);
+  sign.update(plaintext, 'utf8');
   const signatureBase64 = sign.sign(privateKeyPEM, 'base64');
 
   // E. Kembalikan string base64 dari JSON hasil (sebagai plaintext tunggal yang diminta)
