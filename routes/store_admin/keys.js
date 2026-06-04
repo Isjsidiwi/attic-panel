@@ -1,9 +1,9 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 const { db } = require('../../database');
 const { requireStoreAdmin } = require('./middleware');
 
-router.get('/:id', requireStoreAdmin, async (req, res) => {
+router.get('/', requireStoreAdmin, async (req, res) => {
   try {
     const { rows: product } = await db.execute(`SELECT * FROM store_products WHERE id = ?`, [req.params.id]);
     if (!product.length) return res.redirect('/admin/store/products');
@@ -25,7 +25,7 @@ router.get('/:id', requireStoreAdmin, async (req, res) => {
   }
 });
 
-router.post('/:id/add', requireStoreAdmin, async (req, res) => {
+router.post('/add', requireStoreAdmin, async (req, res) => {
   try {
     const { keys_text, variant_id } = req.body;
     const lines = keys_text
@@ -46,7 +46,7 @@ router.post('/:id/add', requireStoreAdmin, async (req, res) => {
   }
 });
 
-router.post('/:id/bulk-delete', requireStoreAdmin, async (req, res) => {
+router.post('/bulk-delete', requireStoreAdmin, async (req, res) => {
   try {
     let { key_ids } = req.body;
     if (!key_ids) return res.redirect(`/admin/store/products/${req.params.id}/keys`);
@@ -63,7 +63,7 @@ router.post('/:id/bulk-delete', requireStoreAdmin, async (req, res) => {
   }
 });
 
-router.post('/:id/:kid/delete', requireStoreAdmin, async (req, res) => {
+router.post('/:kid/delete', requireStoreAdmin, async (req, res) => {
   try {
     await db.execute(`UPDATE store_orders SET key_id = NULL WHERE key_id = ?`, [req.params.kid]);
     await db.execute(`DELETE FROM store_keys WHERE id = ?`, [req.params.kid]);
