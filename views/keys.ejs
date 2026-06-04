@@ -34,13 +34,21 @@
       </form>
 
       <div class="filter-tabs">
-        <a href="/admin/keys?filter=all&search=<%= search %>"      class="filter-tab <%= filter==='all'      ? 'active' : '' %>">Semua</a>
-        <a href="/admin/keys?filter=active&search=<%= search %>"   class="filter-tab <%= filter==='active'   ? 'active' : '' %>">Aktif</a>
-        <a href="/admin/keys?filter=expired&search=<%= search %>"  class="filter-tab <%= filter==='expired'  ? 'active' : '' %>">Expired</a>
-        <a href="/admin/keys?filter=locked&search=<%= search %>"   class="filter-tab <%= filter==='locked'   ? 'active' : '' %>">Terkunci</a>
-        <a href="/admin/keys?filter=inactive&search=<%= search %>" class="filter-tab <%= filter==='inactive' ? 'active' : '' %>">Nonaktif</a>
+        <a href="/admin/keys?filter=all&search=<%= search %>&creator=<%= creator %>"      class="filter-tab <%= filter==='all'      ? 'active' : '' %>">Semua</a>
+        <a href="/admin/keys?filter=active&search=<%= search %>&creator=<%= creator %>"   class="filter-tab <%= filter==='active'   ? 'active' : '' %>">Aktif</a>
+        <a href="/admin/keys?filter=expired&search=<%= search %>&creator=<%= creator %>"  class="filter-tab <%= filter==='expired'  ? 'active' : '' %>">Expired</a>
+        <a href="/admin/keys?filter=locked&search=<%= search %>&creator=<%= creator %>"   class="filter-tab <%= filter==='locked'   ? 'active' : '' %>">Terkunci</a>
+        <a href="/admin/keys?filter=inactive&search=<%= search %>&creator=<%= creator %>" class="filter-tab <%= filter==='inactive' ? 'active' : '' %>">Nonaktif</a>
       </div>
     </div>
+
+    <% if (isOwner) { %>
+    <div style="margin-bottom: 1.5rem; display: flex; gap: 0.5rem; background: var(--bg-sidebar); padding: 0.4rem; border-radius: 12px; width: fit-content; border: 1px solid var(--border);">
+      <a href="/admin/keys?creator=owner&filter=<%= filter %>&search=<%= search %>" class="filter-tab <%= creator === 'owner' ? 'active' : '' %>" style="margin:0; font-size: 0.8rem; padding: 0.4rem 1rem;">Key Saya (Owner)</a>
+      <a href="/admin/keys?creator=resellers&filter=<%= filter %>&search=<%= search %>" class="filter-tab <%= creator === 'resellers' ? 'active' : '' %>" style="margin:0; font-size: 0.8rem; padding: 0.4rem 1rem;">Key Reseller</a>
+      <a href="/admin/keys?creator=all&filter=<%= filter %>&search=<%= search %>" class="filter-tab <%= creator === 'all' ? 'active' : '' %>" style="margin:0; font-size: 0.8rem; padding: 0.4rem 1rem;">Tampilkan Semua</a>
+    </div>
+    <% } %>
 
     <!-- Hidden bulk form (terpisah dari tabel) -->
     <form id="bulk-form" action="/admin/keys/bulk-delete" method="POST" style="display:none">
@@ -141,7 +149,7 @@
     <div class="pagination">
       <% for (let p = 1; p <= totalPages; p++) { %>
         <a
-          href="/admin/keys?page=<%= p %>&filter=<%= filter %>&search=<%= search %>"
+          href="/admin/keys?page=<%= p %>&filter=<%= filter %>&search=<%= search %>&creator=<%= creator %>"
           class="page-btn <%= p === currentPage ? 'active' : '' %>"
         ><%= p %></a>
       <% } %>

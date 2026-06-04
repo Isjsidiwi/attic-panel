@@ -22,6 +22,7 @@ router.get('/', auth, async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const search = req.query.search || '';
   const filter = req.query.filter || 'all';
+  const creator = req.query.creator || 'all';
   const limit = 20;
   const offset = (page - 1) * limit;
   const cfg = await loadConfig();
@@ -32,6 +33,15 @@ router.get('/', auth, async (req, res) => {
   if (!req.user.isOwner) {
     where += ' AND created_by=?';
     params.push(req.user.id);
+  } else {
+    // Owner can filter by creator
+    if (creator === 'owner') {
+      where += ' AND created_by=?';
+      params.push(req.user.id);
+    } else if (creator === 'resellers') {
+      where += ' AND created_by!=?';
+      params.push(req.user.id);
+    }
   }
 
   if (search) {
@@ -68,6 +78,7 @@ router.get('/', auth, async (req, res) => {
     currentPage: page,
     search,
     filter,
+    creator,
     now,
     fmtDate,
     parseSerials,

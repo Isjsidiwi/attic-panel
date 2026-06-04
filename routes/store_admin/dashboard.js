@@ -7,7 +7,7 @@ router.get('/', requireStoreAdmin, async (req, res) => {
   const { rows: stats } = await db.execute(`
     SELECT
       (SELECT COUNT(*) FROM store_products WHERE is_active=1) as total_products,
-      (SELECT COUNT(*) FROM store_keys WHERE is_used=0) as total_stock,
+      (SELECT COUNT(*) FROM store_keys WHERE is_used=0 AND product_id IN (SELECT id FROM store_products WHERE is_active=1)) as total_stock,
       (SELECT COUNT(*) FROM store_orders WHERE status='paid') as total_paid,
       (SELECT COUNT(*) FROM store_orders WHERE status='pending') as total_pending
   `);
