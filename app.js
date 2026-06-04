@@ -50,6 +50,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   res.locals.storeName = process.env.STORE_NAME || 'XSRC';
   res.locals.storeTagline = process.env.STORE_TAGLINE || 'xsrc cheat store';
+  res.locals.currentUrl = req.originalUrl;
   res.locals.isAdmin = false;
   if (req.cookies._token) {
     try {

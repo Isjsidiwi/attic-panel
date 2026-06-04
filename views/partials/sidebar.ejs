@@ -14,46 +14,76 @@
 
   <nav class="sidebar-nav">
     <% const isOwner = admin && admin.role === 'owner'; %>
-    <% if (isOwner) { %>
-    <a href="/admin/dashboard" class="nav-item <%= title === 'Dashboard' ? 'active' : '' %>">
-      <span class="nav-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      </span>
-      <span class="lang-id">Dashboard</span><span class="lang-en" style="display:none;">Dashboard</span>
-    </a>
-    <% } %>
-    <a href="/admin/keys" class="nav-item <%= title === 'Manage Keys' ? 'active' : '' %>">
-      <span class="nav-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-      </span>
-      <span class="lang-id">Kelola Key</span><span class="lang-en" style="display:none;">Manage Keys</span>
-    </a>
-    <% if (isOwner) { %>
-    <a href="/admin/files" class="nav-item <%= title === 'Manage Files' ? 'active' : '' %>">
-      <span class="nav-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
-      </span>
-      <span class="lang-id">Kelola File</span><span class="lang-en" style="display:none;">Manage Files</span>
-    </a>
-    <a href="/admin/settings" class="nav-item <%= title === 'Settings' ? 'active' : '' %>">
-      <span class="nav-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      </span>
-      <span class="lang-id">Pengaturan</span><span class="lang-en" style="display:none;">Settings</span>
-    </a>
-    <a href="/admin/store" class="nav-item">
-      <span class="nav-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-      </span>
-      <span class="lang-id">Kelola Store (Toko)</span><span class="lang-en" style="display:none;">Manage Store</span>
-    </a>
+    <% const isStore = typeof isStoreAdmin !== 'undefined' && isStoreAdmin; %>
+    <% const url = typeof currentUrl !== 'undefined' ? currentUrl : ''; %>
+
+    <% if (isStore) { %>
+      <!-- Store Admin Navigation -->
+      <a href="/admin/store" class="nav-item <%= url === '/admin/store' || url === '/admin/store/' ? 'active' : '' %>">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+        Dashboard Store
+      </a>
+      <a href="/admin/store/products" class="nav-item <%= url.includes('/products') ? 'active' : '' %>">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
+        Kelola Produk
+      </a>
+      <a href="/admin/store/orders" class="nav-item <%= url.includes('/orders') ? 'active' : '' %>">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></span>
+        Kelola Pesanan
+      </a>
+      <a href="/admin/store/referrals" class="nav-item <%= url.includes('/referrals') ? 'active' : '' %>">
+        <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>
+        Kelola Referral
+      </a>
+      <div style="margin: 1rem 0.75rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+        <a href="/admin/dashboard" class="nav-item" style="color: var(--cyan);">
+          <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></span>
+          Panel Utama
+        </a>
+      </div>
     <% } else { %>
-    <a href="/admin/profile" class="nav-item <%= title === 'My Profile' ? 'active' : '' %>">
-      <span class="nav-icon">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-      </span>
-      <span class="lang-id">Profil Saya</span><span class="lang-en" style="display:none;">My Profile</span>
-    </a>
+      <!-- Main Admin Navigation -->
+      <% if (isOwner) { %>
+      <a href="/admin/dashboard" class="nav-item <%= url.includes('/admin/dashboard') ? 'active' : '' %>">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </span>
+        <span class="lang-id">Dashboard</span><span class="lang-en" style="display:none;">Dashboard</span>
+      </a>
+      <% } %>
+      <a href="/admin/keys" class="nav-item <%= url.includes('/admin/keys') ? 'active' : '' %>">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        </span>
+        <span class="lang-id">Kelola Key</span><span class="lang-en" style="display:none;">Manage Keys</span>
+      </a>
+      <% if (isOwner) { %>
+      <a href="/admin/files" class="nav-item <%= url.includes('/admin/files') ? 'active' : '' %>">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+        </span>
+        <span class="lang-id">Kelola File</span><span class="lang-en" style="display:none;">Manage Files</span>
+      </a>
+      <a href="/admin/settings" class="nav-item <%= url.includes('/admin/settings') ? 'active' : '' %>">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </span>
+        <span class="lang-id">Pengaturan</span><span class="lang-en" style="display:none;">Settings</span>
+      </a>
+      <a href="/admin/store" class="nav-item <%= url.startsWith('/admin/store') ? 'active' : '' %>">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        </span>
+        <span class="lang-id">Kelola Store (Toko)</span><span class="lang-en" style="display:none;">Manage Store</span>
+      </a>
+      <% } else { %>
+      <a href="/admin/profile" class="nav-item <%= url.includes('/admin/profile') ? 'active' : '' %>">
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        </span>
+        <span class="lang-id">Profil Saya</span><span class="lang-en" style="display:none;">My Profile</span>
+      </a>
+      <% } %>
     <% } %>
   </nav>
 

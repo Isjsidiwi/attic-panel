@@ -16,6 +16,7 @@ router.use(auth);
 router.use(async (req, res, next) => {
   const cfg = await loadConfig();
   res.locals.panel_name = cfg.panel_name || 'ATTIC PANEL';
+  res.locals.isStoreAdmin = true;
   next();
 });
 
