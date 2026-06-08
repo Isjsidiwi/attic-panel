@@ -43,11 +43,13 @@ function openEdit(key) {
       .join('');
   }
 
-  if (key.expires_at) {
+  if (key.expires_at && key.expires_at != 0) {
     const d = new Date(Number(key.expires_at) * 1000);
     const pad = (n) => String(n).padStart(2, '0');
     const local = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
     document.getElementById('edit-expires').value = local;
+  } else {
+    document.getElementById('edit-expires').value = '';
   }
 
   document.getElementById('edit-form').action = `/admin/keys/${key.id}/edit`;

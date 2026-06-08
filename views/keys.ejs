@@ -97,8 +97,10 @@
                 <td>
                   <% if (!k.is_active) { %>
                     <span class="badge badge-off">NONAKTIF</span>
-                  <% } else if (k.expires_at <= now) { %>
+                  <% } else if (k.expires_at > 0 && k.expires_at <= now) { %>
                     <span class="badge badge-expired">EXPIRED</span>
+                  <% } else if (k.expires_at == 0) { %>
+                    <span class="badge badge-active" style="background: #9b59b6">READY</span>
                   <% } else { %>
                     <span class="badge badge-active">AKTIF</span>
                   <% } %>
@@ -119,7 +121,13 @@
                   </div>
                 </td>
                 <td class="text-muted"><%= fmtDate(k.created_at) %></td>
-                <td class="<%= k.expires_at <= now ? 'text-danger' : 'text-muted' %>"><%= fmtDate(k.expires_at) %></td>
+                <td class="<%= k.expires_at > 0 && k.expires_at <= now ? 'text-danger' : 'text-muted' %>">
+                  <% if (k.expires_at == 0) { %>
+                    <span style="font-size: 0.75rem; color: #9b59b6; font-weight: bold;">BELUM AKTIF</span>
+                  <% } else { %>
+                    <%= fmtDate(k.expires_at) %>
+                  <% } %>
+                </td>
                 <td><span class="badge badge-count"><%= k.price_paid || 0 %></span></td>
                 <td><span class="badge badge-count"><%= k.login_count %>×</span></td>
                 <td>
@@ -249,7 +257,7 @@
       </div>
       <div class="field">
         <label class="field-label">EXPIRED DATE & TIME</label>
-        <input type="datetime-local" name="expires_at_input" id="edit-expires" class="field-input" required>
+        <input type="datetime-local" name="expires_at_input" id="edit-expires" class="field-input">
       </div>
       <div class="field">
         <label class="field-label">STATUS</label>

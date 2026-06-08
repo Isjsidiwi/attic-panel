@@ -13,8 +13,8 @@ router.get('/', auth, requireOwner, async (req, res) => {
 
   const [total, active, expired, recent] = await Promise.all([
     db.get('SELECT COUNT(*) AS c FROM keys'),
-    db.get('SELECT COUNT(*) AS c FROM keys WHERE is_active=1 AND expires_at>?', [now]),
-    db.get('SELECT COUNT(*) AS c FROM keys WHERE expires_at<=?', [now]),
+    db.get('SELECT COUNT(*) AS c FROM keys WHERE is_active=1 AND (expires_at>? OR expires_at=0)', [now]),
+    db.get('SELECT COUNT(*) AS c FROM keys WHERE expires_at<=? AND expires_at!=0', [now]),
     db.all('SELECT * FROM keys ORDER BY created_at DESC LIMIT 8')
   ]);
 

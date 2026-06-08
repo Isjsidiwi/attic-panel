@@ -49,11 +49,11 @@ router.get('/', auth, async (req, res) => {
     params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
   }
   if (filter === 'active') {
-    where += ' AND is_active=1 AND expires_at>?';
+    where += ' AND is_active=1 AND (expires_at>? OR expires_at=0)';
     params.push(now);
   }
   if (filter === 'expired') {
-    where += ' AND expires_at<=?';
+    where += ' AND expires_at<=? AND expires_at!=0';
     params.push(now);
   }
   if (filter === 'locked') {
@@ -151,8 +151,8 @@ router.post('/generate', auth, async (req, res) => {
 
   for (const key of generatedKeys) {
     await db.run(
-      'INSERT INTO keys (key_code, resource, device_serials, max_devices, created_at, expires_at, notes, created_by, created_by_username, price_paid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [key, resource || 'vip', '[]', maxDevices, now, now + secs, notes || '', req.user.id, req.user.username, priceEach]
+      'INSERT INTO keys (key_code, resource, device_serials, max_devices, created_at, expires_at, duration, notes, created_by, created_by_username, price_paid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [key, resource || 'vip', '[]', maxDevices, now, 0, secs, notes || '', req.user.id, req.user.username, priceEach]
     );
   }
 
@@ -180,7 +180,11 @@ router.post('/:id/edit', auth, async (req, res) => {
     }
   }
 
-  const expiresAt = expires_at_input ? Math.floor(new Date(expires_at_input).getTime() / 1000) : Number(row.expires_at);
+  let expiresAt = Number(row.expires_at);
+  if (expires_at_input) {
+    const parsed = Math.floor(new Date(expires_at_input).getTime() / 1000);
+    if (!isNaN(parsed)) expiresAt = parsed;
+  }
   const maxDevices = Math.min(Math.max(1, parseInt(max_devices) || 1), MAX_DEVICES_LIMIT);
   const serials = reset_devices === '1' ? '[]' : row.device_serials || '[]';
 

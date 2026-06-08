@@ -14,6 +14,15 @@ async function validateAndRegisterKey(key_code, serial) {
   const key = await db.get('SELECT * FROM keys WHERE key_code = ?', [key_code]);
   if (!key) return { success: false, reason: 'Key tidak ditemukan.' };
   if (!key.is_active) return { success: false, reason: 'Key dinonaktifkan.' };
+
+  // Jika key belum diaktivasi (expires_at = 0), aktivasi sekarang
+  if (Number(key.expires_at) === 0) {
+    const duration = Number(key.duration) || 0;
+    const newExpiresAt = now + duration;
+    await db.run('UPDATE keys SET expires_at = ? WHERE id = ?', [newExpiresAt, key.id]);
+    key.expires_at = newExpiresAt;
+  }
+
   if (Number(key.expires_at) <= now) return { success: false, reason: 'Key sudah expired.' };
 
   let serials = [];

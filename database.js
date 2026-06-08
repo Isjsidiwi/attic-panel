@@ -35,6 +35,7 @@ async function initDB() {
       max_devices     INTEGER NOT NULL DEFAULT 1,
       created_at      INTEGER NOT NULL,
       expires_at      INTEGER NOT NULL,
+      duration        INTEGER NOT NULL DEFAULT 0,
       is_active       INTEGER NOT NULL DEFAULT 1,
       notes           TEXT DEFAULT '',
       login_count     INTEGER DEFAULT 0,
@@ -157,6 +158,7 @@ async function initDB() {
   await ensureColumn(db, 'keys', 'created_by', 'INTEGER DEFAULT NULL');
   await ensureColumn(db, 'keys', 'created_by_username', "TEXT DEFAULT ''");
   await ensureColumn(db, 'keys', 'price_paid', 'INTEGER NOT NULL DEFAULT 0');
+  await ensureColumn(db, 'keys', 'duration', 'INTEGER NOT NULL DEFAULT 0');
   await ensureColumn(db, 'users', 'expires_at', 'INTEGER DEFAULT NULL');
   await ensureColumn(db, 'users', 'allowed_games', "TEXT NOT NULL DEFAULT '[]'");
   await ensureColumn(db, 'store_referrals', 'allowed_products', "TEXT DEFAULT '[]'");
