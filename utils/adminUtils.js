@@ -6,14 +6,9 @@ const HEX_CHARS = '0123456789ABCDEF';
 const GAME_OPTIONS = [
   { value: 'BS', label: 'Blood Strike (BS)' },
   { value: 'MLBB', label: 'Mobile Legends (MLBB)' },
-  { value: 'ANTARXY', label: 'Mobile Legends (Antarxy)' },
   { value: 'PUBGM', label: 'PUBG Mobile (PUBGM)' },
   { value: 'CODM', label: 'Call Of Duty (CODM)' },
   { value: '8BP', label: '8 Ball Pool (8BP)' },
-  { value: 'FF', label: 'Free Fire (FF)' },
-  { value: 'FFHG', label: 'Free Fire (HG Mods)' },
-  { value: 'FFBR', label: 'Free Fire (BR Mods)' },
-  { value: 'CFL', label: 'Crossfire (CFL)' },
   { value: 'DFM', label: 'X3 DFM (DFM)' }
 ];
 
