@@ -90,8 +90,10 @@
               <td>
                 <% if (!k.is_active) { %>
                   <span class="badge badge-off">NONAKTIF</span>
-                <% } else if (k.expires_at <= now) { %>
+                <% } else if (k.expires_at > 0 && k.expires_at <= now) { %>
                   <span class="badge badge-expired">EXPIRED</span>
+                <% } else if (k.expires_at == 0) { %>
+                  <span class="badge badge-active" style="background: #9b59b6">READY</span>
                 <% } else { %>
                   <span class="badge badge-active">AKTIF</span>
                 <% } %>
@@ -99,9 +101,13 @@
               <% const serials = parseSerials(k.device_serials); %>
               <td class="text-muted"><%= serials.length ? serials[0].substring(0,16) + (serials[0].length > 16 ? '…' : '') : '—' %></td>
               <td class="text-muted">
-                <%= fmtDate(k.expires_at) %>
-                <br>
-                <span class="countdown-timer badge badge-resource" style="font-size: 0.7rem; background: var(--bg-hover); margin-top: 4px; display: inline-block;" data-expires="<%= k.expires_at %>"></span>
+                <% if (k.expires_at == 0) { %>
+                  <span style="font-size: 0.75rem; color: #9b59b6; font-weight: bold;">BELUM AKTIF</span>
+                <% } else { %>
+                  <%= fmtDate(k.expires_at) %>
+                  <br>
+                  <span class="countdown-timer badge badge-resource" style="font-size: 0.7rem; background: var(--bg-hover); margin-top: 4px; display: inline-block;" data-expires="<%= k.expires_at %>"></span>
+                <% } %>
               </td>
               <td><span class="badge badge-count"><%= k.login_count %>×</span></td>
             </tr>

@@ -5,7 +5,7 @@ const HEX_CHARS = '0123456789ABCDEF';
 
 const GAME_OPTIONS = [
   { value: 'BS', label: 'Blood Strike (Hemorax)' },
-  { value: 'MLBB', label: 'Mobile Legends (Attic+Senju)' },
+  { value: 'MLBB', label: 'Mobile Legends (Attic Senju)' },
   { value: 'PUBGM', label: 'PUBG Mobile (VVIP)' },
   { value: 'CODM', label: 'Call of Duty (ASHESZ)' },
   { value: '8BP', label: '8 Ball Pool (EasyVictory)' },
