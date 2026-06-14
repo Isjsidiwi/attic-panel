@@ -94,7 +94,8 @@
 
     <!-- Flash Sale Products Mockup -->
     <div id="flash-scroll" class="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x scroll-smooth">
-      <% products.slice(0, 3).forEach(p => { %>
+      <% const displayFlash = flashProducts && flashProducts.length > 0 ? [...flashProducts, ...flashProducts] : []; %>
+      <% displayFlash.forEach(p => { %>
       <a href="/store/produk/<%= p.slug %>" class="min-w-[280px] md:min-w-[320px] snap-center bg-[#1a202c] rounded-xl flex border border-zinc-800 relative overflow-hidden group hover:border-blue-500/50 transition-colors">
         <div class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full z-10 shadow-lg">-10%</div>
         <div class="w-[40%] bg-zinc-900 relative">
@@ -111,18 +112,21 @@
         </div>
       </a>
       <% }) %>
-      <% if (products.length === 0) { %>
+      <% if (displayFlash.length === 0) { %>
         <div class="text-zinc-500 text-sm italic">Belum ada produk Flash Sale saat ini.</div>
       <% } %>
     </div>
     
     <!-- Dots mockup -->
+    <% if (displayFlash && displayFlash.length > 0) { %>
     <div class="flex justify-center gap-1.5 mt-2">
       <div class="w-6 h-1.5 rounded-full bg-blue-500"></div>
       <div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div>
       <div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div>
       <div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div>
+      <div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div>
     </div>
+    <% } %>
   </div>
 
   <!-- SEARCH & CATEGORIES -->
@@ -229,77 +233,136 @@
         </div>
       </div>
 
-      <div id="review-scroll" class="md:w-2/3 flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x scroll-smooth">
-        <!-- Mock Review 1 -->
-        <div class="min-w-[280px] snap-center bg-[#1a202c] border border-zinc-800 rounded-2xl p-6 flex flex-col relative">
-          <div class="absolute top-4 right-6 text-zinc-700 opacity-20 text-7xl font-serif">"</div>
-          <div class="flex gap-1 text-blue-400 mb-4 z-10 text-sm">
-            ★ ★ ★ ★ ★
+      <div class="md:w-2/3">
+        <div id="review-scroll" class="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x scroll-smooth">
+          <!-- Mock Review 1 -->
+          <div class="min-w-[280px] snap-center bg-[#1a202c] border border-zinc-800 rounded-2xl p-6 flex flex-col relative">
+            <div class="absolute top-4 right-6 text-zinc-700 opacity-20 text-7xl font-serif">"</div>
+            <div class="flex gap-1 text-blue-400 mb-4 z-10 text-sm">★ ★ ★ ★ ★</div>
+            <p class="text-zinc-300 text-sm font-medium italic mb-6 flex-1 z-10 leading-relaxed">"Sangat cepat dan otomatis masuk, mantap layanannya."</p>
+            <div class="bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-6 flex items-center gap-2">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              X3NEXT DFM - KEY 1 DAY
+            </div>
+            <div class="flex items-center gap-3 mt-auto">
+              <div class="w-10 h-10 rounded-xl bg-blue-500 text-white font-black flex items-center justify-center text-lg">W</div>
+              <div>
+                <div class="font-bold text-white text-sm">wan</div>
+                <div class="text-[10px] text-green-400 flex items-center gap-1 font-bold mt-0.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified Customer
+                </div>
+              </div>
+            </div>
           </div>
-          <p class="text-zinc-300 text-sm font-medium italic mb-6 flex-1 z-10 leading-relaxed">
-            "Sangat cepat dan otomatis masuk, mantap layanannya."
-          </p>
-          <div class="bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-6 flex items-center gap-2">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            X3NEXT DFM - KEY 1 DAY
+
+          <!-- Mock Review 2 -->
+          <div class="min-w-[280px] snap-center bg-[#1a202c] border border-zinc-800 rounded-2xl p-6 flex flex-col relative">
+            <div class="absolute top-4 right-6 text-zinc-700 opacity-20 text-7xl font-serif">"</div>
+            <div class="flex gap-1 text-blue-400 mb-4 z-10 text-sm">★ ★ ★ ★ ★</div>
+            <p class="text-zinc-300 text-sm font-medium italic mb-6 flex-1 z-10 leading-relaxed">"Beli tengah malam pun langsung diproses. The best!"</p>
+            <div class="bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-6 flex items-center gap-2">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              PUBGM VVIP - KEY 30 DAY
+            </div>
+            <div class="flex items-center gap-3 mt-auto">
+              <div class="w-10 h-10 rounded-xl bg-blue-500 text-white font-black flex items-center justify-center text-lg">C</div>
+              <div>
+                <div class="font-bold text-white text-sm">cakir</div>
+                <div class="text-[10px] text-green-400 flex items-center gap-1 font-bold mt-0.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified Customer
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="flex items-center gap-3 mt-auto">
-            <div class="w-10 h-10 rounded-xl bg-blue-500 text-white font-black flex items-center justify-center text-lg">W</div>
-            <div>
-              <div class="font-bold text-white text-sm">wan</div>
-              <div class="text-[10px] text-green-400 flex items-center gap-1 font-bold mt-0.5">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified Customer
+
+          <!-- Mock Review 3 -->
+          <div class="min-w-[280px] snap-center bg-[#1a202c] border border-zinc-800 rounded-2xl p-6 flex flex-col relative">
+            <div class="absolute top-4 right-6 text-zinc-700 opacity-20 text-7xl font-serif">"</div>
+            <div class="flex gap-1 text-blue-400 mb-4 z-10 text-sm">★ ★ ★ ★ ★</div>
+            <p class="text-zinc-300 text-sm font-medium italic mb-6 flex-1 z-10 leading-relaxed">"Admin fast respon dan harga sangat bersahabat."</p>
+            <div class="bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-6 flex items-center gap-2">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              ZOLO - KEY 1 DAY
+            </div>
+            <div class="flex items-center gap-3 mt-auto">
+              <div class="w-10 h-10 rounded-xl bg-blue-500 text-white font-black flex items-center justify-center text-lg">Z</div>
+              <div>
+                <div class="font-bold text-white text-sm">Zian</div>
+                <div class="text-[10px] text-green-400 flex items-center gap-1 font-bold mt-0.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified Customer
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Mock Review 4 (Duplicated for scrolling) -->
+          <div class="min-w-[280px] snap-center bg-[#1a202c] border border-zinc-800 rounded-2xl p-6 flex flex-col relative">
+            <div class="absolute top-4 right-6 text-zinc-700 opacity-20 text-7xl font-serif">"</div>
+            <div class="flex gap-1 text-blue-400 mb-4 z-10 text-sm">★ ★ ★ ★ ★</div>
+            <p class="text-zinc-300 text-sm font-medium italic mb-6 flex-1 z-10 leading-relaxed">"Sangat cepat dan otomatis masuk, mantap layanannya."</p>
+            <div class="bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-6 flex items-center gap-2">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              X3NEXT DFM - KEY 1 DAY
+            </div>
+            <div class="flex items-center gap-3 mt-auto">
+              <div class="w-10 h-10 rounded-xl bg-blue-500 text-white font-black flex items-center justify-center text-lg">W</div>
+              <div>
+                <div class="font-bold text-white text-sm">wan</div>
+                <div class="text-[10px] text-green-400 flex items-center gap-1 font-bold mt-0.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified Customer
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mock Review 5 (Duplicated for scrolling) -->
+          <div class="min-w-[280px] snap-center bg-[#1a202c] border border-zinc-800 rounded-2xl p-6 flex flex-col relative">
+            <div class="absolute top-4 right-6 text-zinc-700 opacity-20 text-7xl font-serif">"</div>
+            <div class="flex gap-1 text-blue-400 mb-4 z-10 text-sm">★ ★ ★ ★ ★</div>
+            <p class="text-zinc-300 text-sm font-medium italic mb-6 flex-1 z-10 leading-relaxed">"Beli tengah malam pun langsung diproses. The best!"</p>
+            <div class="bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-6 flex items-center gap-2">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              PUBGM VVIP - KEY 30 DAY
+            </div>
+            <div class="flex items-center gap-3 mt-auto">
+              <div class="w-10 h-10 rounded-xl bg-blue-500 text-white font-black flex items-center justify-center text-lg">C</div>
+              <div>
+                <div class="font-bold text-white text-sm">cakir</div>
+                <div class="text-[10px] text-green-400 flex items-center gap-1 font-bold mt-0.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified Customer
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mock Review 6 (Duplicated for scrolling) -->
+          <div class="min-w-[280px] snap-center bg-[#1a202c] border border-zinc-800 rounded-2xl p-6 flex flex-col relative">
+            <div class="absolute top-4 right-6 text-zinc-700 opacity-20 text-7xl font-serif">"</div>
+            <div class="flex gap-1 text-blue-400 mb-4 z-10 text-sm">★ ★ ★ ★ ★</div>
+            <p class="text-zinc-300 text-sm font-medium italic mb-6 flex-1 z-10 leading-relaxed">"Admin fast respon dan harga sangat bersahabat."</p>
+            <div class="bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-6 flex items-center gap-2">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              ZOLO - KEY 1 DAY
+            </div>
+            <div class="flex items-center gap-3 mt-auto">
+              <div class="w-10 h-10 rounded-xl bg-blue-500 text-white font-black flex items-center justify-center text-lg">Z</div>
+              <div>
+                <div class="font-bold text-white text-sm">Zian</div>
+                <div class="text-[10px] text-green-400 flex items-center gap-1 font-bold mt-0.5">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified Customer
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- Mock Review 2 -->
-        <div class="min-w-[280px] snap-center bg-[#1a202c] border border-zinc-800 rounded-2xl p-6 flex flex-col relative">
-          <div class="absolute top-4 right-6 text-zinc-700 opacity-20 text-7xl font-serif">"</div>
-          <div class="flex gap-1 text-blue-400 mb-4 z-10 text-sm">
-            ★ ★ ★ ★ ★
-          </div>
-          <p class="text-zinc-300 text-sm font-medium italic mb-6 flex-1 z-10 leading-relaxed">
-            "Beli tengah malam pun langsung diproses. The best!"
-          </p>
-          <div class="bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-6 flex items-center gap-2">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            PUBGM VVIP - KEY 30 DAY
-          </div>
-          <div class="flex items-center gap-3 mt-auto">
-            <div class="w-10 h-10 rounded-xl bg-blue-500 text-white font-black flex items-center justify-center text-lg">C</div>
-            <div>
-              <div class="font-bold text-white text-sm">cakir</div>
-              <div class="text-[10px] text-green-400 flex items-center gap-1 font-bold mt-0.5">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified Customer
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mock Review 3 -->
-        <div class="min-w-[280px] snap-center bg-[#1a202c] border border-zinc-800 rounded-2xl p-6 flex flex-col relative">
-          <div class="absolute top-4 right-6 text-zinc-700 opacity-20 text-7xl font-serif">"</div>
-          <div class="flex gap-1 text-blue-400 mb-4 z-10 text-sm">
-            ★ ★ ★ ★ ★
-          </div>
-          <p class="text-zinc-300 text-sm font-medium italic mb-6 flex-1 z-10 leading-relaxed">
-            "Admin fast respon dan harga sangat bersahabat."
-          </p>
-          <div class="bg-blue-500/5 border border-blue-500/20 text-blue-400 text-[10px] font-bold px-3 py-1.5 rounded-full w-fit mb-6 flex items-center gap-2">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            ZOLO - KEY 1 DAY
-          </div>
-          <div class="flex items-center gap-3 mt-auto">
-            <div class="w-10 h-10 rounded-xl bg-blue-500 text-white font-black flex items-center justify-center text-lg">Z</div>
-            <div>
-              <div class="font-bold text-white text-sm">Zian</div>
-              <div class="text-[10px] text-green-400 flex items-center gap-1 font-bold mt-0.5">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Verified Customer
-              </div>
-            </div>
-          </div>
+        
+        <!-- Dots indicator for reviews -->
+        <div class="flex justify-center gap-1.5 mt-4">
+          <div class="w-6 h-1.5 rounded-full bg-blue-500"></div>
+          <div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div>
+          <div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div>
+          <div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div>
+          <div class="w-1.5 h-1.5 rounded-full bg-zinc-700"></div>
         </div>
       </div>
     </div>

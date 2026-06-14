@@ -34,12 +34,22 @@ router.get('/', async (req, res) => {
       `;
     const { rows: products } = await db.execute(productQuery, params);
 
+    // Get a separate list of random/latest products for Flash Sale to ensure it always populates, even during searches
+    const { rows: flashProducts } = await db.execute(`
+      SELECT p.*, 
+        (SELECT COUNT(*) FROM store_keys k WHERE k.product_id = p.id AND k.is_used = 0) as stock,
+        (SELECT MIN(price) FROM store_product_variants pv WHERE pv.product_id = p.id) as min_price
+      FROM store_products p
+      WHERE p.is_active = 1
+      ORDER BY RANDOM() LIMIT 6
+    `);
+
     const { rows: categories } = await db.execute(`SELECT DISTINCT category FROM store_products WHERE is_active = 1`);
 
-    res.render('store/index', { products, categories, selectedCategory, q });
+    res.render('store/index', { products, flashProducts, categories, selectedCategory, q });
   } catch (err) {
     console.error(err);
-    res.render('store/index', { products: [], categories: [], selectedCategory: '', q: '' });
+    res.render('store/index', { products: [], flashProducts: [], categories: [], selectedCategory: '', q: '' });
   }
 });
 
