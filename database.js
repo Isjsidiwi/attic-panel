@@ -197,7 +197,7 @@ async function initDB() {
     });
   }
 
-  const games = ['BS', 'MLBB', 'ANTARXY', 'PUBGM', 'CODM', '8BP', 'FF', 'FFHG', 'FFBR', 'CFL'];
+  const games = ['BS', 'MLBB', 'ANTARXY', 'PUBGM', 'CODM', '8BP', 'FF', 'FFHG', 'FFBR', 'CFL', 'DFM'];
   for (const game of games) {
     for (let day = 1; day <= 30; day++) {
       await db.execute({

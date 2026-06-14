@@ -13,8 +13,11 @@ const GAME_OPTIONS = [
   { value: 'FF', label: 'Free Fire (FF)' },
   { value: 'FFHG', label: 'Free Fire (HG Mods)' },
   { value: 'FFBR', label: 'Free Fire (BR Mods)' },
-  { value: 'CFL', label: 'Crossfire (CFL)' }
+  { value: 'CFL', label: 'Crossfire (CFL)' },
+  { value: 'DFM', label: 'X3 DFM (DFM)' }
 ];
+
+const PRICE_DAYS = Array.from({ length: 30 }, (_, i) => i + 1);
 
 function generateKey(game = 'BS') {
   if (game === 'PUBGM') {
@@ -96,6 +99,7 @@ function getVisibleGames(user) {
 
 module.exports = {
   GAME_OPTIONS,
+  PRICE_DAYS,
   generateKey,
   fmtDate,
   durationToSeconds,
