@@ -9,6 +9,8 @@ const GAME_OPTIONS = [
   { value: 'PUBGM', label: 'PUBG Mobile (PUBGM)' },
   { value: 'CODM', label: 'Call Of Duty (CODM)' },
   { value: '8BP', label: '8 Ball Pool (8BP)' },
+  { value: 'FFHG', label: 'Free Fire (HG Mods)' },
+  { value: 'FFBR', label: 'Free Fire (BR Mods)' },
   { value: 'DFM', label: 'X3 DFM (DFM)' }
 ];
 
