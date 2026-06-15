@@ -88,7 +88,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 router.post('/generate', auth, async (req, res) => {
-  const { game, resource, duration, duration_unit, notes, bulk, max_devices } = req.body;
+  const { game, resource, duration, duration_unit, notes, bulk, max_devices, custom_key } = req.body;
   const now = Math.floor(Date.now() / 1000);
   const count = Math.min(Math.max(1, parseInt(bulk) || 1), 100);
   const unit = duration_unit || 'days';
@@ -134,12 +134,29 @@ router.post('/generate', auth, async (req, res) => {
     }
   }
 
+  if (req.user.isOwner && custom_key) {
+    if (count === 1) {
+      const existing = await db.get('SELECT id FROM keys WHERE key_code=?', [custom_key]);
+      if (existing) {
+        res.flash('error', `Key "${custom_key}" sudah ada di database.`);
+        return res.redirect('/admin/keys');
+      }
+    }
+  }
+
   const generatedKeys = [];
   for (let i = 0; i < count; i++) {
     let key,
       tries = 0;
     do {
-      key = generateKey(gamePrefix);
+      if (req.user.isOwner && custom_key) {
+        key = count === 1 ? custom_key : `${custom_key}-${i + 1}`;
+        if (tries > 0) {
+          key = `${key}-${Math.floor(Math.random() * 1000)}`;
+        }
+      } else {
+        key = generateKey(gamePrefix);
+      }
       tries++;
     } while ((await db.get('SELECT id FROM keys WHERE key_code=?', [key])) && tries < 20);
     generatedKeys.push(key);
