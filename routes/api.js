@@ -122,7 +122,8 @@ router.post('/vvip-bs', async (req, res) => {
       real,
       token,
       rng: Number(key.expires_at),
-      ts: ts
+      ts: ts,
+      xenoanticrack: 'ayam_kampung'
     }
   });
 });
