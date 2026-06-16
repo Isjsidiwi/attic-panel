@@ -132,26 +132,6 @@ router.post('/ev8bp', async (req, res) => {
   });
 });
 
-router.post('/game/pubgm', async (req, res) => {
-  const memberKey = (req.body.member_key || req.body.user_key || '').trim();
-  const serial = (req.body.serial || '').trim();
-
-  const auth = await validateAndRegisterKey(memberKey, serial);
-  if (!auth.success) return res.json({ status: false, reason: auth.reason, data: null });
-
-  const { key } = auth;
-  res.json({
-    status: true,
-    data: {
-      token: 'e57e308605a4dc7f5da27a8a63dc0645',
-      rng: Number(key.expires_at),
-      expired: formatIsoMicros(key.expires_at),
-      EXPR: formatIsoMicros(key.expires_at),
-      registrator: 'Edge'
-    }
-  });
-});
-
 router.post('/connect', async (req, res) => {
   const userKey = (req.body.user_key || '').trim();
   const serial = (req.body.serial || '').trim();

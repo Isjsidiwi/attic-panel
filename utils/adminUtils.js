@@ -6,7 +6,6 @@ const HEX_CHARS = '0123456789ABCDEF';
 const GAME_OPTIONS = [
   { value: 'BS', label: 'Blood Strike (Hemorax)' },
   { value: 'MLBB', label: 'Mobile Legends (Attic Senju)' },
-  { value: 'PUBGM', label: 'PUBG Mobile (VVIP)' },
   { value: 'CODM', label: 'Call of Duty (ASHESZ)' },
   { value: '8BP', label: '8 Ball Pool (EasyVictory)' },
   { value: 'FFHG', label: 'Free Fire (HG Mods)' },
@@ -17,12 +16,6 @@ const GAME_OPTIONS = [
 const PRICE_DAYS = Array.from({ length: 30 }, (_, i) => i + 1);
 
 function generateKey(game = 'BS') {
-  if (game === 'PUBGM') {
-    return `${game}-${Array.from({ length: 10 }, () => HEX_CHARS[Math.floor(Math.random() * HEX_CHARS.length)]).join(
-      ''
-    )}`;
-  }
-
   const seg = () =>
     Array.from({ length: 4 }, () => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
   return `${game}-${seg()}-${seg()}-${seg()}`;
