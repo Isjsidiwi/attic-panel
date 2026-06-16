@@ -103,7 +103,7 @@ router.post('/game/x3', async (req, res) => {
   });
 });
 
-router.post('/game/8bp', async (req, res) => {
+router.post('/ev8bp', async (req, res) => {
   const userKey = (req.body.user_key || '').trim();
   const serial = (req.body.serial || '').trim();
   const game = (req.body.game || '').trim();
