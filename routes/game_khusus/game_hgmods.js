@@ -102,7 +102,7 @@ router.post('/LoginData.php', async (req, res) => {
           IsVisible: 48065956,
           timestamp: Math.floor(Date.now() / 1000),
           seller: "Licencedashboard",
-          panelName: "XSRC MIAW",
+          panelName: "HG CHEAT APK MOD",
           Vendedor: "Licencedashboard",
           Logo: "iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAYAAADL1t+KAAAQAElEQVR4",
           OpenUrl: 0,
