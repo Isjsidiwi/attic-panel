@@ -112,7 +112,7 @@ router.post('/vvip-bs', async (req, res) => {
   if (!auth.success) return res.json({ status: false, reason: auth.reason });
 
   const { key } = auth;
-  const real = `BS-${userKey}-${serial}${resource ? '-' + resource : ''}-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`;
+  const real = `TS-${userKey}-${serial}${resource ? '-' + resource : ''}-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`;
   const token = crypto.createHash('md5').update(real).digest('hex');
   const ts = formatDateTime(key.expires_at);
 
