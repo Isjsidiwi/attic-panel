@@ -105,6 +105,9 @@ app.use('/admin/store', storeAdminRoutes);
 app.use('/api/store', storeApiRoutes);
 app.use('/api', storeApiRoutes);
 
+const authApiRoutes = require('./routes/auth_api');
+app.use('/auth', authApiRoutes);
+
 app.post('/project/login', (req, res) => {
   res.status(200).json({"id":"68ef13a95b460ed3e8845e16","platform":["PUBG","DFM","ARB"]});
 });
