@@ -26,15 +26,15 @@ try {
 // Muat Payload Loader (3.8MB+) ke Memory
 let loaderPayload = '';
 try {
-  const loaderPath = path.join(__dirname, '../certs/loader.txt');
+  const loaderPath = path.join(__dirname, '../certs/loader_auth.txt');
   if (fs.existsSync(loaderPath)) {
     loaderPayload = fs.readFileSync(loaderPath, 'utf8').trim();
     console.log(`[+] Auth API: Loader payload loaded successfully (${(loaderPayload.length / 1024 / 1024).toFixed(2)} MB).`);
   } else {
-    console.error('[-] Auth API: loader.txt not found.');
+    console.error('[-] Auth API: loader_auth.txt not found.');
   }
 } catch (err) {
-  console.error('[-] Auth API: Failed to load loader.txt:', err.message);
+  console.error('[-] Auth API: Failed to load loader_auth.txt:', err.message);
 }
 
 // --- FUNGSI HELPER: ENKRIPSI RESPONSE (XOR + RSA Sign) ---
