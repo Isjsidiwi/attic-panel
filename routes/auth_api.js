@@ -147,7 +147,10 @@ router.post('/login', async (req, res) => {
         Status: 'Success',
         lib_cheat: base64LibCheat,
         lib_original: base64LibOri,
-        MessageString: `Connected! Welcome ${userKey}. Expired in: ${sisaHari} Days` // Harus berupa string
+        MessageString: {
+          Cliente: userKey,
+          Dias: sisaHari.toString()
+        }
       });
 
       finalResponseObject = createEncryptedResponse(payloadSukses);
