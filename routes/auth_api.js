@@ -8,11 +8,20 @@ const { validateAndRegisterKey } = require('../services/gameAuth');
 // --- FUNGSI HELPER: ENKRIPSI AES UNTUK LIBRARY (.so) ---
 // Menggunakan AES/ECB/PKCS5Padding dengan kunci hardcoded aplikasi
 function encryptLib(buffer) {
-  // Gunakan aes-128-ecb (panjang kunci 16 byte)
+  // Tambahkan padding manual secara PKCS5/PKCS7 yang persis sama dengan Java
+  const blockSize = 16;
+  const paddingLength = blockSize - (buffer.length % blockSize);
+  const paddingBuffer = Buffer.alloc(paddingLength, paddingLength);
+  const paddedBuffer = Buffer.concat([buffer, paddingBuffer]);
+
+  // Enkripsi menggunakan aes-128-ecb tanpa AutoPadding bawaan Node
   const cipher = crypto.createCipheriv('aes-128-ecb', Buffer.from('22P9ULFDKPJ70G46', 'utf8'), null);
-  let encrypted = cipher.update(buffer);
+  cipher.setAutoPadding(false); // <--- INI SANGAT PENTING
+
+  let encrypted = cipher.update(paddedBuffer);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
-  return encrypted.toString('base64'); // Return langsung sebagai Base64
+
+  return encrypted.toString('base64');
 }
 
 // Muat Private Key Auth API dari folder certs/
