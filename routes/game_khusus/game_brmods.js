@@ -29,7 +29,9 @@ try {
   const loaderPath = path.join(__dirname, '../../certs/loader.txt');
   if (fs.existsSync(loaderPath)) {
     loaderPayload = fs.readFileSync(loaderPath, 'utf8').trim();
-    console.log(`[+] BR Mods: Loader payload loaded successfully (${(loaderPayload.length / 1024 / 1024).toFixed(2)} MB).`);
+    console.log(
+      `[+] BR Mods: Loader payload loaded successfully (${(loaderPayload.length / 1024 / 1024).toFixed(2)} MB).`
+    );
   } else {
     console.error('[-] BR Mods: loader.txt not found.');
   }
@@ -98,7 +100,7 @@ router.post('/b.php', async (req, res) => {
 
     // 5. Parse Plaintext JSON hasil dekripsi
     const clientData = JSON.parse(decryptedBuffer.toString('utf8'));
-    
+
     // Asumsi user memasukkan key di app_Us atau app_Pa
     const userKey = (clientData.app_Us || clientData.app_Pa || '').trim();
     const hwid = (clientData.app_ID || 'Unknown_HWID').trim();
@@ -134,7 +136,7 @@ router.post('/b.php', async (req, res) => {
         CurrVersion: '2.0',
         SubscriptionLeft: Math.max(0, sisaDetik)
       });
-      
+
       finalResponseObject = createEncryptedResponse(payloadSukses);
     } else {
       const payloadError = JSON.stringify({
@@ -142,13 +144,12 @@ router.post('/b.php', async (req, res) => {
         MessageString: auth.reason || 'Key tidak valid / expired!',
         SubscriptionLeft: 0
       });
-      
+
       finalResponseObject = createEncryptedResponse(payloadError);
     }
 
     // 7. Kirim balasan ke Aplikasi Mod sebagai plaintext Base64
     res.send(finalResponseObject);
-
   } catch (error) {
     console.error('[-] BR Mods Error:', error.message);
     res.status(500).send('Internal Server Error / Invalid Payload');

@@ -7,7 +7,13 @@ router.get('/', requireStoreAdmin, async (req, res) => {
   try {
     const { rows: referrals } = await db.execute(`SELECT * FROM store_referrals ORDER BY created_at DESC`);
     const { rows: products } = await db.execute(`SELECT id, name FROM store_products ORDER BY name ASC`);
-    res.render('store/admin/referrals', { title: 'Manage Store', referrals, products, success: req.query.success, error: req.query.error });
+    res.render('store/admin/referrals', {
+      title: 'Manage Store',
+      referrals,
+      products,
+      success: req.query.success,
+      error: req.query.error
+    });
   } catch (err) {
     console.error('Get referrals error:', err.message);
     res.redirect('/admin/store');

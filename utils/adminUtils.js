@@ -17,8 +17,7 @@ const GAME_OPTIONS = [
 const PRICE_DAYS = Array.from({ length: 30 }, (_, i) => i + 1);
 
 function generateKey(game = 'BS') {
-  const seg = () =>
-    Array.from({ length: 4 }, () => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
+  const seg = () => Array.from({ length: 4 }, () => CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
   return `${game}-${seg()}-${seg()}-${seg()}`;
 }
 

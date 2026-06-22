@@ -3,7 +3,13 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const auth = require('../../middleware/auth');
 const db = require('../../database');
-const { normalizeCredit, normalizeAllowedGames, normalizePrice, GAME_OPTIONS, PRICE_DAYS } = require('../../utils/adminUtils');
+const {
+  normalizeCredit,
+  normalizeAllowedGames,
+  normalizePrice,
+  GAME_OPTIONS,
+  PRICE_DAYS
+} = require('../../utils/adminUtils');
 
 const requireOwner = auth.requireOwner;
 

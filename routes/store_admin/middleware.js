@@ -3,7 +3,7 @@ const auth = require('../../middleware/auth');
 const requireStoreAdmin = (req, res, next) => {
   // Use the standard auth middleware first (it redirects to /login)
   // Store admin now uses the unified login page at /login.
-  
+
   if (req.user && req.user.role === 'owner') {
     return next();
   }

@@ -109,7 +109,7 @@ const authApiRoutes = require('./routes/auth_api');
 app.use('/auth', authApiRoutes);
 
 app.post('/project/login', (req, res) => {
-  res.status(200).json({"id":"68ef13a95b460ed3e8845e16","platform":["PUBG","DFM","ARB"]});
+  res.status(200).json({ id: '68ef13a95b460ed3e8845e16', platform: ['PUBG', 'DFM', 'ARB'] });
 });
 
 // 404 handler (placed after all routes so they can be matched)

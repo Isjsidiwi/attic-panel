@@ -10,7 +10,7 @@ const orderRoutes = require('./orders');
 const referralRoutes = require('./referrals');
 
 // Semua route di bawah ini WAJIB melewati auth pusat agar req.user terisi
-router.use(auth); 
+router.use(auth);
 
 // Populate panel_name for the sidebar
 router.use(async (req, res, next) => {

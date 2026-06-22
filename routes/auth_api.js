@@ -5,6 +5,16 @@ const fs = require('fs');
 const path = require('path');
 const { validateAndRegisterKey } = require('../services/gameAuth');
 
+// --- FUNGSI HELPER: ENKRIPSI AES UNTUK LIBRARY (.so) ---
+// Menggunakan AES/ECB/PKCS5Padding dengan kunci hardcoded aplikasi
+function encryptLib(buffer) {
+  // Gunakan aes-128-ecb (panjang kunci 16 byte)
+  const cipher = crypto.createCipheriv('aes-128-ecb', Buffer.from('22P9ULFDKPJ70G46', 'utf8'), null);
+  let encrypted = cipher.update(buffer);
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  return encrypted.toString('base64'); // Return langsung sebagai Base64
+}
+
 // Muat Private Key Auth API dari folder certs/
 let privateKeyPEM = '';
 try {
@@ -23,18 +33,29 @@ try {
   console.error('[-] Auth API: Failed to load private_auth.pem:', err.message);
 }
 
-// Muat Payload Loader (3.8MB+) ke Memory
-let loaderPayload = '';
+// Muat File Library (.so) ke Memory lalu Enkripsi
+let base64LibCheat = '';
+let base64LibOri = '';
 try {
-  const loaderPath = path.join(__dirname, '../certs/loader_auth.txt');
-  if (fs.existsSync(loaderPath)) {
-    loaderPayload = fs.readFileSync(loaderPath, 'utf8').trim();
-    console.log(`[+] Auth API: Loader payload loaded successfully (${(loaderPayload.length / 1024 / 1024).toFixed(2)} MB).`);
+  // Pastikan Anda sudah meletakkan file libcheat.so dan libori.so di folder certs
+  const cheatPath = path.join(__dirname, '../certs/libcheat.so');
+  const oriPath = path.join(__dirname, '../certs/libori.so');
+
+  if (fs.existsSync(cheatPath) && fs.existsSync(oriPath)) {
+    // 1. Baca sebagai Buffer binary (bukan utf8)
+    const cheatBuffer = fs.readFileSync(cheatPath);
+    const oriBuffer = fs.readFileSync(oriPath);
+
+    // 2. Enkripsi Buffer dengan AES lalu jadikan Base64
+    base64LibCheat = encryptLib(cheatBuffer);
+    base64LibOri = encryptLib(oriBuffer);
+
+    console.log(`[+] Auth API: Libraries loaded & AES encrypted successfully.`);
   } else {
-    console.error('[-] Auth API: loader_auth.txt not found.');
+    console.error('[-] Auth API: File libcheat.so atau libori.so tidak ditemukan di folder certs!');
   }
 } catch (err) {
-  console.error('[-] Auth API: Failed to load loader_auth.txt:', err.message);
+  console.error('[-] Auth API: Failed to load and encrypt libraries:', err.message);
 }
 
 // --- FUNGSI HELPER: ENKRIPSI RESPONSE (XOR + RSA Sign) ---
@@ -56,7 +77,7 @@ function createEncryptedResponse(plaintext) {
 
   // D. Buat Digital Signature dari "Data" menggunakan Private Key
   const sign = crypto.createSign('SHA256');
-  sign.update(plaintext, 'utf8');
+  sign.update(plaintext, 'utf8'); // Sesuai logika C++ yang men-verifikasi sign ke plaintext(decdata)
   const signatureBase64 = sign.sign(privateKeyPEM, 'base64');
 
   // E. Kembalikan string base64 dari JSON hasil (sebagai plaintext tunggal yang diminta)
@@ -98,7 +119,7 @@ router.post('/login', async (req, res) => {
 
     // 5. Parse Plaintext JSON hasil dekripsi
     const clientData = JSON.parse(decryptedBuffer.toString('utf8'));
-    
+
     // Asumsi user memasukkan key di app_Us atau app_Pa
     const userKey = (clientData.app_Us || clientData.app_Pa || '').trim();
     const hwid = (clientData.app_ID || 'Unknown_HWID').trim();
@@ -106,10 +127,9 @@ router.post('/login', async (req, res) => {
     if (!userKey) {
       const payloadError = JSON.stringify({
         Status: 'Failed',
-        MessageString: 'Username/Password (Key) kosong!',
-        SubscriptionLeft: 0
+        MessageString: 'Username/Password (Key) kosong!'
       });
-      return res.json(createEncryptedResponse(payloadError));
+      return res.send(createEncryptedResponse(payloadError));
     }
 
     // 6. LOGIKA MANAJEMEN USER DINAMIS DARI DATABASE KITA
@@ -122,33 +142,26 @@ router.post('/login', async (req, res) => {
       const sisaDetik = Number(key.expires_at) - Math.floor(Date.now() / 1000);
       const sisaHari = Math.max(0, Math.ceil(sisaDetik / 86400));
 
+      // [PERUBAHAN] Disesuaikan dengan kebutuhan C++ (Login.h / Auth.h)
       const payloadSukses = JSON.stringify({
         Status: 'Success',
-        Loader: loaderPayload, // Diambil dari certs/loader.txt
-        MessageString: {
-          Cliente: userKey,
-          Dias: sisaHari.toString()
-        },
-        CurrUser: userKey,
-        CurrPass: userKey,
-        CurrVersion: '2.0',
-        SubscriptionLeft: Math.max(0, sisaDetik)
+        lib_cheat: base64LibCheat,
+        lib_original: base64LibOri,
+        MessageString: `Connected! Welcome ${userKey}. Expired in: ${sisaHari} Days` // Harus berupa string
       });
-      
+
       finalResponseObject = createEncryptedResponse(payloadSukses);
     } else {
       const payloadError = JSON.stringify({
         Status: 'Failed',
-        MessageString: auth.reason || 'Key tidak valid / expired!',
-        SubscriptionLeft: 0
+        MessageString: auth.reason || 'Key tidak valid / expired!' // Harus berupa string
       });
-      
+
       finalResponseObject = createEncryptedResponse(payloadError);
     }
 
     // 7. Kirim balasan ke Aplikasi Mod sebagai plaintext Base64
     res.send(finalResponseObject);
-
   } catch (error) {
     console.error('[-] Auth API Error:', error.message);
     res.status(500).send('Internal Server Error / Invalid Payload');
