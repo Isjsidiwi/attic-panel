@@ -75,7 +75,7 @@ router.post('/game/MLBB', async (req, res) => {
   });
 });
 
-router.post('/game/x3', async (req, res) => {
+router.post('/game/x3x', async (req, res) => {
   const userKey = (req.body.user_key || req.body.member_key || '').trim();
   const serial = (req.body.serial || '').trim();
   const resource = (req.body.resource || '').trim();
