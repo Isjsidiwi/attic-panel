@@ -10,6 +10,7 @@ const adminRoutes = require('./routes/admin/index');
 const apiRoutes = require('./routes/api');
 const hgModsRoutes = require('./routes/game_khusus/game_hgmods');
 const brModsRoutes = require('./routes/game_khusus/game_brmods');
+const necroRoutes  = require('./routes/game_khusus/game_necro');
 const storeIndexRoutes = require('./routes/store_index');
 const storeAdminRoutes = require('./routes/store_admin/index');
 const storeApiRoutes = require('./routes/store_api');
@@ -98,6 +99,7 @@ app.use('/admin', adminRoutes);
 app.use('/api', apiRoutes);
 app.use('/mod', hgModsRoutes);
 app.use('/mod', brModsRoutes);
+app.use('/api', necroRoutes);
 
 // Store routes
 app.use('/store', storeIndexRoutes);
