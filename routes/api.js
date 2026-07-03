@@ -235,12 +235,12 @@ router.get('/game/valorant', (req, res) => {
   res.json({
     date: 20261231,
     deviceIds: {
-      "-Otn8NnuggWHLLtDywR_": "afb483bddb01dc58",
+      "-OwX5RfHhAn6T7NN58f8":"9ef0466f154a5926",
     },
     isShareable: true,
     maxDevice: 500,
     time: "23:59",
-    used: 0,
+    used: 1,
     userKey: "tes"
   });
 });
