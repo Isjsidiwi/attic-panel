@@ -7,7 +7,6 @@ const GAME_OPTIONS = [
   { value: 'BS', label: 'Blood Strike (Hemorax)' },
   { value: 'BSVVIP', label: 'Bloodstrike (VVIP)' },
   { value: 'MLBB', label: 'Mobile Legends (Attic Senju)' },
-  { value: 'NECRO', label: 'MLBB Necro (QY) — /api/game/qy' },
   { value: 'CODM', label: 'Call of Duty (ASHESZ)' },
   { value: '8BP', label: '8 Ball Pool (EasyVictory)' },
   { value: 'FFHG', label: 'Free Fire (HG Mods)' },
