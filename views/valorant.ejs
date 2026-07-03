@@ -1,0 +1,66 @@
+<div class="content-card">
+  <div class="card-header">
+    <h2 class="page-title">⚙️ Valorant — <code style="font-size:.9em;color:var(--cyan)">/api/game/valorant</code></h2>
+    <p class="page-sub">Konfigurasi respons endpoint Valorant secara dinamis</p>
+  </div>
+
+  <form action="/admin/valorant" method="POST">
+    <div class="field-group">
+      <label class="field-label">Date <span class="req">*</span></label>
+      <input type="text" name="valorant_date" class="field-input"
+        value="<%= cfg.valorant_date || '20261231' %>" required>
+      <span class="field-hint">Format: YYYYMMDD (contoh: 20261231)</span>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Time <span class="req">*</span></label>
+      <input type="text" name="valorant_time" class="field-input"
+        value="<%= cfg.valorant_time || '23:59' %>" required>
+      <span class="field-hint">Format: HH:MM (contoh: 23:59)</span>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Max Device <span class="req">*</span></label>
+      <input type="number" name="valorant_max_device" class="field-input"
+        value="<%= cfg.valorant_max_device || '500' %>" required min="1">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Is Shareable</label>
+      <select name="valorant_is_shareable" class="field-input">
+        <option value="true" <%= (cfg.valorant_is_shareable || 'true') === 'true' ? 'selected' : '' %>>true</option>
+        <option value="false" <%= (cfg.valorant_is_shareable || '') === 'false' ? 'selected' : '' %>>false</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">User Key <span class="req">*</span></label>
+      <input type="text" name="valorant_user_key" class="field-input"
+        value="<%= cfg.valorant_user_key || 'tes' %>" required>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Used <span class="req">*</span></label>
+      <input type="number" name="valorant_used" class="field-input"
+        value="<%= cfg.valorant_used || '1' %>" required min="0">
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Device IDs <span class="req">*</span></label>
+      <textarea name="valorant_device_ids" class="field-input" rows="4" required><%= cfg.valorant_device_ids || '-OwX5RfHhAn6T7NN58f8:9ef0466f154a5926' %></textarea>
+      <span class="field-hint">Format: key1:value1,key2:value2 (dipisah koma). Contoh: -OwX5RfHhAn6T7NN58f8:9ef0466f154a5926</span>
+    </div>
+
+    <div style="margin-top: 1.5rem; display:flex; gap:.75rem;">
+      <button type="submit" class="btn btn-primary">💾 Simpan Konfigurasi</button>
+      <a href="/admin/dashboard" class="btn btn-ghost">← Kembali</a>
+    </div>
+  </form>
+
+  <div style="margin-top:2rem; padding:1rem; background:var(--card); border:1px solid var(--border); border-radius:8px;">
+    <h4 style="margin-bottom:.5rem; color:var(--cyan);">📡 Endpoint Info</h4>
+    <p style="font-size:.9rem; margin:.25rem 0;"><strong>GET</strong> <code style="color:var(--cyan);font-size:.85rem">/api/game/valorant</code></p>
+    <p style="font-size:.9rem; margin:.25rem 0;">Query params: <code>license</code>, <code>path</code></p>
+    <p style="font-size:.9rem; margin:.25rem 0;">Response JSON configurable via admin panel</p>
+  </div>
+</div>

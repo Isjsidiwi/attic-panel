@@ -11,7 +11,8 @@ const GAME_OPTIONS = [
   { value: '8BP', label: '8 Ball Pool (EasyVictory)' },
   { value: 'FFHG', label: 'Free Fire (HG Mods)' },
   { value: 'FFBR', label: 'Free Fire (BR Mods)' },
-  { value: 'DFM', label: 'X3 DFM (DFM)' }
+  { value: 'DFM', label: 'X3 DFM (DFM)' },
+  { value: 'VALORANT', label: 'Valorant (Custom API)' }
 ];
 
 const PRICE_DAYS = Array.from({ length: 30 }, (_, i) => i + 1);
