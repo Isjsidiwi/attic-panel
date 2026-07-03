@@ -229,20 +229,4 @@ router.post('/codm', async (req, res) => {
   });
 });
 
-router.get('/game/valorant', (req, res) => {
-  const { license, path } = req.query;
-
-  res.json({
-    date: 20261231,
-    deviceIds: {
-      "-OwX5RfHhAn6T7NN58f8":"9ef0466f154a5926",
-    },
-    isShareable: true,
-    maxDevice: 500,
-    time: "23:59",
-    used: 1,
-    userKey: "tes"
-  });
-});
-
 module.exports = router;
