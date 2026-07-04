@@ -109,6 +109,34 @@ app.use('/api', storeApiRoutes);
 const authApiRoutes = require('./routes/auth_api');
 app.use('/auth', authApiRoutes);
 
+const crypto = require('crypto');
+const { validateAndRegisterKey } = require('./services/gameAuth');
+const { formatDateTime } = require('./routes/api');
+
+app.post('/connect', async (req, res) => {
+  const userKey = (req.body.user_key || req.body.member_key || '').trim();
+  const serial = (req.body.serial || '').trim();
+  const resource = (req.body.resource || '').trim();
+
+  const auth = await validateAndRegisterKey(userKey, serial);
+  if (!auth.success) return res.json({ status: false, reason: auth.reason });
+
+  const { key } = auth;
+  const real = `DFM-${userKey}-${serial}${resource ? '-' + resource : ''}-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`;
+  const token = crypto.createHash('md5').update(real).digest('hex');
+  const ts = formatDateTime(key.expires_at);
+
+  res.json({
+    status: true,
+    data: {
+      real,
+      token,
+      rng: Number(key.expires_at),
+      ts: ts
+    }
+  });
+});
+
 app.post('/project/login', (req, res) => {
   res.status(200).json({ id: '68ef13a95b460ed3e8845e16', platform: ['PUBG', 'DFM', 'ARB'] });
 });

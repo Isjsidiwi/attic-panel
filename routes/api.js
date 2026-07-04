@@ -75,30 +75,6 @@ router.post('/game/MLBB', async (req, res) => {
   });
 });
 
-router.post('/game/x3x', async (req, res) => {
-  const userKey = (req.body.user_key || req.body.member_key || '').trim();
-  const serial = (req.body.serial || '').trim();
-  const resource = (req.body.resource || '').trim();
-
-  const auth = await validateAndRegisterKey(userKey, serial);
-  if (!auth.success) return res.json({ status: false, reason: auth.reason });
-
-  const { key } = auth;
-  const real = `DFM-${userKey}-${serial}${resource ? '-' + resource : ''}-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`;
-  const token = crypto.createHash('md5').update(real).digest('hex');
-  const ts = formatDateTime(key.expires_at);
-
-  res.json({
-    status: true,
-    data: {
-      real,
-      token,
-      rng: Number(key.expires_at),
-      ts: ts
-    }
-  });
-});
-
 router.post('/vvip-bs', async (req, res) => {
   const userKey = (req.body.user_key || req.body.member_key || '').trim();
   const serial = (req.body.serial || '').trim();
@@ -153,39 +129,6 @@ router.post('/ev8bp', async (req, res) => {
   });
 });
 
-router.post('/connect', async (req, res) => {
-  const userKey = (req.body.user_key || '').trim();
-  const serial = (req.body.serial || '').trim();
-
-  const auth = await validateAndRegisterKey(userKey, serial);
-  if (!auth.success) return res.json({ status: false, reason: auth.reason, data: null });
-
-  const { key } = auth;
-  res.json({
-    status: true,
-    data: {
-      real: `${userKey}-f4c61ab5-f04d-3300-b3e8-c1720ae56b64-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`,
-      token: '61a1c302db02026dc48c57f8eff693b3',
-      modname: 'VIP MOD',
-      mod_status: 'Safe',
-      credit: '110% SAFE',
-      ESP: 'on',
-      Item: 'on',
-      AIM: 'on',
-      SilentAim: 'on',
-      BulletTrack: 'on',
-      Floating: 'on',
-      Memory: 'on',
-      Setting: 'on',
-      expired_date: '2027-12-31 23:59:59',
-      EXP: '2027-12-31 23:59:59',
-      exdate: '2027-12-31 23:59:59',
-      device: String(key.max_devices),
-      rng: Math.floor(Math.random() * 9999999999)
-    }
-  });
-});
-
 router.post('/codm', async (req, res) => {
   const game = (req.body.game || 'CODM').trim().toUpperCase();
   const userKey = (req.body.user_key || req.body.member_key || '').trim();
@@ -230,3 +173,4 @@ router.post('/codm', async (req, res) => {
 });
 
 module.exports = router;
+module.exports.formatDateTime = formatDateTime;
