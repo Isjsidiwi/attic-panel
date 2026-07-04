@@ -1,15 +1,22 @@
 <div class="content-card">
   <div class="card-header">
-    <h2 class="page-title">⚙️ Valorant — <code style="font-size:.9em;color:var(--cyan)">/api/game/valorant</code></h2>
+    <h2 class="page-title">Valorant Config — <code style="font-size:.9em;color:var(--cyan)">/api/game/valorant</code></h2>
     <p class="page-sub">Konfigurasi respons endpoint Valorant secara dinamis</p>
   </div>
+
+  <% if (success_msg.length) { %>
+    <div class="alert alert-success"><%= success_msg[0] %></div>
+  <% } %>
+  <% if (error_msg.length) { %>
+    <div class="alert alert-error"><%= error_msg[0] %></div>
+  <% } %>
 
   <form action="/admin/valorant" method="POST">
     <div class="field-group">
       <label class="field-label">Date <span class="req">*</span></label>
       <input type="text" name="valorant_date" class="field-input"
-        value="<%= cfg.valorant_date || '20261231' %>" required>
-      <span class="field-hint">Format: YYYYMMDD (contoh: 20261231)</span>
+        value="<%= cfg.valorant_date || '20251231' %>" required>
+      <span class="field-hint">Format: YYYYMMDD (contoh: 20251231)</span>
     </div>
 
     <div class="field-group">
@@ -36,31 +43,55 @@
     <div class="field-group">
       <label class="field-label">User Key <span class="req">*</span></label>
       <input type="text" name="valorant_user_key" class="field-input"
-        value="<%= cfg.valorant_user_key || 'tes' %>" required>
-    </div>
-
-    <div class="field-group">
-      <label class="field-label">Used <span class="req">*</span></label>
-      <input type="number" name="valorant_used" class="field-input"
-        value="<%= cfg.valorant_used || '1' %>" required min="0">
-    </div>
-
-    <div class="field-group">
-      <label class="field-label">Device IDs <span class="req">*</span></label>
-      <textarea name="valorant_device_ids" class="field-input" rows="4" required><%= cfg.valorant_device_ids || '-OwX5RfHhAn6T7NN58f8:9ef0466f154a5926' %></textarea>
-      <span class="field-hint">Format: key1:value1,key2:value2 (dipisah koma). Contoh: -OwX5RfHhAn6T7NN58f8:9ef0466f154a5926</span>
+        value="<%= cfg.valorant_user_key || 'KONTOL' %>" required>
     </div>
 
     <div style="margin-top: 1.5rem; display:flex; gap:.75rem;">
-      <button type="submit" class="btn btn-primary">💾 Simpan Konfigurasi</button>
-      <a href="/admin/dashboard" class="btn btn-ghost">← Kembali</a>
+      <button type="submit" class="btn btn-primary">Simpan Konfigurasi</button>
+      <a href="/admin/dashboard" class="btn btn-ghost">Kembali</a>
     </div>
   </form>
 
+  <div style="margin-top:2rem;">
+    <div class="card-header">
+      <h3>Registered Devices (<%= devices.length %>)</h3>
+    </div>
+    <% if (devices.length === 0) { %>
+      <p style="color:var(--muted);padding:1rem;">Belum ada device terdaftar.</p>
+    <% } else { %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Device ID</th>
+            <th>Registered At</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% devices.forEach(d => { %>
+            <tr>
+              <td><code><%= d.name %></code></td>
+              <td><code><%= d.device_id %></code></td>
+              <td><%= new Date(Number(d.created_at) * 1000).toLocaleString('id-ID') %></td>
+              <td>
+                <form action="/admin/valorant/<%= d.id %>/delete-device" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hapus device ini?')">Delete</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+
   <div style="margin-top:2rem; padding:1rem; background:var(--card); border:1px solid var(--border); border-radius:8px;">
-    <h4 style="margin-bottom:.5rem; color:var(--cyan);">📡 Endpoint Info</h4>
-    <p style="font-size:.9rem; margin:.25rem 0;"><strong>GET</strong> <code style="color:var(--cyan);font-size:.85rem">/api/game/valorant</code></p>
-    <p style="font-size:.9rem; margin:.25rem 0;">Query params: <code>license</code>, <code>path</code></p>
-    <p style="font-size:.9rem; margin:.25rem 0;">Response JSON configurable via admin panel</p>
+    <h4 style="margin-bottom:.5rem; color:var(--cyan);">Endpoint Info</h4>
+    <table class="table" style="font-size:.85rem;">
+      <tr><td><strong>GET</strong></td><td><code>/api/game/valorant</code></td><td>Ambil status + device terdaftar</td></tr>
+      <tr><td><strong>POST</strong></td><td><code>/api/game/valorant</code></td><td>Daftarkan deviceId (body raw: "deviceId" string)</td></tr>
+      <tr><td><strong>PATCH</strong></td><td><code>/api/game/valorant</code></td><td>Update used (selalu balikin <code>{"used":0}</code>)</td></tr>
+    </table>
   </div>
 </div>

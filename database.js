@@ -129,6 +129,13 @@ async function initDB() {
       FOREIGN KEY (variant_id) REFERENCES store_product_variants(id),
       FOREIGN KEY (key_id) REFERENCES store_keys(id)
     );
+
+    CREATE TABLE IF NOT EXISTS valorant_device_ids (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT UNIQUE NOT NULL,
+      device_id TEXT NOT NULL,
+      created_at INTEGER NOT NULL
+    );
   `);
 
   // Migration: tabel lama mungkin punya device_serial (tanpa s)
