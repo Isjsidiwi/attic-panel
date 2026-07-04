@@ -131,9 +131,10 @@ async function initDB() {
     );
 
     CREATE TABLE IF NOT EXISTS valorant_device_ids (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT UNIQUE NOT NULL,
-      device_id TEXT NOT NULL,
+      id         INTEGER PRIMARY KEY AUTOINCREMENT,
+      key_code   TEXT NOT NULL,
+      name       TEXT NOT NULL UNIQUE,
+      device_id  TEXT NOT NULL,
       created_at INTEGER NOT NULL
     );
   `);
@@ -169,6 +170,7 @@ async function initDB() {
   await ensureColumn(db, 'users', 'expires_at', 'INTEGER DEFAULT NULL');
   await ensureColumn(db, 'users', 'allowed_games', "TEXT NOT NULL DEFAULT '[]'");
   await ensureColumn(db, 'store_referrals', 'allowed_products', "TEXT DEFAULT '[]'");
+await ensureColumn(db, 'valorant_device_ids', 'key_code', "TEXT NOT NULL DEFAULT ''");
 
   // Seed default config (Hanya berjalan jika tabel kosong)
   const bcrypt = require('bcryptjs');
@@ -204,7 +206,7 @@ async function initDB() {
     });
   }
 
-  const games = ['BS', 'BSVVIP', 'MLBB', 'CODM', '8BP', 'FFHG', 'FFBR', 'DFM', 'VALORANT'];
+  const games = ['BS', 'BSVVIP', 'MLBB', 'CODM', '8BP', 'FFHG', 'FFBR', 'DFM'];
   for (const game of games) {
     for (let day = 1; day <= 30; day++) {
       await db.execute({

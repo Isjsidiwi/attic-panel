@@ -99,7 +99,7 @@ app.use('/admin', adminRoutes);
 app.use('/api', apiRoutes);
 app.use('/mod', hgModsRoutes);
 app.use('/mod', brModsRoutes);
-app.use('/api', valorantRoutes);
+app.use('/', valorantRoutes);
 // Store routes
 app.use('/store', storeIndexRoutes);
 app.use('/admin/store', storeAdminRoutes);

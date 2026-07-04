@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const db = require('../../database').db;
-const { loadConfig } = require('../../config');
+const db = require('../../database');
 
 function generateName() {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-';
@@ -14,66 +13,109 @@ function generateName() {
   return name;
 }
 
-function toDeviceIdsMap(rows) {
-  const map = {};
-  rows.forEach(r => { map[r.name] = r.device_id; });
-  return map;
+function toYYYYMMDD(unix) {
+  const d = new Date(Number(unix) * 1000);
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return parseInt(`${y}${m}${day}`);
 }
 
-router.get('/game/valorant', async (req, res) => {
+function getKeyCode(req) {
+  return (req.query.key || '').trim();
+}
+
+async function resolveKey(keyCode) {
+  if (!keyCode) return null;
+  const key = await db.get('SELECT * FROM keys WHERE key_code = ?', [keyCode]);
+  if (!key || !key.is_active) return null;
+  const now = Math.floor(Date.now() / 1000);
+  if (Number(key.expires_at) === 0) {
+    const duration = Number(key.duration) || 0;
+    const newExpiresAt = now + duration;
+    await db.run('UPDATE keys SET expires_at = ? WHERE id = ?', [newExpiresAt, key.id]);
+    key.expires_at = newExpiresAt;
+  }
+  return key;
+}
+
+async function deviceCount(keyCode) {
+  const rows = await db.all(
+    'SELECT name, device_id FROM valorant_device_ids WHERE key_code = ? ORDER BY created_at DESC',
+    [keyCode]
+  );
+  return rows;
+}
+
+router.get('/license/login-auth', async (req, res) => {
   try {
-    const cfg = await loadConfig();
-    const devices = await db.execute('SELECT name, device_id, created_at FROM valorant_device_ids ORDER BY created_at DESC');
-    const rows = devices.rows || [];
-    const used = rows.length;
+    const key = await resolveKey(getKeyCode(req));
+    if (!key) return res.json({ status: false, reason: 'key is invalid' });
 
-    const payload = {
-      date: parseInt(cfg.valorant_date || '20251231'),
-      deviceIds: used === 0 ? '' : toDeviceIdsMap(rows),
-      isShareable: (cfg.valorant_is_shareable || 'true') === 'true',
-      maxDevice: parseInt(cfg.valorant_max_device || '500'),
-      time: cfg.valorant_time || '23:59',
+    const devices = await deviceCount(key.key_code);
+    const used = devices.length;
+
+    res.json({
+      date: toYYYYMMDD(key.expires_at),
+      deviceIds: used === 0 ? '' : Object.fromEntries(devices.map(d => [d.name, d.device_id])),
+      isShareable: Number(key.max_devices) > 1,
+      maxDevice: Number(key.max_devices),
+      time: '23:59',
       used,
-      userKey: cfg.valorant_user_key || 'KONTOL'
-    };
-
-    res.json(payload);
+      userKey: key.key_code
+    });
   } catch (err) {
     console.error('[-] Valorant GET Error:', err.message);
-    res.status(500).json({ status: false, reason: 'Internal Server Error' });
+    res.json({ status: false, reason: 'key is invalid' });
   }
 });
 
-router.post('/game/valorant', async (req, res) => {
+router.post('/license/login-auth', async (req, res) => {
   try {
+    const key = await resolveKey(getKeyCode(req));
+    if (!key) return res.json({ status: false, reason: 'key is invalid' });
+
     const deviceId = (req.body && typeof req.body === 'object' && req.body.deviceId)
       ? String(req.body.deviceId).trim()
       : (typeof req.body === 'string' ? req.body.trim() : '');
 
-    if (!deviceId) {
-      return res.status(400).json({ error: 'deviceId required' });
+    if (!deviceId) return res.json({ status: false, reason: 'key is invalid' });
+
+    const devices = await deviceCount(key.key_code);
+    if (devices.length >= Number(key.max_devices)) {
+      return res.json({ status: false, reason: 'key is invalid' });
     }
 
     const name = generateName();
     const now = Math.floor(Date.now() / 1000);
 
-    await db.execute(
-      'INSERT INTO valorant_device_ids (name, device_id, created_at) VALUES (?, ?, ?)',
-      [name, deviceId, now]
+    await db.run(
+      'INSERT INTO valorant_device_ids (key_code, name, device_id, created_at) VALUES (?, ?, ?, ?)',
+      [key.key_code, name, deviceId, now]
     );
 
     res.status(201).json({ name });
   } catch (err) {
     if (err.message && err.message.includes('UNIQUE')) {
-      return res.status(409).json({ error: 'Device already registered' });
+      return res.json({ status: false, reason: 'key is invalid' });
     }
     console.error('[-] Valorant POST Error:', err.message);
-    res.status(500).json({ status: false, reason: 'Internal Server Error' });
+    res.json({ status: false, reason: 'key is invalid' });
   }
 });
 
-router.patch('/game/valorant', async (req, res) => {
-  res.json({ used: 0 });
+router.patch('/license/login-auth', async (req, res) => {
+  try {
+    const key = await resolveKey(getKeyCode(req));
+    if (!key) return res.json({ status: false, reason: 'key is invalid' });
+
+    const devices = await deviceCount(key.key_code);
+
+    res.json({ used: devices.length });
+  } catch (err) {
+    console.error('[-] Valorant PATCH Error:', err.message);
+    res.json({ status: false, reason: 'key is invalid' });
+  }
 });
 
 module.exports = router;
