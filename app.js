@@ -94,6 +94,48 @@ app.use((req, res, next) => {
   next();
 });
 
+function safeJson(data) {
+  return JSON.stringify(data).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
+}
+
+function stripPrivateData(value) {
+  if (Array.isArray(value)) return value.map(stripPrivateData);
+  if (!value || typeof value !== 'object') return value;
+  const out = {};
+  for (const [key, item] of Object.entries(value)) {
+    if (/password|password_hash|token|secret/i.test(key)) continue;
+    out[key] = stripPrivateData(item);
+  }
+  return out;
+}
+
+app.use((req, res, next) => {
+  const originalRender = res.render.bind(res);
+  res.render = (view, locals = {}, callback) => {
+    if (view === 'react-shell') return originalRender(view, locals, callback);
+    const data = {
+      view,
+      currentUrl: req.originalUrl,
+      user: req.user || res.locals.admin || null,
+      isStoreAdmin: Boolean(res.locals.isStoreAdmin),
+      success_msg: res.locals.success_msg || [],
+      error_msg: res.locals.error_msg || [],
+      ...res.locals,
+      ...locals
+    };
+    return originalRender(
+      'react-shell',
+      {
+        title: data.title || 'ATTIC PANEL',
+        panel_name: data.panel_name || data.storeName || 'ATTIC PANEL',
+        appData: safeJson(stripPrivateData(data))
+      },
+      callback
+    );
+  };
+  next();
+});
+
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/api', apiRoutes);

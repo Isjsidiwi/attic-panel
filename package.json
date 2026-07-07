@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
+    "build": "vite build",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
@@ -22,14 +23,18 @@
     "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",
     "multer": "^2.1.1",
-    "qs": "^6.15.2"
+    "qs": "^6.15.2",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.3",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-node": "^11.1.0",
     "nodemon": "^3.0.3",
-    "prettier": "^3.8.3"
+    "prettier": "^3.8.3",
+    "vite": "^8.1.3"
   }
 }
