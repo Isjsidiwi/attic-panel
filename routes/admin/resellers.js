@@ -13,6 +13,19 @@ const {
 
 const requireOwner = auth.requireOwner;
 
+async function ensureResellerColumns() {
+  for (const sql of [
+    'ALTER TABLE users ADD COLUMN expires_at INTEGER DEFAULT 0',
+    "ALTER TABLE users ADD COLUMN allowed_games TEXT NOT NULL DEFAULT '[]'"
+  ]) {
+    try {
+      await db.run(sql);
+    } catch (err) {
+      if (!String(err && err.message).toLowerCase().includes('duplicate column')) throw err;
+    }
+  }
+}
+
 router.post('/', auth, requireOwner, async (req, res) => {
   const username = (req.body.username || '').trim();
   const password = req.body.password || '';
@@ -39,6 +52,7 @@ router.post('/', auth, requireOwner, async (req, res) => {
   }
 
   try {
+    await ensureResellerColumns();
     await db.run(
       'INSERT INTO users (username, password_hash, role, credit, is_active, created_at, expires_at, allowed_games) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [username, bcrypt.hashSync(password, 10), 'reseller', credit, 1, now, expiresAt, JSON.stringify(allowedGames)]
@@ -104,6 +118,7 @@ router.post('/:id', auth, requireOwner, async (req, res) => {
   args.push(id);
 
   try {
+    await ensureResellerColumns();
     await db.run(`UPDATE users SET ${fields.join(', ')} WHERE id=? AND role='reseller'`, args);
   } catch (err) {
     res.flash('error', 'Username reseller sudah dipakai.');

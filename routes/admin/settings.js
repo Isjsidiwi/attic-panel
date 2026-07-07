@@ -11,9 +11,7 @@ const requireOwner = auth.requireOwner;
 router.get('/', auth, requireOwner, async (req, res) => {
   const cfg = await loadConfig();
   const [resellers, priceMatrix] = await Promise.all([
-    db.all(
-      "SELECT id, username, credit, is_active, created_at, expires_at, allowed_games FROM users WHERE role='reseller' ORDER BY created_at DESC"
-    ),
+    db.all("SELECT * FROM users WHERE role='reseller' ORDER BY created_at DESC"),
     getPriceMatrix()
   ]);
 
