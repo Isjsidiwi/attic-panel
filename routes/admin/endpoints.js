@@ -42,7 +42,7 @@ router.get('/', auth, async (req, res) => {
           [req.user.id, req.user.id]
         ),
     isOwner
-      ? db.all("SELECT id, username, can_create_endpoint FROM users WHERE role='reseller' ORDER BY username ASC")
+      ? db.all("SELECT id, username, can_create_endpoint, endpoint_api_secret FROM users WHERE role='reseller' ORDER BY username ASC")
       : [],
     isOwner ? db.all('SELECT * FROM custom_endpoint_access WHERE endpoint_id IS NOT NULL') : []
   ]);
@@ -51,7 +51,7 @@ router.get('/', auth, async (req, res) => {
     title: 'Custom Endpoints',
     panel_name: cfg.panel_name,
     endpoints,
-    resellers,
+    resellers: resellers.map((reseller) => ({ ...reseller, endpoint_api_key: reseller.endpoint_api_secret })),
     accessRows,
     canCreateEndpoint: isOwner || (await canCreateEndpoint(req.user)),
     baseEndpoint: 'https://qyz.vercel.app/api/naah'
@@ -85,11 +85,12 @@ router.post('/', auth, async (req, res) => {
 
   try {
     const now = Math.floor(Date.now() / 1000);
-    const result = await db.run(
+    await db.run(
       'INSERT INTO custom_endpoints (path, method, response_body, response_mode, is_active, created_by, created_by_name, created_at) VALUES (?, ?, ?, ?, 1, ?, ?, ?)',
       [path, method, responseBody, responseMode, req.user.id, req.user.username, now]
     );
-    const endpointId = Number(result.lastInsertRowid || result.lastInsertId || 0);
+    const inserted = await db.get('SELECT id FROM custom_endpoints WHERE path=?', [path]);
+    const endpointId = inserted && inserted.id;
     if (req.user.role === 'reseller' && endpointId) {
       await db.run(
         'INSERT OR IGNORE INTO custom_endpoint_access (endpoint_id, reseller_id, can_use, can_create, created_at) VALUES (?, ?, 1, 0, ?)',

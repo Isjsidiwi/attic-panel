@@ -192,6 +192,7 @@ async function initDB() {
   await ensureColumn(db, 'keys', 'duration', 'INTEGER NOT NULL DEFAULT 0');
   await ensureColumn(db, 'users', 'expires_at', 'INTEGER DEFAULT NULL');
   await ensureColumn(db, 'users', 'allowed_games', "TEXT NOT NULL DEFAULT '[]'");
+  await ensureColumn(db, 'users', 'endpoint_api_secret', "TEXT NOT NULL DEFAULT ''");
   await ensureColumn(db, 'store_referrals', 'allowed_products', "TEXT DEFAULT '[]'");
 await ensureColumn(db, 'valorant_device_ids', 'key_code', "TEXT NOT NULL DEFAULT ''");
   await ensureColumn(db, 'users', 'can_create_endpoint', 'INTEGER NOT NULL DEFAULT 0');
@@ -199,8 +200,18 @@ await ensureColumn(db, 'valorant_device_ids', 'key_code', "TEXT NOT NULL DEFAULT
   await ensureColumn(db, 'custom_endpoints', 'created_by', 'INTEGER DEFAULT NULL');
   await ensureColumn(db, 'custom_endpoints', 'created_by_name', "TEXT DEFAULT ''");
 
-  // Seed default config (Hanya berjalan jika tabel kosong)
   const bcrypt = require('bcryptjs');
+  const crypto = require('crypto');
+
+  const resellerSecretRows = await db.execute("SELECT id FROM users WHERE role='reseller' AND (endpoint_api_secret IS NULL OR endpoint_api_secret='')");
+  for (const row of resellerSecretRows.rows) {
+    await db.execute({
+      sql: 'UPDATE users SET endpoint_api_secret=? WHERE id=?',
+      args: [crypto.randomBytes(24).toString('base64url'), row.id]
+    });
+  }
+
+  // Seed default config (Hanya berjalan jika tabel kosong)
   const defaults = {
     panel_name: 'ATTIC PANEL',
     admin_username: 'admin',

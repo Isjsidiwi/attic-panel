@@ -4,6 +4,7 @@ const session = require('cookie-session');
 const methodOverride = require('method-override');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 const { initDB } = require('./database');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin/index');
@@ -21,8 +22,8 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.urlencoded({ extended: true, limit: '500mb' }));
-app.use(express.json({ limit: '500mb', strict: false }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
+app.use(express.json({ limit: '5mb', strict: false }));
 app.use(cookieParser());
 app.use(
   session({
@@ -32,6 +33,27 @@ app.use(
   })
 );
 app.use(methodOverride('_method'));
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 240,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => res.status(429).json({ status: false, reason: 'Terlalu banyak request. Coba lagi nanti.' })
+});
+
+app.use((req, res, next) => {
+  if (!['POST', 'PUT', 'PATCH', 'DELETE'].includes(req.method)) return next();
+  const source = req.get('origin') || req.get('referer');
+  if (!source) return next();
+  try {
+    const sourceUrl = new URL(source);
+    const host = req.get('host');
+    if (sourceUrl.host !== host) return res.status(403).send('Forbidden origin');
+  } catch {
+    return res.status(403).send('Forbidden origin');
+  }
+  next();
+});
 // Security headers to harden responses
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -89,7 +111,7 @@ app.use((req, res, next) => {
   res.flash = (type, msg) => {
     res.cookie('_flash', JSON.stringify({ type, msg }), {
       maxAge: 10000,
-      httpOnly: false,
+      httpOnly: true,
       path: '/',
       sameSite: 'lax'
     });
@@ -142,6 +164,7 @@ app.use((req, res, next) => {
 
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
+app.use('/api', apiLimiter);
 app.use('/api', customEndpointRoutes);
 app.use('/api', apiRoutes);
 app.use('/mod', hgModsRoutes);

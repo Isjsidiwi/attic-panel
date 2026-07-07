@@ -39,12 +39,27 @@ function requester(req) {
   ).trim();
 }
 
+function requesterSecret(req) {
+  const body = req.body || {};
+  const query = req.query || {};
+  return String(req.get('x-reseller-secret') || body.reseller_secret || query.reseller_secret || '').trim();
+}
+
 async function hasAccess(endpoint, req) {
-  const access = await db.all('SELECT u.id, u.username FROM custom_endpoint_access cea JOIN users u ON u.id=cea.reseller_id WHERE cea.endpoint_id=? AND cea.can_use=1', [endpoint.id]);
+  const access = await db.all('SELECT u.id, u.username, u.endpoint_api_secret FROM custom_endpoint_access cea JOIN users u ON u.id=cea.reseller_id WHERE cea.endpoint_id=? AND cea.can_use=1', [endpoint.id]);
   if (access.length === 0) return true;
   const who = requester(req).toLowerCase();
-  if (!who) return false;
-  return access.some((row) => String(row.id) === who || String(row.username).toLowerCase() === who);
+  const secret = requesterSecret(req);
+  if (!who || !secret) return false;
+  return access.some(
+    (row) =>
+      (String(row.id) === who || String(row.username).toLowerCase() === who) &&
+      row.endpoint_api_secret &&
+      crypto.timingSafeEqual(
+        crypto.createHash('sha256').update(String(row.endpoint_api_secret)).digest(),
+        crypto.createHash('sha256').update(secret).digest()
+      )
+  );
 }
 
 router.all('*', async (req, res, next) => {

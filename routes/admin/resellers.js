@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const auth = require('../../middleware/auth');
 const db = require('../../database');
 const {
@@ -57,6 +58,10 @@ router.post('/', auth, requireOwner, async (req, res) => {
       'INSERT INTO users (username, password_hash, role, credit, is_active, created_at, expires_at, allowed_games) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
       [username, bcrypt.hashSync(password, 10), 'reseller', credit, 1, now, expiresAt, JSON.stringify(allowedGames)]
     );
+    await db.run('UPDATE users SET endpoint_api_secret=? WHERE username=? AND role=\'reseller\' AND (endpoint_api_secret IS NULL OR endpoint_api_secret=\'\')', [
+      crypto.randomBytes(24).toString('base64url'),
+      username
+    ]);
   } catch (err) {
     console.error('Create reseller failed:', err);
     const isDuplicate = String(err && err.message).toLowerCase().includes('unique');
