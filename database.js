@@ -137,6 +137,29 @@ async function initDB() {
       device_id  TEXT NOT NULL,
       created_at INTEGER NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS custom_endpoints (
+      id              INTEGER PRIMARY KEY AUTOINCREMENT,
+      path            TEXT NOT NULL UNIQUE,
+      method          TEXT NOT NULL DEFAULT 'POST',
+      response_body   TEXT NOT NULL DEFAULT '{}',
+      response_mode   TEXT NOT NULL DEFAULT 'json',
+      is_active       INTEGER NOT NULL DEFAULT 1,
+      created_by      INTEGER DEFAULT NULL,
+      created_by_name TEXT DEFAULT '',
+      created_at      INTEGER NOT NULL,
+      updated_at      INTEGER DEFAULT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS custom_endpoint_access (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      endpoint_id INTEGER DEFAULT NULL,
+      reseller_id INTEGER NOT NULL,
+      can_use     INTEGER NOT NULL DEFAULT 0,
+      can_create  INTEGER NOT NULL DEFAULT 0,
+      created_at  INTEGER NOT NULL,
+      UNIQUE(endpoint_id, reseller_id)
+    );
   `);
 
   // Migration: tabel lama mungkin punya device_serial (tanpa s)
@@ -171,6 +194,10 @@ async function initDB() {
   await ensureColumn(db, 'users', 'allowed_games', "TEXT NOT NULL DEFAULT '[]'");
   await ensureColumn(db, 'store_referrals', 'allowed_products', "TEXT DEFAULT '[]'");
 await ensureColumn(db, 'valorant_device_ids', 'key_code', "TEXT NOT NULL DEFAULT ''");
+  await ensureColumn(db, 'users', 'can_create_endpoint', 'INTEGER NOT NULL DEFAULT 0');
+  await ensureColumn(db, 'custom_endpoints', 'response_mode', "TEXT NOT NULL DEFAULT 'json'");
+  await ensureColumn(db, 'custom_endpoints', 'created_by', 'INTEGER DEFAULT NULL');
+  await ensureColumn(db, 'custom_endpoints', 'created_by_name', "TEXT DEFAULT ''");
 
   // Seed default config (Hanya berjalan jika tabel kosong)
   const bcrypt = require('bcryptjs');

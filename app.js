@@ -14,6 +14,7 @@ const valorantRoutes = require('./routes/game_khusus/game_valorant');
 const storeIndexRoutes = require('./routes/store_index');
 const storeAdminRoutes = require('./routes/store_admin/index');
 const storeApiRoutes = require('./routes/store_api');
+const customEndpointRoutes = require('./routes/custom_endpoints');
 
 const app = express();
 
@@ -36,6 +37,8 @@ app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
   // Basic CSP - adjust if you add external script/font providers
   res.setHeader(
     'Content-Security-Policy',
@@ -139,6 +142,7 @@ app.use((req, res, next) => {
 
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
+app.use('/api', customEndpointRoutes);
 app.use('/api', apiRoutes);
 app.use('/mod', hgModsRoutes);
 app.use('/mod', brModsRoutes);
