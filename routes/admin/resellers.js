@@ -21,7 +21,7 @@ router.post('/', auth, requireOwner, async (req, res) => {
   const allowedGames = normalizeAllowedGames(req.body.allowed_games);
   const now = Math.floor(Date.now() / 1000);
 
-  let expiresAt = null;
+  let expiresAt = 0;
   if (duration === '1_month') expiresAt = now + 30 * 86400;
   else if (duration === '1_year') expiresAt = now + 365 * 86400;
 
@@ -44,7 +44,9 @@ router.post('/', auth, requireOwner, async (req, res) => {
       [username, bcrypt.hashSync(password, 10), 'reseller', credit, 1, now, expiresAt, JSON.stringify(allowedGames)]
     );
   } catch (err) {
-    res.flash('error', 'Username reseller sudah dipakai.');
+    console.error('Create reseller failed:', err);
+    const isDuplicate = String(err && err.message).toLowerCase().includes('unique');
+    res.flash('error', isDuplicate ? 'Username reseller sudah dipakai.' : 'Gagal membuat reseller. Cek konfigurasi database.');
     return res.redirect('/admin/settings');
   }
 
@@ -89,7 +91,7 @@ router.post('/:id', auth, requireOwner, async (req, res) => {
 
     if (extendDuration === '1_month') newExpiresAt += 30 * 86400;
     else if (extendDuration === '1_year') newExpiresAt += 365 * 86400;
-    else if (extendDuration === 'lifetime') newExpiresAt = null;
+    else if (extendDuration === 'lifetime') newExpiresAt = 0;
 
     fields.push('expires_at=?');
     args.push(newExpiresAt);
