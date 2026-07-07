@@ -10,10 +10,20 @@ const requireOwner = auth.requireOwner;
 
 router.get('/', auth, requireOwner, async (req, res) => {
   const cfg = await loadConfig();
-  const [resellers, priceMatrix] = await Promise.all([
-    db.all("SELECT * FROM users WHERE role='reseller' ORDER BY created_at DESC"),
-    getPriceMatrix()
-  ]);
+  let resellers = [];
+  let priceMatrix = {};
+
+  try {
+    resellers = await db.all("SELECT * FROM users WHERE role='reseller' ORDER BY id DESC");
+  } catch (err) {
+    console.error('Load resellers for settings failed:', err);
+  }
+
+  try {
+    priceMatrix = await getPriceMatrix();
+  } catch (err) {
+    console.error('Load price matrix for settings failed:', err);
+  }
 
   res.render('settings', {
     title: 'Settings',
