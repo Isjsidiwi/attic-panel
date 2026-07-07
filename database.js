@@ -141,6 +141,8 @@ async function initDB() {
     CREATE TABLE IF NOT EXISTS custom_endpoints (
       id              INTEGER PRIMARY KEY AUTOINCREMENT,
       path            TEXT NOT NULL UNIQUE,
+      game_code       TEXT NOT NULL DEFAULT '',
+      game_name       TEXT NOT NULL DEFAULT '',
       method          TEXT NOT NULL DEFAULT 'POST',
       response_body   TEXT NOT NULL DEFAULT '{}',
       response_mode   TEXT NOT NULL DEFAULT 'json',
@@ -197,6 +199,8 @@ async function initDB() {
 await ensureColumn(db, 'valorant_device_ids', 'key_code', "TEXT NOT NULL DEFAULT ''");
   await ensureColumn(db, 'users', 'can_create_endpoint', 'INTEGER NOT NULL DEFAULT 0');
   await ensureColumn(db, 'custom_endpoints', 'response_mode', "TEXT NOT NULL DEFAULT 'json'");
+  await ensureColumn(db, 'custom_endpoints', 'game_code', "TEXT NOT NULL DEFAULT ''");
+  await ensureColumn(db, 'custom_endpoints', 'game_name', "TEXT NOT NULL DEFAULT ''");
   await ensureColumn(db, 'custom_endpoints', 'created_by', 'INTEGER DEFAULT NULL');
   await ensureColumn(db, 'custom_endpoints', 'created_by_name', "TEXT DEFAULT ''");
 

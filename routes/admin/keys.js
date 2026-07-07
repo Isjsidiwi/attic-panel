@@ -17,6 +17,24 @@ const {
 
 const MAX_DEVICES_LIMIT = 500;
 
+async function getCustomGameOptions(user) {
+  const rows = user.isOwner
+    ? await db.all("SELECT game_code, game_name FROM custom_endpoints WHERE is_active=1 AND game_code!='' ORDER BY game_name ASC")
+    : await db.all(
+        "SELECT game_code, game_name FROM custom_endpoints WHERE is_active=1 AND created_by=? AND game_code!='' ORDER BY game_name ASC",
+        [user.id]
+      );
+  return rows.map((row) => ({ value: row.game_code, label: `${row.game_name || row.game_code} (Custom Endpoint)`, custom: true }));
+}
+
+async function getVisibleGameOptions(user) {
+  return [...getVisibleGames(user), ...(await getCustomGameOptions(user))];
+}
+
+async function getCustomGame(gameCode) {
+  return db.get('SELECT * FROM custom_endpoints WHERE game_code=? AND is_active=1', [gameCode]);
+}
+
 router.get('/', auth, async (req, res) => {
   const now = Math.floor(Date.now() / 1000);
   const page = Math.max(1, parseInt(req.query.page) || 1);
@@ -63,10 +81,11 @@ router.get('/', auth, async (req, res) => {
     where += ' AND is_active=0';
   }
 
-  const [keys, countRow, priceMatrix] = await Promise.all([
+  const [keys, countRow, priceMatrix, gameOptions] = await Promise.all([
     db.all(`SELECT * FROM keys ${where} ORDER BY created_at DESC LIMIT ? OFFSET ?`, [...params, limit, offset]),
     db.get(`SELECT COUNT(*) AS c FROM keys ${where}`, params),
-    getPriceMatrix()
+    getPriceMatrix(),
+    getVisibleGameOptions(req.user)
   ]);
 
   res.render('keys', {
@@ -82,7 +101,7 @@ router.get('/', auth, async (req, res) => {
     now,
     fmtDate,
     parseSerials,
-    gameOptions: getVisibleGames(req.user),
+    gameOptions,
     priceMatrix
   });
 });
@@ -96,15 +115,22 @@ router.post('/generate', auth, async (req, res) => {
   const secs = durationToSeconds(durationNum, unit);
   const maxDevices = Math.min(Math.max(1, parseInt(max_devices) || 1), MAX_DEVICES_LIMIT);
   const gamePrefix = (game || 'BS').toUpperCase();
+  const customGame = await getCustomGame(gamePrefix);
+  const isCustomGame = Boolean(customGame);
   let priceEach = 0;
   let totalCost = 0;
 
-  if (!GAME_OPTIONS.some((g) => g.value === gamePrefix)) {
+  if (!GAME_OPTIONS.some((g) => g.value === gamePrefix) && !isCustomGame) {
     res.flash('error', 'Game tidak valid.');
     return res.redirect('/admin/keys');
   }
 
-  if (!req.user.isOwner && !normalizeAllowedGames(req.user.allowedGames).includes(gamePrefix)) {
+  if (isCustomGame && !req.user.isOwner && Number(customGame.created_by) !== Number(req.user.id)) {
+    res.flash('error', 'Game custom ini hanya bisa dipakai pembuat endpoint tersebut.');
+    return res.redirect('/admin/keys');
+  }
+
+  if (!isCustomGame && !req.user.isOwner && !normalizeAllowedGames(req.user.allowedGames).includes(gamePrefix)) {
     res.flash('error', 'Game ini belum diizinkan owner untuk akun reseller kamu.');
     return res.redirect('/admin/keys');
   }

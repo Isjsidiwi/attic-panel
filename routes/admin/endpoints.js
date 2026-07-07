@@ -7,6 +7,7 @@ const router = express.Router();
 const requireOwner = auth.requireOwner;
 
 const RESERVED_PATHS = new Set(['/api/game/mlbb', '/api/vvip-bs', '/api/ev8bp', '/api/codm']);
+const RESERVED_GAME_CODES = new Set(['BS', 'BSVVIP', 'MLBB', 'CODM', '8BP', 'FFHG', 'FFBR', 'DFM', 'VALORANT']);
 
 function normalizePath(value) {
   let path = String(value || '').trim().toLowerCase();
@@ -20,6 +21,11 @@ function validatePath(path) {
   if (!/^\/api\/[a-z0-9][a-z0-9/_-]{1,80}$/.test(path)) return 'Path endpoint tidak valid.';
   if (RESERVED_PATHS.has(path) || path.startsWith('/api/store')) return 'Endpoint bentrok dengan endpoint bawaan.';
   return null;
+}
+
+function normalizeGameCode(value, path) {
+  const fallback = path.split('/').filter(Boolean).pop() || 'CUSTOM';
+  return String(value || fallback).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 14);
 }
 
 async function canCreateEndpoint(user) {
@@ -70,9 +76,22 @@ router.post('/', auth, async (req, res) => {
     : 'POST';
   const responseMode = req.body.response_mode === 'chacha20-poly1305' ? 'chacha20-poly1305' : 'json';
   const responseBody = String(req.body.response_body || '{}').trim() || '{}';
+  const gameName = String(req.body.game_name || '').trim() || path.split('/').filter(Boolean).pop() || 'Custom Game';
+  const gameCode = normalizeGameCode(req.body.game_code, path);
   const error = validatePath(path);
   if (error) {
     res.flash('error', error);
+    return res.redirect('/admin/endpoints');
+  }
+
+  if (!gameCode || RESERVED_GAME_CODES.has(gameCode)) {
+    res.flash('error', 'Kode game custom tidak valid atau bentrok dengan game bawaan.');
+    return res.redirect('/admin/endpoints');
+  }
+
+  const gameCodeExists = await db.get('SELECT id FROM custom_endpoints WHERE game_code=?', [gameCode]);
+  if (gameCodeExists) {
+    res.flash('error', 'Kode game custom sudah dipakai endpoint lain.');
     return res.redirect('/admin/endpoints');
   }
 
@@ -86,8 +105,8 @@ router.post('/', auth, async (req, res) => {
   try {
     const now = Math.floor(Date.now() / 1000);
     await db.run(
-      'INSERT INTO custom_endpoints (path, method, response_body, response_mode, is_active, created_by, created_by_name, created_at) VALUES (?, ?, ?, ?, 1, ?, ?, ?)',
-      [path, method, responseBody, responseMode, req.user.id, req.user.username, now]
+      'INSERT INTO custom_endpoints (path, game_code, game_name, method, response_body, response_mode, is_active, created_by, created_by_name, created_at) VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, ?)',
+      [path, gameCode, gameName, method, responseBody, responseMode, req.user.id, req.user.username, now]
     );
     const inserted = await db.get('SELECT id FROM custom_endpoints WHERE path=?', [path]);
     const endpointId = inserted && inserted.id;
