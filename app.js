@@ -128,6 +128,7 @@ app.use((req, res, next) => {
       {
         title: data.title || 'ATTIC PANEL',
         panel_name: data.panel_name || data.storeName || 'ATTIC PANEL',
+        bodyClass: view === 'login' ? 'login-view' : view.startsWith('store/') && !view.startsWith('store/admin/') ? 'store-view' : '',
         appData: safeJson(stripPrivateData(data))
       },
       callback
