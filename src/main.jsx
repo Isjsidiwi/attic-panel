@@ -1,7 +1,30 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
-const data = window.__APP_DATA__ || { view: 'login' };
+const initialData = window.__APP_DATA__ || { view: 'login', currentUrl: window.location.pathname };
+const pageCache = new Map([[window.location.href, { data: initialData, title: document.title }]]);
+
+function bodyClassFor(view = '') {
+  if (view === 'login') return 'login-view';
+  if (view.startsWith('store/') && !view.startsWith('store/admin/')) return 'store-view';
+  return '';
+}
+
+async function fetchPageData(href) {
+  const url = new URL(href, window.location.origin).href;
+  if (pageCache.has(url)) return pageCache.get(url);
+  const res = await fetch(url, { credentials: 'same-origin', headers: { 'X-Requested-With': 'ReactSoftNavigation' } });
+  if (!res.ok || !res.headers.get('content-type')?.includes('text/html')) throw new Error('Navigation target is not HTML');
+  const html = await res.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const script = [...doc.scripts].find((item) => item.textContent.includes('window.__APP_DATA__'));
+  if (!script) throw new Error('Navigation target has no app data');
+  const raw = script.textContent.match(/window\.__APP_DATA__\s*=\s*([\s\S]*?);\s*$/m)?.[1];
+  if (!raw) throw new Error('Unable to parse app data');
+  const payload = { data: JSON.parse(raw), title: doc.title };
+  pageCache.set(url, payload);
+  return payload;
+}
 
 function fmtDate(value) {
   if (!value) return '-';
@@ -57,27 +80,67 @@ function useThemeLang() {
   };
 }
 
-function useInternalPrefetch() {
+function useSoftNavigation(setApp) {
   useEffect(() => {
-    const prefetched = new Set();
+    const canHandle = (link, event) => {
+      if (!link || !link.href) return false;
+      if (event && (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0)) return false;
+      if (link.target && link.target !== '_self') return false;
+      if (link.hasAttribute('download')) return false;
+      if (link.dataset.noSoftNav === '1') return false;
+      const url = new URL(link.href, window.location.origin);
+      if (url.origin !== window.location.origin) return false;
+      if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/mod/') || url.pathname.startsWith('/auth/')) return false;
+      if (/\.(so|png|jpe?g|gif|webp|svg|css|js|ico|zip|rar|7z|apk)$/i.test(url.pathname)) return false;
+      return true;
+    };
+    const applyPayload = (payload, href, push = true) => {
+      setApp(payload.data);
+      document.title = payload.title || document.title;
+      document.body.className = bodyClassFor(payload.data.view);
+      if (push) history.pushState({ href }, '', href);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    };
     const prefetch = (href) => {
-      if (!href || prefetched.has(href)) return;
+      if (!href || pageCache.has(new URL(href, window.location.origin).href)) return;
       const url = new URL(href, window.location.origin);
       if (url.origin !== window.location.origin || url.pathname === window.location.pathname) return;
-      prefetched.add(url.href);
-      fetch(url.href, { credentials: 'same-origin' }).catch(() => {});
+      fetchPageData(url.href).catch(() => {});
     };
     const onOver = (event) => {
       const link = event.target.closest && event.target.closest('a[href]');
-      if (link) prefetch(link.href);
+      if (canHandle(link)) prefetch(link.href);
     };
+    const onClick = async (event) => {
+      const link = event.target.closest && event.target.closest('a[href]');
+      if (!canHandle(link, event)) return;
+      event.preventDefault();
+      try {
+        const payload = await fetchPageData(link.href);
+        applyPayload(payload, link.href);
+      } catch {
+        window.location.href = link.href;
+      }
+    };
+    const onPop = async () => {
+      try {
+        const payload = await fetchPageData(window.location.href);
+        applyPayload(payload, window.location.href, false);
+      } catch {
+        window.location.reload();
+      }
+    };
+    document.addEventListener('click', onClick);
     document.addEventListener('mouseover', onOver, { passive: true });
     document.addEventListener('touchstart', onOver, { passive: true });
+    window.addEventListener('popstate', onPop);
     return () => {
+      document.removeEventListener('click', onClick);
       document.removeEventListener('mouseover', onOver);
       document.removeEventListener('touchstart', onOver);
+      window.removeEventListener('popstate', onPop);
     };
-  }, []);
+  }, [setApp]);
 }
 
 function Alert({ messages, type }) {
@@ -453,9 +516,9 @@ function StoreAdminReferrals({ app }) {
 }
 
 function App() {
+  const [app, setApp] = useState(initialData);
   const controls = useThemeLang();
-  useInternalPrefetch();
-  const app = data;
+  useSoftNavigation(setApp);
   const view = app.view;
   if (view === 'login') return <Login app={app} controls={controls} />;
   if (view.startsWith('store/') && !view.startsWith('store/admin/')) {
