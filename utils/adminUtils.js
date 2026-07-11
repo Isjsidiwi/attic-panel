@@ -11,6 +11,7 @@ const GAME_OPTIONS = [
   { value: '8BP', label: '8 Ball Pool (EasyVictory)' },
   { value: 'FFHG', label: 'Free Fire (HG Mods)' },
   { value: 'FFBR', label: 'Free Fire (BR Mods)' },
+  { value: 'GNG', label: 'Gold and Glory (GNG)' },
   { value: 'DFM', label: 'X3 DFM (DFM)' },
   { value: 'VALORANT', label: 'Valorant (Custom API)' }
 ];

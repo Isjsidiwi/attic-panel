@@ -6,8 +6,8 @@ const { loadConfig } = require('../../config');
 const router = express.Router();
 const requireOwner = auth.requireOwner;
 
-const RESERVED_PATHS = new Set(['/api/game/mlbb', '/api/vvip-bs', '/api/ev8bp', '/api/codm']);
-const RESERVED_GAME_CODES = new Set(['BS', 'BSVVIP', 'MLBB', 'CODM', '8BP', 'FFHG', 'FFBR', 'DFM', 'VALORANT']);
+const RESERVED_PATHS = new Set(['/api/game/mlbb', '/api/vvip-bs', '/api/ev8bp', '/api/codm', '/api/gng']);
+const RESERVED_GAME_CODES = new Set(['BS', 'BSVVIP', 'MLBB', 'CODM', '8BP', 'FFHG', 'FFBR', 'GNG', 'DFM', 'VALORANT']);
 
 function normalizePath(value) {
   let path = String(value || '').trim().toLowerCase();

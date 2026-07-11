@@ -248,7 +248,7 @@ await ensureColumn(db, 'valorant_device_ids', 'key_code', "TEXT NOT NULL DEFAULT
     });
   }
 
-  const games = ['BS', 'BSVVIP', 'MLBB', 'CODM', '8BP', 'FFHG', 'FFBR', 'DFM', 'VALORANT'];
+  const games = ['BS', 'BSVVIP', 'MLBB', 'CODM', '8BP', 'FFHG', 'FFBR', 'GNG', 'DFM', 'VALORANT'];
   for (const game of games) {
     for (let day = 1; day <= 30; day++) {
       await db.execute({
