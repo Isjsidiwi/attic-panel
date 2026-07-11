@@ -129,21 +129,34 @@ router.post('/ev8bp', async (req, res) => {
   });
 });
 
-function encryptChaCha20(payload, aad) {
+function xorWithStream(input, seed) {
+  const output = Buffer.alloc(input.length);
+  let offset = 0;
+  let round = 0;
+  while (offset < input.length) {
+    const block = crypto.createHash('sha256').update(seed).update(String(round++)).digest();
+    for (let i = 0; i < block.length && offset < input.length; i++, offset++) output[offset] = input[offset] ^ block[i];
+  }
+  return output;
+}
+
+function encryptGngEnvelope(payload) {
   const key = crypto.createHash('sha256').update(process.env.GNG_CHACHA_SECRET || 'gng-chacha20-poly1305-key-2024').digest();
   const nonce = crypto.randomBytes(12);
+  const mask = crypto.randomBytes(16);
+  const aad = Buffer.from([0x67, 0x6e, 0x67, 0x3a, 0x32]);
   const cipher = crypto.createCipheriv('chacha20-poly1305', key, nonce, { authTagLength: 16 });
-  cipher.setAAD(Buffer.from(aad));
+  cipher.setAAD(aad);
   const encrypted = Buffer.concat([cipher.update(JSON.stringify(payload), 'utf8'), cipher.final()]);
   const tag = cipher.getAuthTag();
-  return {
-    status: true,
-    encrypted: true,
-    alg: 'gng-c20p1305-v1',
-    nonce: nonce.toString('base64url'),
-    tag: tag.toString('base64url'),
-    data: encrypted.toString('base64url')
-  };
+
+  const a = mask.toString('base64url');
+  const b = xorWithStream(nonce, Buffer.concat([mask, Buffer.from('n')])).toString('base64url');
+  const c = xorWithStream(tag, Buffer.concat([mask, Buffer.from('t')])).toString('base64url');
+  const d = xorWithStream(encrypted, Buffer.concat([mask, Buffer.from('d')])).toString('base64url');
+  const e = crypto.createHmac('sha256', key).update(`${a}.${b}.${c}.${d}`).digest().subarray(0, 18).toString('base64url');
+
+  return { a, b, c, d, e };
 }
 
 router.post('/gng', async (req, res) => {
@@ -153,7 +166,7 @@ router.post('/gng', async (req, res) => {
   const auth = await validateAndRegisterKey(key_code, serial);
   if (!auth.success) {
     const failPayload = { status: false, reason: auth.reason || 'Key tidak valid' };
-    return res.json(encryptChaCha20(failPayload, Buffer.from([0x67, 0x6e, 0x67])));
+    return res.json(encryptGngEnvelope(failPayload));
   }
 
   const { key } = auth;
@@ -167,7 +180,7 @@ router.post('/gng', async (req, res) => {
     expires_at: new Date(Number(key.expires_at) * 1000).toISOString()
   };
 
-  res.json(encryptChaCha20(payload, Buffer.from([0x67, 0x6e, 0x67])));
+  res.json(encryptGngEnvelope(payload));
 });
 
 router.post('/codm', async (req, res) => {
