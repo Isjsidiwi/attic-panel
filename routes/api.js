@@ -129,6 +129,47 @@ router.post('/ev8bp', async (req, res) => {
   });
 });
 
+function encryptChaCha20(payload, aad) {
+  const key = crypto.createHash('sha256').update(process.env.GNG_CHACHA_SECRET || 'gng-chacha20-poly1305-key-2024').digest();
+  const nonce = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('chacha20-poly1305', key, nonce, { authTagLength: 16 });
+  cipher.setAAD(Buffer.from(aad));
+  const encrypted = Buffer.concat([cipher.update(JSON.stringify(payload), 'utf8'), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return {
+    status: true,
+    encrypted: true,
+    alg: 'gng-c20p1305-v1',
+    nonce: nonce.toString('base64url'),
+    tag: tag.toString('base64url'),
+    data: encrypted.toString('base64url')
+  };
+}
+
+router.post('/gng', async (req, res) => {
+  const key_code = (req.body.key_code || req.body.user_key || req.body.member_key || '').trim();
+  const serial = (req.body.serial || req.body.device_serial || '').trim();
+
+  const auth = await validateAndRegisterKey(key_code, serial);
+  if (!auth.success) {
+    const failPayload = { status: false, reason: auth.reason || 'Key tidak valid' };
+    return res.json(encryptChaCha20(failPayload, Buffer.from([0x67, 0x6e, 0x67])));
+  }
+
+  const { key } = auth;
+  const raw = `GNG-${key_code}-${serial}-Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E`;
+  const token = crypto.createHash('md5').update(raw).digest('hex');
+
+  const payload = {
+    status: true,
+    token: token,
+    rng: Number(key.expires_at),
+    expires_at: new Date(Number(key.expires_at) * 1000).toISOString()
+  };
+
+  res.json(encryptChaCha20(payload, Buffer.from([0x67, 0x6e, 0x67])));
+});
+
 router.post('/codm', async (req, res) => {
   const game = (req.body.game || 'CODM').trim().toUpperCase();
   const userKey = (req.body.user_key || req.body.member_key || '').trim();
