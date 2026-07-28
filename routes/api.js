@@ -226,5 +226,19 @@ router.post('/codm', async (req, res) => {
   });
 });
 
+router.post('/game/gngg', async (req, res) => {
+  const userKey = (req.body.user_key || req.body.member_key || '').trim();
+  const serial = (req.body.serial || req.body.hwid || '').trim();
+
+  const auth = await validateAndRegisterKey(userKey, serial);
+  if (!auth.success) return res.json({ status: false, reason: auth.reason });
+
+  res.json({
+    status: "succses",
+    hwid: serial,
+    key: userKey
+  });
+});
+
 module.exports = router;
 module.exports.formatDateTime = formatDateTime;
