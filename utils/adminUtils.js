@@ -12,6 +12,7 @@ const GAME_OPTIONS = [
   { value: 'FFHG', label: 'Free Fire (HG Mods)' },
   { value: 'FFBR', label: 'Free Fire (BR Mods)' },
   { value: 'GNG', label: 'Gold and Glory (GNG)' },
+  { value: 'GNGG', label: 'Gold and Glory (Heya)' },
   { value: 'DFM', label: 'X3 DFM (DFM)' },
   { value: 'VALORANT', label: 'Valorant (Custom API)' }
 ];
