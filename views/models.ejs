@@ -333,13 +333,21 @@
   </div>
 </main>
 
+<script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+</script>
 <script type="module">
-    import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
-    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
-    import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
-    import { DRACOLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/DRACOLoader.js';
-    import { OBJLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/OBJLoader.js';
-    import { FBXLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/FBXLoader.js';
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
+    import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+    import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 
     console.log("Three.js module loaded!");
     window.THREE = THREE;
@@ -366,6 +374,9 @@
     function init3DViewer() {
         const container = document.getElementById('canvas-container');
         if (!container) return;
+        
+        // Membersihkan canvas sebelumnya jika ada
+        container.innerHTML = '';
         
         // Scene
         scene = new THREE.Scene();
@@ -551,6 +562,8 @@
         
         const ext = path.split('.').pop().toLowerCase();
         
+        console.log("Ekstensi file:", ext);
+        
         const onProgress = (xhr) => {
             if (xhr.lengthComputable && xhr.total > 0) {
                 const percentComplete = (xhr.loaded / xhr.total) * 100;
@@ -568,11 +581,11 @@
         const onError = (error) => {
             console.error('Error loading model:', error);
             // Tambahkan logger yang muncul di layar (dalam progress text)
-            progressText.innerText = 'Error! (Lihat Console F12)';
-            progressBar.style.backgroundColor = 'red';
+            if (progressText) progressText.innerText = 'Error! (Lihat Console F12)';
+            if (progressBar) progressBar.style.backgroundColor = 'red';
             
             setTimeout(() => {
-                overlay.style.display = 'none';
+                if(overlay) overlay.style.display = 'none';
             }, 8000);
             
             // Tampilkan alert error khusus
@@ -642,19 +655,24 @@
             }
             
             console.log("Memuat model dari:", absolutePath);
-            loader.load(absolutePath, (gltf) => {
-                const object = gltf.scene;
-                
-                // Play animations if exist
-                if (gltf.animations && gltf.animations.length > 0) {
-                    mixer = new THREE.AnimationMixer(object);
-                    gltf.animations.forEach((clip) => {
-                        mixer.clipAction(clip).play();
-                    });
-                }
-                
-                onLoadFinish(object);
-            }, onProgress, onError);
+            loader.load(
+                absolutePath, 
+                (gltf) => {
+                    const object = gltf.scene;
+                    
+                    // Play animations if exist
+                    if (gltf.animations && gltf.animations.length > 0) {
+                        mixer = new THREE.AnimationMixer(object);
+                        gltf.animations.forEach((clip) => {
+                            mixer.clipAction(clip).play();
+                        });
+                    }
+                    
+                    onLoadFinish(object);
+                }, 
+                onProgress, 
+                onError
+            );
         } else if (ext === 'obj') {
             const loader = new OBJLoader();
             loader.load(path, onLoadFinish, onProgress, onError);
