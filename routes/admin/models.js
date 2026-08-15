@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { isAuthenticated } = require('../../middleware/auth');
+const auth = require('../../middleware/auth');
+
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 
-// Setup multer for uploading 3d models
+// Gunakan fungsi auth secara eksplisit
+router.use((req, res, next) => auth(req, res, next));
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const dir = path.join(__dirname, '../../public/models');
@@ -30,8 +33,6 @@ const upload = multer({
         }
     }
 });
-
-router.use(isAuthenticated);
 
 // GET /admin/models
 router.get('/', (req, res) => {
