@@ -544,9 +544,13 @@
         
         const onProgress = (xhr) => {
             if (xhr.lengthComputable) {
-                const percentComplete = xhr.loaded / xhr.total * 100;
+                const percentComplete = (xhr.loaded / xhr.total) * 100;
                 progressBar.style.width = percentComplete + '%';
-                progressText.innerText = Math.round(percentComplete, 2) + '%';
+                progressText.innerText = Math.round(percentComplete) + '%';
+            } else {
+                // Berpura-pura memuat jika ukuran total tidak diketahui
+                progressBar.style.width = '50%';
+                progressText.innerText = 'Loading...';
             }
         };
         
@@ -608,7 +612,7 @@
             const loader = new THREE.GLTFLoader();
             // Setup DRACOLoader for compressed models
             const dracoLoader = new THREE.DRACOLoader();
-            dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.4.1/');
+            dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
             loader.setDRACOLoader(dracoLoader);
             
             // Bypass CORS issues on Vercel deployment if models are loaded from absolute URLs
