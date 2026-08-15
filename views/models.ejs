@@ -1,0 +1,170 @@
+<div class="models-container" style="padding: 2rem; width: 100%; height: 100%;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1 style="margin: 0; color: var(--cyan); font-size: 1.5rem;">3D Models Viewer</h1>
+  </div>
+  
+  <div style="width: 100%; height: calc(100vh - 150px); background: #000; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; position: relative;" id="model-canvas-container">
+    <div id="loading-indicator" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--cyan); font-family: monospace; display: flex; flex-direction: column; align-items: center; gap: 1rem; z-index: 10;">
+      <svg class="animate-spin" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+      <span>Loading 3D Engine...</span>
+    </div>
+  </div>
+
+  <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+    <button class="btn btn-primary" id="btn-cube" style="flex: 1;">Show Cube</button>
+    <button class="btn btn-primary" id="btn-sphere" style="flex: 1;">Show Sphere</button>
+    <button class="btn btn-primary" id="btn-torus" style="flex: 1;">Show Torus</button>
+  </div>
+</div>
+
+<style>
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+</style>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+</script>
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+  // Wait for the container to be ready
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('model-canvas-container');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    
+    // Scene setup
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0f18); // Match panel dark theme
+    scene.fog = new THREE.FogExp2(0x0a0f18, 0.05);
+
+    // Camera setup
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.z = 5;
+
+    // Renderer setup
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    // Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 2.0;
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+    scene.add(ambientLight);
+
+    const pointLight1 = new THREE.PointLight(0x00e5ff, 2, 50); // Cyan light
+    pointLight1.position.set(5, 5, 5);
+    scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0x00ff88, 2, 50); // Green light
+    pointLight2.position.set(-5, -5, 5);
+    scene.add(pointLight2);
+
+    // Grid Helper
+    const gridHelper = new THREE.GridHelper(20, 20, 0x00e5ff, 0x1f2937);
+    gridHelper.position.y = -2;
+    scene.add(gridHelper);
+
+    // Material (common for all geometries)
+    const material = new THREE.MeshPhysicalMaterial({
+      color: 0x222222,
+      metalness: 0.9,
+      roughness: 0.1,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.1,
+      wireframe: false
+    });
+    
+    // Wireframe material overlay
+    const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x00e5ff, transparent: true, opacity: 0.5 });
+
+    let currentMesh = null;
+    let currentWireframe = null;
+
+    function addModel(geometry) {
+      if (currentMesh) {
+        scene.remove(currentMesh);
+        scene.remove(currentWireframe);
+        currentMesh.geometry.dispose();
+      }
+
+      currentMesh = new THREE.Mesh(geometry, material);
+      currentMesh.castShadow = true;
+      currentMesh.receiveShadow = true;
+      
+      const wireframeGeometry = new THREE.WireframeGeometry(geometry);
+      currentWireframe = new THREE.LineSegments(wireframeGeometry, wireframeMaterial);
+      
+      scene.add(currentMesh);
+      scene.add(currentWireframe);
+      
+      // Reset rotation
+      currentMesh.rotation.set(0, 0, 0);
+      currentWireframe.rotation.set(0, 0, 0);
+    }
+
+    // Geometries
+    const cubeGeometry = new THREE.BoxGeometry(2, 2, 2);
+    const sphereGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+    const torusGeometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
+
+    // Initial model
+    addModel(torusGeometry);
+    loadingIndicator.style.display = 'none';
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      controls.update();
+      
+      if (currentMesh && currentWireframe) {
+        // Subtle floating animation
+        const time = Date.now() * 0.001;
+        currentMesh.position.y = Math.sin(time) * 0.2;
+        currentWireframe.position.y = Math.sin(time) * 0.2;
+        
+        // Sync wireframe rotation
+        currentWireframe.rotation.copy(currentMesh.rotation);
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+      if (container) {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      }
+    });
+
+    // Button event listeners
+    document.getElementById('btn-cube').addEventListener('click', () => addModel(cubeGeometry));
+    document.getElementById('btn-sphere').addEventListener('click', () => addModel(sphereGeometry));
+    document.getElementById('btn-torus').addEventListener('click', () => addModel(torusGeometry));
+  });
+</script>

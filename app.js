@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 const { initDB } = require('./database');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin/index');
+const modelRoutes = require('./routes/admin/models');
 const apiRoutes = require('./routes/api');
 const hgModsRoutes = require('./routes/game_khusus/game_hgmods');
 const brModsRoutes = require('./routes/game_khusus/game_brmods');
@@ -164,6 +165,7 @@ app.use((req, res, next) => {
 
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
+app.use('/admin/models', modelRoutes);
 app.use('/api', apiLimiter);
 app.use('/api', customEndpointRoutes);
 app.use('/api', apiRoutes);
