@@ -333,15 +333,17 @@
   </div>
 </main>
 
-<!-- Load Three.js from CDN -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+<script type="module">
+    import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+    import { GLTFLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
+    import { DRACOLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/DRACOLoader.js';
+    import { OBJLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/OBJLoader.js';
+    import { FBXLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/FBXLoader.js';
 
-<script>
+    // Jadikan variabel global agar fungsi onclick HTML bisa mengaksesnya
+    window.THREE = THREE;
+    
     function updateFileName(input) {
         if (input.files && input.files[0]) {
             document.getElementById('fileNameDisplay').textContent = input.files[0].name;
@@ -391,7 +393,7 @@
         container.appendChild(renderer.domElement);
         
         // Controls
-        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.autoRotate = autoRotate;
@@ -620,17 +622,14 @@
         };
 
         if (ext === 'gltf' || ext === 'glb') {
-            const loader = new THREE.GLTFLoader();
+            const loader = new GLTFLoader();
             // Setup DRACOLoader for compressed models
             try {
-                if (typeof THREE.DRACOLoader !== 'undefined') {
-                    const dracoLoader = new THREE.DRACOLoader();
-                    // Setup path khusus untuk unpkg
-                    dracoLoader.setDecoderPath('https://unpkg.com/three@0.128.0/examples/js/libs/draco/gltf/');
-                    dracoLoader.setDecoderConfig({ type: 'js' });
-                    dracoLoader.preload();
-                    loader.setDRACOLoader(dracoLoader);
-                }
+                const dracoLoader = new DRACOLoader();
+                // Gunakan decoder google yang paling universal untuk module
+                dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+                dracoLoader.setDecoderConfig({ type: 'js' });
+                loader.setDRACOLoader(dracoLoader);
             } catch (e) {
                 console.warn('DRACOLoader setup failed:', e);
             }
@@ -638,6 +637,7 @@
             // Tambahkan basePath untuk Vercel / Express
             const absolutePath = path.startsWith('/') ? window.location.origin + path : path;
             
+            console.log("Loading GLTF/GLB from:", absolutePath);
             loader.load(absolutePath, (gltf) => {
                 const object = gltf.scene;
                 
@@ -652,29 +652,32 @@
                 onLoadFinish(object);
             }, onProgress, onError);
         } else if (ext === 'obj') {
-            const loader = new THREE.OBJLoader();
+            const loader = new OBJLoader();
             loader.load(path, onLoadFinish, onProgress, onError);
         } else if (ext === 'fbx') {
             // Ensure FBXLoader script is loaded for this to work
-            if (THREE.FBXLoader) {
-                const loader = new THREE.FBXLoader();
-                loader.load(path, (object) => {
-                    if (object.animations && object.animations.length > 0) {
-                        mixer = new THREE.AnimationMixer(object);
-                        object.animations.forEach((clip) => {
-                            mixer.clipAction(clip).play();
-                        });
-                    }
-                    onLoadFinish(object);
-                }, onProgress, onError);
-            } else {
-                onError(new Error("FBXLoader not available"));
-            }
+            const loader = new FBXLoader();
+            loader.load(path, (object) => {
+                if (object.animations && object.animations.length > 0) {
+                    mixer = new THREE.AnimationMixer(object);
+                    object.animations.forEach((clip) => {
+                        mixer.clipAction(clip).play();
+                    });
+                }
+                onLoadFinish(object);
+            }, onProgress, onError);
         } else {
             onError(new Error("Format not supported via generic loader setup"));
         }
     }
 
+    // Ekspos loadModel ke window agar onclick="loadModel(...)" di HTML tetap jalan
+    window.loadModel = loadModel;
+    window.toggleAutoRotate = toggleAutoRotate;
+    window.toggleWireframe = toggleWireframe;
+    window.resetCamera = resetCamera;
+    window.updateFileName = updateFileName;
+    
     // Initialize when DOM is ready
     document.addEventListener('DOMContentLoaded', () => {
         init3DViewer();
