@@ -57,11 +57,23 @@ router.get('/', (req, res) => {
     }
   }
 
-  res.render('models', {
+  // Gunakan express internal render untuk membypass custom react-shell render di app.js
+  const viewPath = path.join(req.app.get('views'), 'models.ejs');
+  req.app.render('models', {
     title: 'Model 3D',
     panel_name: process.env.PANEL_NAME || 'ATTIC PANEL',
     admin: req.user,
-    models: models
+    models: models,
+    currentUrl: req.originalUrl,
+    success_msg: res.locals.success_msg || [],
+    error_msg: res.locals.error_msg || [],
+    isStoreAdmin: false
+  }, (err, html) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).send('Error rendering view');
+      }
+      res.send(html);
   });
 });
 
