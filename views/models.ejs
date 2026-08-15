@@ -333,25 +333,23 @@
   </div>
 </main>
 
-<script type="importmap">
-    {
-        "imports": {
-            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-        }
-    }
-</script>
-<script type="module">
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-    import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
-    import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-    import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
 
-    console.log("Three.js module loaded!");
-    window.THREE = THREE;
-    
+<script>
+    // --- Three.js Setup ---
+    let scene, camera, renderer, controls;
+    let currentModel = null;
+    let autoRotate = true;
+    let isWireframe = false;
+    let animationId;
+    let mixer; // For animations if gltf has them
+    const clock = new THREE.Clock();
+
     function updateFileName(input) {
         if (input.files && input.files[0]) {
             document.getElementById('fileNameDisplay').textContent = input.files[0].name;
@@ -361,15 +359,6 @@
             document.getElementById('uploadBtn').style.display = 'none';
         }
     }
-
-    // --- Three.js Setup ---
-    let scene, camera, renderer, controls;
-    let currentModel = null;
-    let autoRotate = true;
-    let isWireframe = false;
-    let animationId;
-    let mixer; // For animations if gltf has them
-    const clock = new THREE.Clock();
 
     function init3DViewer() {
         const container = document.getElementById('canvas-container');
@@ -404,7 +393,7 @@
         container.appendChild(renderer.domElement);
         
         // Controls
-        controls = new OrbitControls(camera, renderer.domElement);
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.autoRotate = autoRotate;
@@ -639,12 +628,12 @@
 
         if (ext === 'gltf' || ext === 'glb') {
             console.log("Inisialisasi GLTFLoader...");
-            const loader = new GLTFLoader();
+            const loader = new THREE.GLTFLoader();
             // Setup DRACOLoader for compressed models
             try {
-                if (typeof DRACOLoader !== 'undefined') {
+                if (typeof THREE.DRACOLoader !== 'undefined') {
                     console.log("Inisialisasi DRACOLoader...");
-                    const dracoLoader = new DRACOLoader();
+                    const dracoLoader = new THREE.DRACOLoader();
                     dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
                     dracoLoader.setDecoderConfig({ type: 'js' });
                     loader.setDRACOLoader(dracoLoader);
@@ -682,20 +671,24 @@
                 onError
             );
         } else if (ext === 'obj') {
-            const loader = new OBJLoader();
+            const loader = new THREE.OBJLoader();
             loader.load(path, onLoadFinish, onProgress, onError);
         } else if (ext === 'fbx') {
             // Ensure FBXLoader script is loaded for this to work
-            const loader = new FBXLoader();
-            loader.load(path, (object) => {
-                if (object.animations && object.animations.length > 0) {
-                    mixer = new THREE.AnimationMixer(object);
-                    object.animations.forEach((clip) => {
-                        mixer.clipAction(clip).play();
-                    });
-                }
-                onLoadFinish(object);
-            }, onProgress, onError);
+            if (typeof THREE.FBXLoader !== 'undefined') {
+                const loader = new THREE.FBXLoader();
+                loader.load(path, (object) => {
+                    if (object.animations && object.animations.length > 0) {
+                        mixer = new THREE.AnimationMixer(object);
+                        object.animations.forEach((clip) => {
+                            mixer.clipAction(clip).play();
+                        });
+                    }
+                    onLoadFinish(object);
+                }, onProgress, onError);
+            } else {
+                onError(new Error("FBXLoader tidak tersedia"));
+            }
         } else {
             onError(new Error("Format not supported via generic loader setup"));
         }
@@ -729,12 +722,12 @@
     });
 
     // Bind event listeners for UI buttons
-    document.getElementById('btn-rotate')?.addEventListener('click', toggleAutoRotate);
-    document.getElementById('btn-wireframe')?.addEventListener('click', toggleWireframe);
-    document.getElementById('btn-reset')?.addEventListener('click', resetCamera);
+    document.getElementById('btn-rotate').addEventListener('click', toggleAutoRotate);
+    document.getElementById('btn-wireframe').addEventListener('click', toggleWireframe);
+    document.getElementById('btn-reset').addEventListener('click', resetCamera);
 
     // Setup input file listener since inline onchange was removed
-    document.getElementById('modelFile')?.addEventListener('change', function() {
+    document.getElementById('modelFile').addEventListener('change', function() {
         updateFileName(this);
     });
 
