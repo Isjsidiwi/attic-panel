@@ -279,7 +279,7 @@
               <h3 style="margin-bottom: 0.5rem;">Drag & Drop atau Pilih File</h3>
               <p style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.5rem;">Mendukung format .gltf, .glb, .obj, .fbx (Maks 50MB)</p>
               
-              <input type="file" id="modelFile" name="modelFile" accept=".gltf,.glb,.obj,.fbx,.stl" style="display: none;" onchange="updateFileName(this)">
+              <input type="file" id="modelFile" name="modelFile" accept=".gltf,.glb,.obj,.fbx,.stl" style="display: none;">
               <div style="display: flex; gap: 1rem; justify-content: center; align-items: center;">
                   <button type="button" class="btn btn-outline" onclick="document.getElementById('modelFile').click()">Pilih File</button>
                   <span id="fileNameDisplay" style="font-family: monospace; color: var(--cyan);"></span>
@@ -341,7 +341,7 @@
     import { OBJLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/OBJLoader.js';
     import { FBXLoader } from 'https://unpkg.com/three@0.160.0/examples/jsm/loaders/FBXLoader.js';
 
-    // Jadikan variabel global agar fungsi onclick HTML bisa mengaksesnya
+    console.log("Three.js module loaded!");
     window.THREE = THREE;
     
     function updateFileName(input) {
@@ -503,6 +503,7 @@
     }
     
     function loadModel(path, element, name = null) {
+        console.log("Tombol Ditekan! Path:", path, "Name:", name);
         if (!path) return;
         
         // Update UI selection
@@ -635,9 +636,12 @@
             }
             
             // Tambahkan basePath untuk Vercel / Express
-            const absolutePath = path.startsWith('/') ? window.location.origin + path : path;
+            let absolutePath = path;
+            if (path.startsWith('/')) {
+                absolutePath = window.location.origin + path;
+            }
             
-            console.log("Loading GLTF/GLB from:", absolutePath);
+            console.log("Memuat model dari:", absolutePath);
             loader.load(absolutePath, (gltf) => {
                 const object = gltf.scene;
                 
@@ -698,9 +702,14 @@
     });
 
     // Bind event listeners for UI buttons
-    document.getElementById('btn-rotate').addEventListener('click', toggleAutoRotate);
-    document.getElementById('btn-wireframe').addEventListener('click', toggleWireframe);
-    document.getElementById('btn-reset').addEventListener('click', resetCamera);
+    document.getElementById('btn-rotate')?.addEventListener('click', toggleAutoRotate);
+    document.getElementById('btn-wireframe')?.addEventListener('click', toggleWireframe);
+    document.getElementById('btn-reset')?.addEventListener('click', resetCamera);
+
+    // Setup input file listener since inline onchange was removed
+    document.getElementById('modelFile')?.addEventListener('change', function() {
+        updateFileName(this);
+    });
 
     // Eksekusi init setelah semua module siap
     init3DViewer();
