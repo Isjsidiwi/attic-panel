@@ -558,26 +558,22 @@
                 const loadedMB = (xhr.loaded / (1024 * 1024)).toFixed(2);
                 progressBar.style.width = '100%';
                 progressBar.style.animation = 'pulse 2s infinite';
-                progressText.innerText = `Loading... (${loadedMB} MB)`;
+                progressText.innerText = `Memuat ${loadedMB} MB ...`;
             }
         };
         
         const onError = (error) => {
             console.error('Error loading model:', error);
             // Tambahkan logger yang muncul di layar (dalam progress text)
-            progressText.innerText = 'Error! Cek console browser (F12).';
+            progressText.innerText = 'Error! (Lihat Console F12)';
             progressBar.style.backgroundColor = 'red';
             
             setTimeout(() => {
                 overlay.style.display = 'none';
-            }, 5000);
+            }, 8000);
             
-            // Perbaiki pesan error agar lebih deskriptif (misal: gagal karena draco compression)
-            let errorMsg = 'Gagal memuat model. Format mungkin tidak didukung atau file rusak.\n\nDetail:\n' + (error.message || JSON.stringify(error));
-            if (error && error.message && error.message.includes('draco')) {
-                errorMsg = 'Model menggunakan kompresi DRACO yang belum didukung oleh panel ini. Gunakan model GLTF/GLB tanpa kompresi.';
-            }
-            alert(errorMsg);
+            // Tampilkan alert error khusus
+            alert('Gagal memuat model 3D.\n\nDetail:\n' + (error.message || 'Error CORS/Network atau format tidak valid.\n\nTips:\nPastikan model Anda diekspor dengan opsi yang benar (Hindari kompresi webp/draco tingkat tinggi jika tidak perlu).'));
         };
         
         const onLoadFinish = (object) => {
@@ -629,19 +625,20 @@
             try {
                 if (typeof THREE.DRACOLoader !== 'undefined') {
                     const dracoLoader = new THREE.DRACOLoader();
-                    // Gunakan unpkg agar lebih stabil
-                    dracoLoader.setDecoderPath('https://unpkg.com/three@0.128.0/examples/js/libs/draco/');
+                    // Setup path khusus untuk unpkg
+                    dracoLoader.setDecoderPath('https://unpkg.com/three@0.128.0/examples/js/libs/draco/gltf/');
+                    dracoLoader.setDecoderConfig({ type: 'js' });
+                    dracoLoader.preload();
                     loader.setDRACOLoader(dracoLoader);
                 }
             } catch (e) {
                 console.warn('DRACOLoader setup failed:', e);
             }
             
-            // Bypass CORS issues on Vercel deployment if models are loaded from absolute URLs
-            if (path.startsWith('http')) {
-                loader.setCrossOrigin('anonymous');
-            }
-            loader.load(path, (gltf) => {
+            // Tambahkan basePath untuk Vercel / Express
+            const absolutePath = path.startsWith('/') ? window.location.origin + path : path;
+            
+            loader.load(absolutePath, (gltf) => {
                 const object = gltf.scene;
                 
                 // Play animations if exist
