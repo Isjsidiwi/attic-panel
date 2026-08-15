@@ -231,7 +231,8 @@ app.use((req, res) => {
 // Init DB then start
 initDB().catch((err) => {
   console.error('DB init failed:', err);
-  process.exit(1);
+  console.warn('WARNING: Database connection failed. The application will continue to run, but database-dependent features may not work.');
+  // Removed process.exit(1) to prevent server from crashing when Turso times out
 });
 
 const PORT = process.env.PORT || 3000;
