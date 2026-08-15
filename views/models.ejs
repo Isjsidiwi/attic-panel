@@ -588,8 +588,10 @@
                 if(overlay) overlay.style.display = 'none';
             }, 8000);
             
-            // Tampilkan alert error khusus
-            alert('Gagal memuat model 3D.\n\nDetail:\n' + (error.message || 'Error CORS/Network atau format tidak valid.\n\nTips:\nPastikan model Anda diekspor dengan opsi yang benar (Hindari kompresi webp/draco tingkat tinggi jika tidak perlu).'));
+            // Tampilkan alert error khusus tanpa memblokir thread
+            setTimeout(() => {
+                alert('Gagal memuat model 3D.\n\nDetail:\n' + (error.message || 'Error CORS/Network atau format tidak valid.\n\nTips:\nPastikan model Anda diekspor dengan opsi yang benar (Hindari kompresi webp/draco tingkat tinggi jika tidak perlu).'));
+            }, 100);
         };
         
         const onLoadFinish = (object) => {
@@ -636,14 +638,17 @@
         };
 
         if (ext === 'gltf' || ext === 'glb') {
+            console.log("Inisialisasi GLTFLoader...");
             const loader = new GLTFLoader();
             // Setup DRACOLoader for compressed models
             try {
-                const dracoLoader = new DRACOLoader();
-                // Gunakan decoder google yang paling universal untuk module
-                dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
-                dracoLoader.setDecoderConfig({ type: 'js' });
-                loader.setDRACOLoader(dracoLoader);
+                if (typeof DRACOLoader !== 'undefined') {
+                    console.log("Inisialisasi DRACOLoader...");
+                    const dracoLoader = new DRACOLoader();
+                    dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+                    dracoLoader.setDecoderConfig({ type: 'js' });
+                    loader.setDRACOLoader(dracoLoader);
+                }
             } catch (e) {
                 console.warn('DRACOLoader setup failed:', e);
             }
@@ -653,6 +658,9 @@
             if (path.startsWith('/')) {
                 absolutePath = window.location.origin + path;
             }
+            
+            // Bypass CORS issues on Vercel deployment if models are loaded from absolute URLs
+            loader.setCrossOrigin('anonymous');
             
             console.log("Memuat model dari:", absolutePath);
             loader.load(
@@ -713,6 +721,7 @@
             e.preventDefault();
             const path = this.dataset.path;
             const name = this.dataset.name;
+            console.log("View Button Clicked!", {path, name});
             if(path && name) {
                 window.loadModel(path, null, name);
             }
