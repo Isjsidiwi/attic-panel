@@ -151,6 +151,12 @@
         transition: width 0.1s;
     }
     
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
@@ -331,9 +337,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
 
 <script>
     function updateFileName(input) {
@@ -543,22 +549,31 @@
         const ext = path.split('.').pop().toLowerCase();
         
         const onProgress = (xhr) => {
-            if (xhr.lengthComputable) {
+            if (xhr.lengthComputable && xhr.total > 0) {
                 const percentComplete = (xhr.loaded / xhr.total) * 100;
                 progressBar.style.width = percentComplete + '%';
                 progressText.innerText = Math.round(percentComplete) + '%';
             } else {
-                // Berpura-pura memuat jika ukuran total tidak diketahui
-                progressBar.style.width = '50%';
-                progressText.innerText = 'Loading...';
+                // Tampilkan besaran file yg terdownload
+                const loadedMB = (xhr.loaded / (1024 * 1024)).toFixed(2);
+                progressBar.style.width = '100%';
+                progressBar.style.animation = 'pulse 2s infinite';
+                progressText.innerText = `Loading... (${loadedMB} MB)`;
             }
         };
         
         const onError = (error) => {
             console.error('Error loading model:', error);
-            overlay.style.display = 'none';
+            // Tambahkan logger yang muncul di layar (dalam progress text)
+            progressText.innerText = 'Error! Cek console browser (F12).';
+            progressBar.style.backgroundColor = 'red';
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 5000);
+            
             // Perbaiki pesan error agar lebih deskriptif (misal: gagal karena draco compression)
-            let errorMsg = 'Gagal memuat model. Format mungkin tidak didukung atau file rusak.';
+            let errorMsg = 'Gagal memuat model. Format mungkin tidak didukung atau file rusak.\n\nDetail:\n' + (error.message || JSON.stringify(error));
             if (error && error.message && error.message.includes('draco')) {
                 errorMsg = 'Model menggunakan kompresi DRACO yang belum didukung oleh panel ini. Gunakan model GLTF/GLB tanpa kompresi.';
             }
@@ -611,9 +626,16 @@
         if (ext === 'gltf' || ext === 'glb') {
             const loader = new THREE.GLTFLoader();
             // Setup DRACOLoader for compressed models
-            const dracoLoader = new THREE.DRACOLoader();
-            dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
-            loader.setDRACOLoader(dracoLoader);
+            try {
+                if (typeof THREE.DRACOLoader !== 'undefined') {
+                    const dracoLoader = new THREE.DRACOLoader();
+                    // Gunakan unpkg agar lebih stabil
+                    dracoLoader.setDecoderPath('https://unpkg.com/three@0.128.0/examples/js/libs/draco/');
+                    loader.setDRACOLoader(dracoLoader);
+                }
+            } catch (e) {
+                console.warn('DRACOLoader setup failed:', e);
+            }
             
             // Bypass CORS issues on Vercel deployment if models are loaded from absolute URLs
             if (path.startsWith('http')) {
